@@ -93,6 +93,15 @@ export default function RunnerConfig({ onGenerate }: Props) {
     [totalDurationSec]
   )
 
+  const compatibleBpms = useMemo(() => {
+    if (!targetBpm) return null
+    return {
+      half: Math.round(targetBpm / 2),
+      twoThirds: Math.round((targetBpm * 2) / 3),
+      full: targetBpm,
+    }
+  }, [targetBpm])
+
   const isValid = !!targetBpm && !!totalDurationSec
 
   const distanceLabel = useMemo(() => {
@@ -295,10 +304,15 @@ export default function RunnerConfig({ onGenerate }: Props) {
               <span className="text-xs text-zinc-500">
                 Playlist: ~{formatDuration(bufferedDurationSec!)} (with 15% buffer)
               </span>
+              {compatibleBpms && (
+                <span className="text-xs text-zinc-600 mt-0.5">
+                  Music targets: {compatibleBpms.half} BPM (÷2) · {compatibleBpms.twoThirds} BPM (⅔) · {compatibleBpms.full} BPM
+                </span>
+              )}
             </div>
             <div className="shrink-0 rounded-lg bg-teal-500/10 border border-teal-500/30 px-3 py-1.5 text-center">
               <div className="text-lg font-bold text-teal-400 leading-none">{targetBpm}</div>
-              <div className="text-[10px] text-teal-500/70 uppercase tracking-wider mt-0.5">BPM</div>
+              <div className="text-[10px] text-teal-500/70 uppercase tracking-wider mt-0.5">cadence</div>
             </div>
           </div>
         </div>

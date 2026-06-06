@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ConnectTidal from '@/components/ConnectTidal'
 import PlaylistView from '@/components/PlaylistView'
 import FeedbackBar from '@/components/FeedbackBar'
@@ -52,11 +52,67 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false)
   const [savedUrl, setSavedUrl] = useState('')
 
+  // Library sync state
+  const [libraryStatus, setLibraryStatus] = useState<{
+    synced: boolean; trackCount: number; lastSync: string | null; bpmTracksCount: number
+  } | null>(null)
+  const [isSyncing, setIsSyncing] = useState(false)
+  const [syncMessage, setSyncMessage] = useState('')
+
   const rejectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isGeneratingRef = useRef(false)
 
   useEffect(() => { checkAuth() }, [])
+  useEffect(() => { fetchLibraryStatus() }, [])
   useEffect(() => { isGeneratingRef.current = isGenerating }, [isGenerating])
+
+  async function fetchLibraryStatus() {
+    try {
+      const res = await fetch('/api/library/status')
+      if (res.ok) setLibraryStatus(await res.json())
+    } catch {}
+  }
+
+  const triggerSync = useCallback(async (mode: 'full' | 'incremental' = 'incremental') => {
+    if (isSyncing) return
+    setIsSyncing(true)
+    setSyncMessage('Starting…')
+    try {
+      const res = await fetch('/api/library/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode }),
+      })
+      if (!res.body) throw new Error('No response body')
+      const reader = res.body.getReader()
+      const dec = new TextDecoder()
+      let buf = ''
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buf += dec.decode(value, { stream: true })
+        const lines = buf.split('\n')
+        buf = lines.pop() ?? ''
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const ev = JSON.parse(line.slice(6))
+            if (ev.type === 'progress') setSyncMessage(ev.message)
+            else if (ev.type === 'done') {
+              setSyncMessage(`Done — ${ev.tracksAdded} new, ${ev.tracksUpdated} updated`)
+              await fetchLibraryStatus()
+            } else if (ev.type === 'error') {
+              setSyncMessage(`Error: ${ev.message}`)
+            }
+          } catch {}
+        }
+      }
+    } catch (e) {
+      setSyncMessage(`Failed: ${String(e)}`)
+    } finally {
+      setIsSyncing(false)
+    }
+  }, [isSyncing])
 
   // When mode changes, reset tracks and saved state
   useEffect(() => {
@@ -335,12 +391,35 @@ export default function Home() {
             <span className="text-xs text-zinc-600">·</span>
             <span className="text-xs text-zinc-500">AI Playlist Curator</span>
           </div>
-          {appStatus === 'connected' && tidalUser && (
-            <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-3 py-1 text-xs text-zinc-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-              {tidalUser}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {appStatus === 'connected' && libraryStatus !== null && (
+              <button
+                onClick={() => triggerSync(libraryStatus.synced ? 'incremental' : 'full')}
+                disabled={isSyncing}
+                title={isSyncing ? syncMessage : libraryStatus.synced ? 'Sync library' : 'Library not synced — click to sync'}
+                className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-60"
+              >
+                {isSyncing ? (
+                  <span className="h-2.5 w-2.5 rounded-full border border-zinc-600 border-t-teal-400 animate-spin shrink-0" />
+                ) : (
+                  <span className={`text-[10px] ${libraryStatus.synced ? 'text-zinc-600' : 'text-amber-500'}`}>↻</span>
+                )}
+                {isSyncing ? (
+                  <span className="hidden sm:inline max-w-[140px] truncate">{syncMessage}</span>
+                ) : libraryStatus.synced ? (
+                  <span className="hidden sm:inline">{libraryStatus.trackCount.toLocaleString()} tracks</span>
+                ) : (
+                  <span className="hidden sm:inline text-amber-500/80">Sync library</span>
+                )}
+              </button>
+            )}
+            {appStatus === 'connected' && tidalUser && (
+              <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-3 py-1 text-xs text-zinc-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+                {tidalUser}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -371,6 +450,7 @@ export default function Home() {
               <PlaylistView
                 tracks={tracks}
                 mood={selectedMood}
+                defaultTitle={mode === 'run' && runConfig ? `${runConfig.label}` : undefined}
                 onUpdateStatus={updateTrackStatus}
                 onRejectAndRefresh={handleRejectAndRefresh}
                 onSave={isEnhanceMode ? addToPlaylist : savePlaylist}

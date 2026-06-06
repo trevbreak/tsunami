@@ -16,6 +16,7 @@ const MOOD_TITLES: Record<Mood, string> = {
 interface Props {
   tracks: PlaylistTrack[]
   mood: Mood | null
+  defaultTitle?: string
   onUpdateStatus: (tidalId: string, status: 'accepted' | 'rejected') => void
   onRejectAndRefresh: (tidalId: string) => void
   onSave: (title: string) => void
@@ -27,6 +28,7 @@ interface Props {
 export default function PlaylistView({
   tracks,
   mood,
+  defaultTitle: externalDefaultTitle,
   onUpdateStatus,
   onRejectAndRefresh,
   onSave,
@@ -35,18 +37,28 @@ export default function PlaylistView({
   savedUrl,
 }: Props) {
   const month = new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
-  const defaultTitle = mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`
-  const [title, setTitle] = useState(defaultTitle)
+  const computedDefault = mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`
+  const initialTitle = externalDefaultTitle ?? computedDefault
+  const [title, setTitle] = useState(initialTitle)
   const [editingTitle, setEditingTitle] = useState(false)
 
   useEffect(() => {
-    setTitle(mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`)
-  }, [mood])
+    setTitle(externalDefaultTitle ?? (mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`))
+  }, [mood, externalDefaultTitle])
 
   const visible = tracks.filter((t) => t.status !== 'rejected')
   const accepted = tracks.filter((t) => t.status === 'accepted')
   const pending = tracks.filter((t) => t.status === 'pending')
   const hasAccepted = accepted.length > 0
+
+  const totalDurationSec = tracks
+    .filter((t) => t.status !== 'rejected' && t.duration)
+    .reduce((sum, t) => sum + (t.duration ?? 0), 0)
+  const durationDisplay = totalDurationSec > 0
+    ? totalDurationSec >= 3600
+      ? `${Math.floor(totalDurationSec / 3600)}h ${Math.floor((totalDurationSec % 3600) / 60)}m`
+      : `${Math.floor(totalDurationSec / 60)}m`
+    : null
 
   function acceptAll() {
     pending.forEach((t) => onUpdateStatus(t.tidal_id, 'accepted'))
@@ -78,6 +90,7 @@ export default function PlaylistView({
             )}
             <p className="text-xs text-zinc-500 mt-0.5">
               {accepted.length} confirmed · {pending.length} pending
+              {durationDisplay && <span> · {durationDisplay}</span>}
             </p>
           </div>
         </div>

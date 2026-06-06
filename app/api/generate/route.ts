@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, TIDAL_TOOLS, SYSTEM_PROMPT, MOOD_DESCRIPTIONS, parseTracksFromMessage } from '@/lib/claude'
 import { getFavoriteTracks, getBatchRecommendations, getUserPlaylists, getPlaylistTracks } from '@/lib/tidal'
 import { getMusicRecommendations, formatRedditContext } from '@/lib/reddit'
+import { dbExists, getFavoriteLibraryTracks } from '@/lib/db'
 import type { Message, Mood } from '@/types'
 
 export const runtime = 'nodejs'
@@ -44,6 +45,17 @@ async function handleToolCall(
   urlMap: Map<string, string>
 ): Promise<string> {
   if (toolName === 'get_tidal_favorites') {
+    if (dbExists()) {
+      const libTracks = getFavoriteLibraryTracks()
+      if (libTracks.length > 0) {
+        const tracks = libTracks.slice(0, 200).map((t) => ({
+          id: t.id, title: t.title, artist: t.artist, album: t.album,
+          duration: t.duration, bpm: t.bpm, cover_url: t.cover_url, url: t.tidal_url,
+        }))
+        tracks.forEach((t) => { if (t.cover_url) coverMap.set(t.id, t.cover_url); if (t.url) urlMap.set(t.id, t.url) })
+        return JSON.stringify({ tracks })
+      }
+    }
     const limit = (toolInput.limit as number) ?? 50
     const data = await getFavoriteTracks(limit)
     captureUrls(data, coverMap, urlMap)
@@ -131,6 +143,7 @@ export async function POST(req: NextRequest) {
           { role: 'user', content: userContent },
         ]
 
+        let tracksEmitted = false
         let continueLoop = true
         while (continueLoop) {
           const response = await anthropic.messages.create({
@@ -153,6 +166,7 @@ export async function POST(req: NextRequest) {
                   tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
                 }))
                 send({ type: 'tracks', tracks: enriched })
+                tracksEmitted = true
               }
             }
           }
@@ -179,7 +193,11 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        send({ type: 'done' })
+        if (!tracksEmitted) {
+          send({ type: 'error', message: 'No tracks could be generated. Try a different mood or give some feedback to guide the curation.' })
+        } else {
+          send({ type: 'done' })
+        }
       } catch (err) {
         send({ type: 'error', message: String(err) })
       } finally {

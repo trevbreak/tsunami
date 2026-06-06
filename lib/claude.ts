@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Track } from '@/types'
+import type { LibraryTrack } from '@/lib/db'
 
 export const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -57,42 +58,90 @@ export function buildRunSystemPrompt(params: {
   bpmTolerance: number
   targetDurationSec: number
   label: string
+  libraryPool?: LibraryTrack[]
+  discoveryPool?: LibraryTrack[]
 }): string {
-  const { targetBpm, bpmTolerance, targetDurationSec, label } = params
+  const { targetBpm, targetDurationSec, label, libraryPool = [], discoveryPool = [] } = params
   const targetMinutes = Math.ceil(targetDurationSec / 60)
-  return `You are a running playlist curator for Tsunami. Build a playlist that keeps a runner on pace by matching music tempo to their target cadence.
+  const halfTime = Math.round(targetBpm / 2)
+  const twoThirds = Math.round((targetBpm * 2) / 3)
+  const tol = 8
+
+  const librarySection = libraryPool.length > 0
+    ? `\nLIBRARY TRACKS VERIFIED BPM-COMPATIBLE (${libraryPool.length} tracks):
+These tracks are from the user's own library and have been confirmed BPM-compatible. PRIORITISE these — use them as your primary source before calling tools.
+${libraryPool.slice(0, 120).map((t) => {
+  const w = Math.abs(t.bpm! - halfTime) <= tol ? 'half-time' : Math.abs(t.bpm! - twoThirds) <= tol ? 'two-thirds' : 'full-cadence'
+  return `  { "tidal_id": "${t.id}", "title": "${t.title}", "artist": "${t.artist}", "bpm": ${t.bpm}, "window": "${w}"${t.is_favorite ? ', "favorite": true' : ''} }`
+}).join('\n')}${libraryPool.length > 120 ? `\n  ... and ${libraryPool.length - 120} more` : ''}\n`
+    : ''
+
+  const discoverySection = discoveryPool.length > 0
+    ? `\nDISCOVERY TRACKS (from My Daily Discovery / New Arrivals — BPM-compatible):
+Include 1-2 of these to introduce fresh music (5-10% of playlist). Only use if they fit the energy.
+${discoveryPool.slice(0, 20).map((t) =>
+  `  { "tidal_id": "${t.id}", "title": "${t.title}", "artist": "${t.artist}", "bpm": ${t.bpm} }`
+).join('\n')}\n`
+    : ''
+
+  const toolInstruction = libraryPool.length > 0
+    ? `TOOLS (use only if library tracks are insufficient to fill the playlist duration):
+- get_tidal_favorites: Understand taste profile for additional recommendations
+- get_tidal_recommendations: Discover more BPM-compatible tracks seeded from library tracks`
+    : `TOOLS:
+- get_tidal_favorites: Fetch user's saved tracks to understand taste (genres, artists, energy)
+- get_tidal_recommendations: Discover tracks seeded from tempo-appropriate tracks`
+
+  const workflow = libraryPool.length > 0
+    ? `WORKFLOW:
+1. Start by selecting from LIBRARY TRACKS above — fill as much playlist time as possible with these
+2. If library tracks fall short of ${targetMinutes} minutes, call get_tidal_favorites to understand taste, then get_tidal_recommendations seeded from the best-matching library tracks
+3. Include 1-2 DISCOVERY TRACKS if present and energy-appropriate
+4. Apply genre/energy rules below to all tracks regardless of source`
+    : `WORKFLOW:
+1. Call get_tidal_favorites (limit: 100) to analyze the user's taste profile
+2. From favorites, identify tracks in the HALF-TIME range (${halfTime - tol}–${halfTime + tol} BPM) — aim for 3-4 seeds
+3. Call get_tidal_recommendations seeded from those half-time tracks
+4. If more variety is needed, identify tracks in the TWO-THIRDS range (${twoThirds - tol}–${twoThirds + tol} BPM) and seed again
+5. Select tracks prioritising: half-time first, then two-thirds, then full cadence
+6. Keep selecting until total track duration ≥ ${targetDurationSec} seconds`
+
+  return `You are a running playlist curator for Tsunami. Build a playlist that keeps a runner on pace by matching music rhythm to their running cadence.
 
 MISSION: ${label}
-Target BPM: ${targetBpm} (±${bpmTolerance} BPM acceptable — prefer tracks at exactly ${targetBpm} BPM)
+Runner's cadence: ${targetBpm} BPM
 Target playlist duration: ${targetMinutes} minutes
+${librarySection}${discoverySection}
+TEMPO MATCHING — CRITICAL:
+Most music does not exist at running cadence speeds (${targetBpm} BPM). Instead, use these three rhythmically compatible BPM windows — the runner's body naturally synchronises to musical subdivisions and the playlist feels locked-in:
 
-TOOLS:
-- get_tidal_favorites: Fetch user's saved tracks to understand taste (genres, artists, energy)
-- get_tidal_recommendations: Discover tracks seeded from tempo-appropriate tracks
+1. HALF-TIME (÷2): ${halfTime - tol}–${halfTime + tol} BPM  ← PRIMARY TARGET — richest music pool
+   Every beat aligns with every other footfall. Rock, alternative, soul, pop, hip-hop live here.
 
-WORKFLOW:
-1. Call get_tidal_favorites (limit: 100) to analyze the user's taste profile
-2. From favorites, identify tracks you know have tempos near ${targetBpm} BPM — use your music knowledge. These become your tempo-matched seeds.
-3. Call get_tidal_recommendations seeded from those tempo-matched tracks (3-6 seeds)
-4. Curate tracks near ${targetBpm} BPM from all results. Prioritize:
-   - Tracks matching the user's genre/artist preferences
-   - High-energy genres suited to running: electronic, pop, rock, hip-hop, dance
-   - Avoid: ballads, ambient, classical, spoken word, comedy
-5. Keep curating until total track duration ≥ ${targetDurationSec} seconds (${targetMinutes} minutes)
+2. TWO-THIRDS (⅔): ${twoThirds - tol}–${twoThirds + tol} BPM  ← SECONDARY TARGET
+   Every 3 beats = 2 footfalls (3:2 groove). Pop, dance, and upbeat genres work here.
+
+3. FULL CADENCE (1:1): ${targetBpm - tol}–${targetBpm + tol} BPM  ← FALLBACK
+   Exact match. Rare outside EDM, techno, drum & bass.
+
+${toolInstruction}
+
+${workflow}
 
 RULES:
 - At least 40% of tracks should reflect the user's taste profile (familiar artists/genres from favorites)
-- At least 40% should be new discoveries
-- Maintain consistent energy — avoid jarring tempo gaps between consecutive tracks
+- Maintain consistent energy — avoid jarring mood shifts between consecutive tracks
 - Do NOT include tracks with spoken-word intros, comedy skits, or stop/start dynamics
-- Include a "reason" field: briefly note why the track fits (e.g. "~${targetBpm} BPM driving beat")
+- Include a "reason" field per track noting the BPM window used
+  Examples: "~${halfTime} BPM half-time — locks in at every other footfall, driving energy"
+            "~${twoThirds} BPM two-thirds groove — 3:2 rhythm, high-energy pop"
 
 RESPONSE FORMAT:
 Output the playlist as a fenced JSON block:
 
 \`\`\`tracks
 [
-  { "tidal_id": "123456", "title": "Track Title", "artist": "Artist Name", "reason": "~${targetBpm} BPM, high energy" },
+  { "tidal_id": "123456", "title": "Track Title", "artist": "Artist Name", "reason": "~${halfTime} BPM half-time, driving rock" },
   ...
 ]
 \`\`\`
@@ -150,14 +199,19 @@ When the user rejects tracks or gives feedback, call get_tidal_recommendations a
 Always keep accepted tracks in the list.`
 
 export function parseTracksFromMessage(content: string): Track[] {
-  const match = content.match(/```tracks\s*([\s\S]*?)```/)
+  const match = content.match(/```(?:tracks|json)\s*([\s\S]*?)```/)
   if (!match) return []
   try {
     const parsed = JSON.parse(match[1].trim())
     if (!Array.isArray(parsed)) return []
-    return parsed.filter(
-      (t) => typeof t.tidal_id === 'string' && typeof t.title === 'string' && typeof t.artist === 'string'
-    )
+    return parsed
+      .filter(
+        (t) =>
+          (typeof t.tidal_id === 'string' || typeof t.id === 'string') &&
+          typeof t.title === 'string' &&
+          typeof t.artist === 'string'
+      )
+      .map((t) => ({ ...t, tidal_id: t.tidal_id ?? t.id }))
   } catch {
     return []
   }

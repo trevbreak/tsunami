@@ -2,7 +2,9 @@ import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, RUN_TOOLS, buildRunSystemPrompt, parseTracksFromMessage } from '@/lib/claude'
 import { getFavoriteTracks, getBatchRecommendations } from '@/lib/tidal'
+import { dbExists, getTracksByBpmRange, getDiscoveryTracks } from '@/lib/db'
 import type { RunConfig } from '@/types'
+import type { LibraryTrack } from '@/lib/db'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
@@ -72,11 +74,36 @@ export async function POST(req: NextRequest) {
       try {
         send({ type: 'status', phase: 'favorites', message: 'Getting started…' })
 
+        // Pull BPM-matched tracks from local library if synced
+        let libraryPool: LibraryTrack[] = []
+        let discoveryPool: LibraryTrack[] = []
+        if (dbExists()) {
+          const halfBpm = Math.round(config.targetBpm / 2)
+          const twoThirdsBpm = Math.round((config.targetBpm * 2) / 3)
+          const tol = 8
+          const seen = new Set<string>()
+          for (const t of [
+            ...getTracksByBpmRange(halfBpm - tol, halfBpm + tol),
+            ...getTracksByBpmRange(twoThirdsBpm - tol, twoThirdsBpm + tol),
+            ...getTracksByBpmRange(config.targetBpm - tol, config.targetBpm + tol),
+          ]) {
+            if (!seen.has(t.id)) { seen.add(t.id); libraryPool.push(t) }
+          }
+          discoveryPool = getDiscoveryTracks().filter(
+            (t) => !seen.has(t.id) && t.bpm != null &&
+              (Math.abs(t.bpm - halfBpm) <= tol ||
+               Math.abs(t.bpm - twoThirdsBpm) <= tol ||
+               Math.abs(t.bpm - config.targetBpm) <= tol)
+          )
+        }
+
         const systemPrompt = buildRunSystemPrompt({
           targetBpm: config.targetBpm,
           bpmTolerance: config.bpmTolerance,
           targetDurationSec: config.targetDurationSec,
           label: config.label,
+          libraryPool,
+          discoveryPool,
         })
 
         const targetMinutes = Math.ceil(config.targetDurationSec / 60)
@@ -94,11 +121,12 @@ export async function POST(req: NextRequest) {
           { role: 'user', content: userContent },
         ]
 
+        let tracksEmitted = false
         let continueLoop = true
         while (continueLoop) {
           const response = await anthropic.messages.create({
             model: 'claude-sonnet-4-6',
-            max_tokens: 4096,
+            max_tokens: 8192,
             system: systemPrompt,
             tools: RUN_TOOLS,
             messages: apiMessages,
@@ -115,6 +143,7 @@ export async function POST(req: NextRequest) {
                   tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
                 }))
                 send({ type: 'tracks', tracks: enriched })
+                tracksEmitted = true
               }
             }
           }
@@ -141,7 +170,11 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        send({ type: 'done' })
+        if (!tracksEmitted) {
+          send({ type: 'error', message: 'No tracks could be generated. Try adjusting your BPM target or pace and try again.' })
+        } else {
+          send({ type: 'done' })
+        }
       } catch (err) {
         send({ type: 'error', message: String(err) })
       } finally {

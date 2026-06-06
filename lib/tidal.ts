@@ -24,6 +24,13 @@ export async function getFavoriteTracks(limit = 50): Promise<{ tracks: RawTrack[
   return tidalFetch(`/api/tracks?limit=${limit}`)
 }
 
+export async function getFavoriteTracksPage(
+  limit: number,
+  offset: number
+): Promise<{ tracks: RawTrack[]; count: number }> {
+  return tidalFetch(`/api/tracks?limit=${limit}&offset=${offset}`)
+}
+
 export async function getBatchRecommendations(
   trackIds: string[],
   limitPerTrack = 10
@@ -45,6 +52,28 @@ export async function getPlaylistTracks(
   limit = 100
 ): Promise<{ tracks: RawTrack[] }> {
   return tidalFetch(`/api/playlists/${playlistId}/tracks?limit=${limit}`)
+}
+
+export async function getPlaylistTracksPage(
+  playlistId: string,
+  limit: number,
+  offset: number
+): Promise<{ tracks: RawTrack[]; count: number; total_tracks: number }> {
+  return tidalFetch(`/api/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`)
+}
+
+export async function getMixes(): Promise<{
+  mixes: Array<{ id: string; title: string; sub_title: string; track_count: number }>
+  warning?: string
+}> {
+  return tidalFetch('/api/mixes')
+}
+
+export async function getMixTracks(
+  mixId: string,
+  limit = 100
+): Promise<{ tracks: RawTrack[] }> {
+  return tidalFetch(`/api/mixes/${mixId}/tracks?limit=${limit}`)
 }
 
 export async function addTracksToPlaylist(
@@ -74,6 +103,12 @@ export interface RawTrack {
   artist: string
   album?: string
   duration?: number
+  bpm?: number
   cover_url?: string
   url?: string
+  isrc?: string
+  popularity?: number
+  explicit?: boolean
+  release_date?: string
+  audio_quality?: string
 }
