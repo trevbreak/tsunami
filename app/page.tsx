@@ -7,10 +7,11 @@ import FeedbackBar from '@/components/FeedbackBar'
 import MoodSelector from '@/components/MoodSelector'
 import GeneratingView from '@/components/GeneratingView'
 import PlaylistPicker from '@/components/PlaylistPicker'
-import type { ExistingPlaylist, Message, Mood, PlaylistTrack, StreamEvent, Track } from '@/types'
+import RunnerConfig from '@/components/RunnerConfig'
+import type { ExistingPlaylist, Message, Mood, PlaylistTrack, RunConfig, StreamEvent, Track } from '@/types'
 
 type AppStatus = 'checking' | 'disconnected' | 'connected'
-type AppMode = 'create' | 'enhance'
+type AppMode = 'create' | 'enhance' | 'run'
 
 const MOOD_COLORS: Record<Mood, string> = {
   romance: '#f472b6',
@@ -31,6 +32,9 @@ export default function Home() {
   // Create mode
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null)
   const [createMessages, setCreateMessages] = useState<Message[]>([])
+
+  // Run mode
+  const [runConfig, setRunConfig] = useState<RunConfig | null>(null)
 
   // Enhance mode
   const [targetPlaylist, setTargetPlaylist] = useState<ExistingPlaylist | null>(null)
@@ -61,6 +65,7 @@ export default function Home() {
     setError('')
     setTargetPlaylist(null)
     setPlaylistTracks([])
+    setRunConfig(null)
   }, [mode])
 
   async function checkAuth() {
@@ -79,12 +84,12 @@ export default function Home() {
     }
   }
 
-  function mergeIncomingTracks(incoming: Track[]) {
+  function mergeIncomingTracks(incoming: Track[], defaultStatus: 'pending' | 'accepted' = 'pending') {
     setTracks((prev) => {
       const prevMap = new Map(prev.map((t) => [t.tidal_id, t]))
       return incoming.map((t) => ({
         ...t,
-        status: prevMap.get(t.tidal_id)?.status ?? 'pending',
+        status: prevMap.get(t.tidal_id)?.status ?? defaultStatus,
       }))
     })
   }
@@ -100,8 +105,10 @@ export default function Home() {
       if (!isGeneratingRef.current) {
         if (mode === 'create') {
           runGenerate('Swap in a fresh discovery to replace the track I just skipped.')
-        } else {
+        } else if (mode === 'enhance') {
           runEnhance('Swap in a fresh discovery to replace the track I just skipped.')
+        } else if (mode === 'run') {
+          runRun('Swap in a fresh discovery to replace the track I just skipped.')
         }
       }
     }, 500)
@@ -202,9 +209,37 @@ export default function Home() {
     }
   }
 
+  // ---------- RUN mode ----------
+
+  async function runRun(userPrompt?: string, configOverride?: RunConfig) {
+    const cfg = configOverride ?? runConfig
+    if (!cfg) return
+    setIsGenerating(true)
+    setStatusPhase('favorites')
+    setError('')
+    setSavedUrl('')
+
+    const acceptedIds = tracks.filter((t) => t.status === 'accepted').map((t) => t.tidal_id)
+    const rejectedIds = tracks.filter((t) => t.status === 'rejected').map((t) => t.tidal_id)
+
+    try {
+      const res = await fetch('/api/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ config: cfg, acceptedIds, rejectedIds, prompt: userPrompt }),
+      })
+      if (!res.body) throw new Error('No response body')
+      await consumeStream(res.body, 'accepted')
+    } catch (e) {
+      setError(String(e))
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
   // ---------- Shared stream consumer ----------
 
-  async function consumeStream(body: ReadableStream<Uint8Array>) {
+  async function consumeStream(body: ReadableStream<Uint8Array>, defaultStatus: 'pending' | 'accepted' = 'pending') {
     const reader = body.getReader()
     const decoder = new TextDecoder()
     let buffer = ''
@@ -219,7 +254,7 @@ export default function Home() {
         try {
           const event: StreamEvent = JSON.parse(line.slice(6))
           if (event.type === 'status') setStatusPhase(event.phase)
-          else if (event.type === 'tracks') mergeIncomingTracks(event.tracks)
+          else if (event.type === 'tracks') mergeIncomingTracks(event.tracks, defaultStatus)
           else if (event.type === 'error') setError(event.message)
         } catch {}
       }
@@ -316,7 +351,7 @@ export default function Home() {
           <div className="flex flex-col gap-6">
             {/* Mode switcher */}
             <div className="flex rounded-xl border border-zinc-800 bg-zinc-900/40 p-1 gap-1">
-              {(['create', 'enhance'] as AppMode[]).map((m) => (
+              {(['create', 'enhance', 'run'] as AppMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
@@ -326,7 +361,7 @@ export default function Home() {
                       : 'text-zinc-500 hover:text-zinc-300'
                   }`}
                 >
-                  {m === 'create' ? '✨ New Playlist' : '🎵 Enhance Existing'}
+                  {m === 'create' ? '✨ New Playlist' : m === 'enhance' ? '🎵 Enhance Existing' : '🏃 Run'}
                 </button>
               ))}
             </div>
@@ -355,6 +390,22 @@ export default function Home() {
             {/* Dynamic middle section */}
             {isGenerating ? (
               <GeneratingView phase={statusPhase} />
+            ) : mode === 'run' ? (
+              /* Run mode UI */
+              hasPlaylist ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => { setRunConfig(null); setTracks([]); setSavedUrl('') }}
+                    className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
+                  >
+                    ← Change settings
+                  </button>
+                  <span className="text-xs text-zinc-600">·</span>
+                  <span className="text-xs text-zinc-400">{runConfig?.label}</span>
+                </div>
+              ) : (
+                <RunnerConfig onGenerate={(cfg) => { setRunConfig(cfg); runRun(undefined, cfg) }} />
+              )
             ) : isEnhanceMode ? (
               /* Enhance mode UI */
               targetPlaylist ? (
@@ -411,14 +462,14 @@ export default function Home() {
               )
             )}
 
-            {/* Feedback bar — hidden in enhance mode when no playlist selected yet */}
-            {!(isEnhanceMode && !targetPlaylist && !hasPlaylist) && (
+            {/* Feedback bar — hidden when no context to generate from yet */}
+            {!(isEnhanceMode && !targetPlaylist && !hasPlaylist) && !(mode === 'run' && !hasPlaylist) && (
               <FeedbackBar
-                onSend={isEnhanceMode ? runEnhance : runGenerate}
-                onRegenerate={() => (isEnhanceMode ? runEnhance() : runGenerate())}
+                onSend={mode === 'run' ? runRun : isEnhanceMode ? runEnhance : runGenerate}
+                onRegenerate={() => mode === 'run' ? runRun() : isEnhanceMode ? runEnhance() : runGenerate()}
                 isGenerating={isGenerating}
                 hasPlaylist={hasPlaylist}
-                canGenerate={isEnhanceMode ? !!targetPlaylist : !!selectedMood}
+                canGenerate={mode === 'run' ? !!runConfig : isEnhanceMode ? !!targetPlaylist : !!selectedMood}
               />
             )}
           </div>

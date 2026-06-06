@@ -30,6 +30,13 @@ export interface GenerateRequest {
   mood?: Mood
 }
 
+export interface RunConfig {
+  targetBpm: number
+  bpmTolerance: number
+  targetDurationSec: number
+  label: string
+}
+
 export interface ExistingPlaylist {
   id: string
   title: string
