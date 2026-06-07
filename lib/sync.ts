@@ -7,6 +7,8 @@ import {
   startSyncLog,
   completeSyncLog,
   getPlaylistSyncState,
+  getTracksWithoutBpm,
+  updateTrackBpm,
 } from './db'
 import {
   getUserPlaylists,
@@ -14,6 +16,7 @@ import {
   getPlaylistTracksPage,
   getMixes,
   getMixTracks,
+  enrichBpmBatch,
 } from './tidal'
 import type { RawTrack } from './tidal'
 
@@ -197,6 +200,56 @@ async function syncMixes(
   return { added, updated }
 }
 
+export async function runBpmEnrichment(
+  emit: (event: SyncEvent) => void
+): Promise<{ analyzed: number; failed: number }> {
+  const tracks = getTracksWithoutBpm()
+  if (tracks.length === 0) {
+    emit({ type: 'progress', phase: 'bpm', message: 'All tracks already have BPM data.' })
+    return { analyzed: 0, failed: 0 }
+  }
+
+  emit({
+    type: 'progress',
+    phase: 'bpm',
+    message: `Analysing BPM for ${tracks.length} tracks — this runs once and may take ~${Math.ceil(tracks.length * 2.5 / 60)} minutes…`,
+    current: 0,
+    total: tracks.length,
+  })
+
+  const trackIds = tracks.map((t) => t.id)
+  let analyzed = 0
+  let failed = 0
+
+  for await (const event of enrichBpmBatch(trackIds)) {
+    if (event.done) {
+      analyzed = event.analyzed
+      failed = event.failed
+      emit({
+        type: 'progress',
+        phase: 'bpm',
+        message: `BPM analysis complete: ${analyzed} analysed, ${failed} skipped`,
+        current: event.total,
+        total: event.total,
+      })
+    } else {
+      if (event.bpm !== null) {
+        updateTrackBpm(event.trackId, event.bpm)
+      }
+      // Emit on every track so the UI can show smooth progress + a live ETA
+      emit({
+        type: 'progress',
+        phase: 'bpm',
+        message: `Analysing BPM… ${event.analyzed}/${event.total}`,
+        current: event.analyzed,
+        total: event.total,
+      })
+    }
+  }
+
+  return { analyzed, failed }
+}
+
 export async function runFullSync(
   emit: (event: SyncEvent) => void
 ): Promise<void> {
@@ -262,6 +315,10 @@ export async function runFullSync(
     totalUpdated += mixStats.updated
 
     completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated })
+
+    // Enrich any tracks still missing BPM via local audio analysis
+    await runBpmEnrichment(emit)
+
     emit({
       type: 'done',
       tracksAdded: totalAdded,
@@ -352,6 +409,10 @@ export async function runIncrementalSync(
     totalUpdated += mixStats.updated
 
     completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated })
+
+    // Enrich any tracks still missing BPM via local audio analysis
+    await runBpmEnrichment(emit)
+
     emit({
       type: 'done',
       tracksAdded: totalAdded,

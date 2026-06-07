@@ -97,6 +97,45 @@ export async function createPlaylist(
   })
 }
 
+export async function* enrichBpmBatch(
+  trackIds: string[]
+): AsyncGenerator<
+  | { done: false; trackId: string; bpm: number | null; analyzed: number; total: number }
+  | { done: true; analyzed: number; failed: number; total: number }
+> {
+  const res = await fetch(`${TIDAL_API}/api/bpm/batch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ track_ids: trackIds }),
+  })
+
+  if (!res.ok || !res.body) {
+    throw new Error(`BPM batch failed: ${res.status}`)
+  }
+
+  const reader = res.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    buffer += decoder.decode(value, { stream: true })
+    const lines = buffer.split('\n')
+    buffer = lines.pop() ?? ''
+
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue
+      const data = JSON.parse(line.slice(6))
+      if (data.done) {
+        yield { done: true, analyzed: data.analyzed, failed: data.failed, total: data.total }
+      } else {
+        yield { done: false, trackId: data.track_id, bpm: data.bpm ?? null, analyzed: data.analyzed, total: data.total }
+      }
+    }
+  }
+}
+
 export interface RawTrack {
   id: string
   title: string

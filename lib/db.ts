@@ -261,6 +261,16 @@ export function getPlaylistSyncState(): Map<string, string | null> {
   return map
 }
 
+export function updateTrackBpm(id: string, bpm: number): void {
+  getDb().prepare('UPDATE tracks SET bpm = ? WHERE id = ?').run(Math.round(bpm), id)
+}
+
+export function getTracksWithoutBpm(): Array<{ id: string }> {
+  return getDb()
+    .prepare('SELECT id FROM tracks WHERE bpm IS NULL OR bpm = 0')
+    .all() as Array<{ id: string }>
+}
+
 export function dbExists(): boolean {
   return fs.existsSync(DB_PATH)
 }

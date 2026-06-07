@@ -13,6 +13,17 @@ import type { ExistingPlaylist, Message, Mood, PlaylistTrack, RunConfig, StreamE
 type AppStatus = 'checking' | 'disconnected' | 'connected'
 type AppMode = 'create' | 'enhance' | 'run'
 
+function formatEta(ms: number): string {
+  if (!Number.isFinite(ms) || ms <= 0) return ''
+  const totalSec = Math.round(ms / 1000)
+  if (totalSec < 60) return `~${totalSec}s left`
+  const min = Math.round(totalSec / 60)
+  if (min < 60) return `~${min} min left`
+  const h = Math.floor(min / 60)
+  const m = min % 60
+  return m ? `~${h}h ${m}m left` : `~${h}h left`
+}
+
 const MOOD_COLORS: Record<Mood, string> = {
   romance: '#f472b6',
   energetic: '#fb923c',
@@ -58,7 +69,10 @@ export default function Home() {
   } | null>(null)
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncMessage, setSyncMessage] = useState('')
+  const [syncProgress, setSyncProgress] = useState<{ phase: string; current: number; total: number } | null>(null)
+  const [syncEta, setSyncEta] = useState('')
 
+  const bpmStartRef = useRef<{ t: number; base: number } | null>(null)
   const rejectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isGeneratingRef = useRef(false)
 
@@ -77,6 +91,9 @@ export default function Home() {
     if (isSyncing) return
     setIsSyncing(true)
     setSyncMessage('Starting…')
+    setSyncProgress(null)
+    setSyncEta('')
+    bpmStartRef.current = null
     try {
       const res = await fetch('/api/library/sync', {
         method: 'POST',
@@ -97,12 +114,36 @@ export default function Home() {
           if (!line.startsWith('data: ')) continue
           try {
             const ev = JSON.parse(line.slice(6))
-            if (ev.type === 'progress') setSyncMessage(ev.message)
-            else if (ev.type === 'done') {
+            if (ev.type === 'progress') {
+              setSyncMessage(ev.message)
+              if (typeof ev.current === 'number' && typeof ev.total === 'number' && ev.total > 0) {
+                setSyncProgress({ phase: ev.phase, current: ev.current, total: ev.total })
+                if (ev.phase === 'bpm') {
+                  if (!bpmStartRef.current) {
+                    bpmStartRef.current = { t: Date.now(), base: ev.current }
+                  }
+                  const done = ev.current - bpmStartRef.current.base
+                  if (done > 0) {
+                    const perTrack = (Date.now() - bpmStartRef.current.t) / done
+                    setSyncEta(formatEta(perTrack * Math.max(0, ev.total - ev.current)))
+                  }
+                } else {
+                  setSyncEta('')
+                }
+              } else {
+                setSyncProgress(null)
+                setSyncEta('')
+              }
+            } else if (ev.type === 'done') {
               setSyncMessage(`Done — ${ev.tracksAdded} new, ${ev.tracksUpdated} updated`)
+              setSyncProgress(null)
+              setSyncEta('')
+              bpmStartRef.current = null
               await fetchLibraryStatus()
             } else if (ev.type === 'error') {
               setSyncMessage(`Error: ${ev.message}`)
+              setSyncProgress(null)
+              setSyncEta('')
             }
           } catch {}
         }
@@ -396,7 +437,7 @@ export default function Home() {
               <button
                 onClick={() => triggerSync(libraryStatus.synced ? 'incremental' : 'full')}
                 disabled={isSyncing}
-                title={isSyncing ? syncMessage : libraryStatus.synced ? 'Sync library' : 'Library not synced — click to sync'}
+                title={isSyncing ? syncMessage : libraryStatus.synced ? `Sync library · ${libraryStatus.bpmTracksCount.toLocaleString()} tracks with BPM` : 'Library not synced — click to sync'}
                 className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-60"
               >
                 {isSyncing ? (
@@ -422,6 +463,30 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {isSyncing && syncProgress && (
+        <div className="sticky top-[49px] z-10 border-b border-zinc-800/60 bg-zinc-950/95 backdrop-blur">
+          <div className="mx-auto max-w-3xl px-4 py-2.5">
+            <div className="flex items-center justify-between gap-3 text-xs">
+              <span className="text-zinc-300 truncate">
+                {syncProgress.phase === 'bpm' ? '🎚️ Analysing BPM' : '↻ Syncing library'} — {syncProgress.current.toLocaleString()} of {syncProgress.total.toLocaleString()}
+              </span>
+              {syncEta && <span className="shrink-0 tabular-nums text-zinc-500">{syncEta}</span>}
+            </div>
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+              <div
+                className="h-full rounded-full bg-teal-400 transition-all duration-500"
+                style={{ width: `${Math.min(100, (syncProgress.current / syncProgress.total) * 100)}%` }}
+              />
+            </div>
+            {syncProgress.phase === 'bpm' && (
+              <p className="mt-1 text-[11px] text-zinc-600">
+                One-time analysis — keep this window open. Your library is being prepared for BPM-matched running playlists.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       <main className="mx-auto max-w-3xl px-4 py-8">
         {appStatus === 'disconnected' ? (
