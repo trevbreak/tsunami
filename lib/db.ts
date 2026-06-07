@@ -24,6 +24,18 @@ export interface LibraryTrack {
   is_favorite: number
 }
 
+/**
+ * Normalise a TIDAL track ID to a clean numeric string.
+ *
+ * The TIDAL backend returns IDs as JSON numbers. If a JS number is bound to a
+ * TEXT column, better-sqlite3/SQLite stores it via REAL→TEXT conversion as
+ * e.g. "377620709.0", which TIDAL rejects when saving a playlist. Always coerce
+ * to a string and strip any trailing ".0" so IDs round-trip cleanly.
+ */
+export function normalizeId(id: string | number): string {
+  return String(id).trim().replace(/\.0+$/, '')
+}
+
 export function getDb(): Database.Database {
   if (_db) return _db
 
@@ -35,7 +47,28 @@ export function getDb(): Database.Database {
   _db.pragma('journal_mode = WAL')
   _db.pragma('foreign_keys = ON')
   initSchema(_db)
+  migrateFloatIds(_db)
   return _db
+}
+
+/**
+ * One-time repair for libraries synced before IDs were normalised: strips the
+ * trailing ".0" from track IDs across all tables. Runs inside a transaction
+ * with foreign keys disabled so the parent/child IDs can be rewritten together.
+ */
+function migrateFloatIds(db: Database.Database) {
+  const stale = db
+    .prepare("SELECT COUNT(*) AS n FROM tracks WHERE id LIKE '%.0'")
+    .get() as { n: number }
+  if (stale.n === 0) return
+
+  db.pragma('foreign_keys = OFF')
+  db.transaction(() => {
+    db.exec("UPDATE tracks SET id = substr(id, 1, length(id) - 2) WHERE id LIKE '%.0'")
+    db.exec("UPDATE playlist_tracks SET track_id = substr(track_id, 1, length(track_id) - 2) WHERE track_id LIKE '%.0'")
+    db.exec("UPDATE favorites SET track_id = substr(track_id, 1, length(track_id) - 2) WHERE track_id LIKE '%.0'")
+  })()
+  db.pragma('foreign_keys = ON')
 }
 
 function initSchema(db: Database.Database) {
@@ -108,13 +141,14 @@ export function upsertTrack(track: {
   explicit?: boolean | null; audio_quality?: string | null; release_date?: string | null
 }): 'inserted' | 'updated' {
   const db = getDb()
-  const existing = db.prepare('SELECT id FROM tracks WHERE id = ?').get(track.id)
+  const id = normalizeId(track.id)
+  const existing = db.prepare('SELECT id FROM tracks WHERE id = ?').get(id)
   db.prepare(`
     INSERT OR REPLACE INTO tracks
       (id, title, artist, album, duration, bpm, cover_url, tidal_url, isrc, popularity, explicit, audio_quality, release_date, synced_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
   `).run(
-    track.id, track.title, track.artist,
+    id, track.title, track.artist,
     track.album ?? null, track.duration ?? null, track.bpm ?? null,
     track.cover_url ?? null, track.tidal_url ?? null,
     track.isrc ?? null, track.popularity ?? null,
@@ -155,7 +189,7 @@ export function addPlaylistTracks(
     'INSERT OR IGNORE INTO playlist_tracks (playlist_id, track_id, position) VALUES (?, ?, ?)'
   )
   const insertBatch = db.transaction(() => {
-    for (const t of tracks) insert.run(playlistId, t.id, t.position)
+    for (const t of tracks) insert.run(playlistId, normalizeId(t.id), t.position)
   })
   insertBatch()
 }
@@ -167,7 +201,7 @@ export function setFavorites(trackIds: string[]): void {
   )
   const replace = db.transaction(() => {
     db.prepare('DELETE FROM favorites').run()
-    for (const id of trackIds) insertFav.run(id)
+    for (const id of trackIds) insertFav.run(normalizeId(id))
   })
   replace()
 }
@@ -262,7 +296,7 @@ export function getPlaylistSyncState(): Map<string, string | null> {
 }
 
 export function updateTrackBpm(id: string, bpm: number): void {
-  getDb().prepare('UPDATE tracks SET bpm = ? WHERE id = ?').run(Math.round(bpm), id)
+  getDb().prepare('UPDATE tracks SET bpm = ? WHERE id = ?').run(Math.round(bpm), normalizeId(id))
 }
 
 export function getTracksWithoutBpm(): Array<{ id: string }> {

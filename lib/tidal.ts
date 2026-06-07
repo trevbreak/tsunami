@@ -76,24 +76,48 @@ export async function getMixTracks(
   return tidalFetch(`/api/mixes/${mixId}/tracks?limit=${limit}`)
 }
 
+/**
+ * TIDAL track IDs are positive integers. The backend's add-items endpoint
+ * rejects the *entire* batch with a 400 if any ID is malformed (e.g. the
+ * "377620709.0" floats produced by older library syncs, or IDs hallucinated by
+ * the model). Coerce to clean numeric strings and drop anything that isn't a
+ * valid ID so a single bad entry can't sink the whole playlist.
+ */
+export function sanitizeTrackIds(trackIds: Array<string | number>): string[] {
+  const seen = new Set<string>()
+  const clean: string[] = []
+  for (const raw of trackIds) {
+    const id = String(raw).trim().replace(/\.0+$/, '')
+    if (/^\d+$/.test(id) && !seen.has(id)) {
+      seen.add(id)
+      clean.push(id)
+    }
+  }
+  return clean
+}
+
 export async function addTracksToPlaylist(
   playlistId: string,
-  trackIds: string[]
+  trackIds: Array<string | number>
 ): Promise<{ status: string; added_count: number }> {
+  const ids = sanitizeTrackIds(trackIds)
+  if (ids.length === 0) throw new Error('No valid TIDAL track IDs to add')
   return tidalFetch(`/api/playlists/${playlistId}/tracks`, {
     method: 'POST',
-    body: JSON.stringify({ track_ids: trackIds }),
+    body: JSON.stringify({ track_ids: ids }),
   })
 }
 
 export async function createPlaylist(
   title: string,
   description: string,
-  trackIds: string[]
+  trackIds: Array<string | number>
 ): Promise<{ status: string; playlist: { id: string; title: string } }> {
+  const ids = sanitizeTrackIds(trackIds)
+  if (ids.length === 0) throw new Error('No valid TIDAL track IDs to save')
   return tidalFetch('/api/playlists', {
     method: 'POST',
-    body: JSON.stringify({ title, description, track_ids: trackIds }),
+    body: JSON.stringify({ title, description, track_ids: ids }),
   })
 }
 
