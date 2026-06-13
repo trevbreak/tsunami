@@ -3,7 +3,10 @@ import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, TIDAL_TOOLS, SYSTEM_PROMPT, MOOD_DESCRIPTIONS, parseTracksFromMessage } from '@/lib/claude'
 import { getFavoriteTracks, getBatchRecommendations, getUserPlaylists, getPlaylistTracks } from '@/lib/tidal'
 import { getMusicRecommendations, formatRedditContext } from '@/lib/reddit'
-import { dbExists, getFavoriteLibraryTracks } from '@/lib/db'
+import { dbExists, getTracksByIds, getGenreMap, getFeatureVectorMap, logFeedback } from '@/lib/db'
+import { recommend } from '@/lib/recommender'
+import { sequenceTidalTracks } from '@/lib/sequencer'
+import type { SeqAudio } from '@/lib/sequencer'
 import type { Message, Mood } from '@/types'
 
 export const runtime = 'nodejs'
@@ -46,9 +49,12 @@ async function handleToolCall(
 ): Promise<string> {
   if (toolName === 'get_tidal_favorites') {
     if (dbExists()) {
-      const libTracks = getFavoriteLibraryTracks()
+      // Taste reference ranked by the tuned recommender (favourites-spine, recent-add
+      // tilt, play reinforcement) so Claude's curation is anchored on what's most
+      // relevant now — not just the raw favourites list.
+      const libTracks = recommend({ limit: 150 }).map((s) => s.track)
       if (libTracks.length > 0) {
-        const tracks = libTracks.slice(0, 200).map((t) => ({
+        const tracks = libTracks.map((t) => ({
           id: t.id, title: t.title, artist: t.artist, album: t.album,
           duration: t.duration, bpm: t.bpm, cover_url: t.cover_url, url: t.tidal_url,
         }))
@@ -105,6 +111,15 @@ export async function POST(req: NextRequest) {
     rejectedIds: string[]
     prompt?: string
     mood?: Mood
+  }
+
+  // Log the previous round's accept/reject feedback (Phase 5 foundation).
+  if (dbExists() && (acceptedIds.length > 0 || rejectedIds.length > 0)) {
+    const context = mood ? `generate:${mood}` : 'generate'
+    logFeedback([
+      ...acceptedIds.map((id) => ({ track_id: id, action: 'accept' as const, context })),
+      ...rejectedIds.map((id) => ({ track_id: id, action: 'reject' as const, context })),
+    ])
   }
 
   // Maps populated from tool responses for enriching Claude's output
@@ -165,7 +180,14 @@ export async function POST(req: NextRequest) {
                   cover_url: t.cover_url || coverMap.get(t.tidal_id),
                   tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
                 }))
-                send({ type: 'tracks', tracks: enriched })
+                // DJ-sequence the final list: smooth transitions, spaced artists.
+                const audio = new Map<string, SeqAudio>(
+                  getTracksByIds(enriched.map((t) => t.tidal_id)).map((r) => [
+                    r.id,
+                    { bpm: r.bpm, music_key: r.music_key, key_scale: r.key_scale },
+                  ])
+                )
+                send({ type: 'tracks', tracks: sequenceTidalTracks(enriched, audio, { artistGap: 3 }, getGenreMap(), getFeatureVectorMap()) })
                 tracksEmitted = true
               }
             }

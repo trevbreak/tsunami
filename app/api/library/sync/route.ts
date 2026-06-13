@@ -1,13 +1,13 @@
 import { NextRequest } from 'next/server'
-import { runFullSync, runIncrementalSync } from '@/lib/sync'
+import { runFullSync, runIncrementalSync, runQuickSync } from '@/lib/sync'
 import type { SyncEvent } from '@/lib/sync'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({})) as { mode?: 'full' | 'incremental' }
-  const mode = body.mode === 'full' ? 'full' : 'incremental'
+  const body = await req.json().catch(() => ({})) as { mode?: 'full' | 'incremental' | 'quick' }
+  const mode = body.mode === 'full' || body.mode === 'quick' ? body.mode : 'incremental'
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -18,6 +18,8 @@ export async function POST(req: NextRequest) {
       try {
         if (mode === 'full') {
           await runFullSync(send)
+        } else if (mode === 'quick') {
+          await runQuickSync(send)
         } else {
           await runIncrementalSync(send)
         }

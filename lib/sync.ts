@@ -4,18 +4,21 @@ import {
   clearPlaylistTracks,
   addPlaylistTracks,
   setFavorites,
+  replaceTrackHistory,
   startSyncLog,
   completeSyncLog,
   getPlaylistSyncState,
   getTracksWithoutBpm,
   updateTrackBpm,
 } from './db'
+import type { TrackHistoryRow } from './db'
 import {
   getUserPlaylists,
-  getFavoriteTracksPage,
-  getPlaylistTracksPage,
+  getFavoriteTracks,
+  getPlaylistTracks,
   getMixes,
   getMixTracks,
+  getListeningHistory,
   enrichBpmBatch,
 } from './tidal'
 import type { RawTrack } from './tidal'
@@ -67,6 +70,8 @@ function processTrack(raw: RawTrack): 'inserted' | 'updated' {
     explicit: raw.explicit,
     audio_quality: raw.audio_quality,
     release_date: raw.release_date,
+    music_key: raw.key,
+    key_scale: raw.key_scale,
   })
 }
 
@@ -77,31 +82,23 @@ async function syncPlaylistTracks(
 ): Promise<{ added: number; updated: number }> {
   let added = 0
   let updated = 0
-  let offset = 0
-  const pageSize = 100
   const trackRefs: Array<{ id: string; position: number }> = []
 
   clearPlaylistTracks(playlistId)
 
-  while (true) {
-    const page = await fetchWithRetry(() =>
-      getPlaylistTracksPage(playlistId, pageSize, offset)
-    )
+  // The backend paginates internally and ignores an app-supplied offset, so we
+  // fetch the whole playlist in one high-limit call rather than an offset loop
+  // (the old loop re-fetched page 1 forever and never terminated).
+  const { tracks } = await fetchWithRetry(() => getPlaylistTracks(playlistId, 10000))
 
-    for (const raw of page.tracks) {
-      const result = processTrack(raw)
-      if (result === 'inserted') added++
-      else updated++
-      trackRefs.push({ id: raw.id, position: offset + trackRefs.length })
-    }
+  tracks.forEach((raw, i) => {
+    const result = processTrack(raw)
+    if (result === 'inserted') added++
+    else updated++
+    trackRefs.push({ id: raw.id, position: i })
+  })
 
-    onProgress(offset + page.count, totalTracks || page.count)
-
-    if (page.count < pageSize) break
-    offset += pageSize
-    await sleep(150)
-  }
-
+  onProgress(tracks.length, totalTracks || tracks.length)
   addPlaylistTracks(playlistId, trackRefs)
   return { added, updated }
 }
@@ -111,35 +108,86 @@ async function syncFavorites(
 ): Promise<{ added: number; updated: number }> {
   let added = 0
   let updated = 0
-  let offset = 0
-  const pageSize = 50
-  const favoriteIds: string[] = []
 
   emit({ type: 'progress', phase: 'favorites', message: 'Syncing favourite tracks…' })
 
-  while (true) {
-    const page = await fetchWithRetry(() => getFavoriteTracksPage(pageSize, offset))
+  // One high-limit call — the backend paginates internally and returns favourites
+  // date-added DESCENDING, so array position == rank (0 = most recently added).
+  // (The old offset loop never terminated because the backend ignores offset.)
+  const { tracks } = await fetchWithRetry(() => getFavoriteTracks(10000))
 
-    for (const raw of page.tracks) {
-      const result = processTrack(raw)
-      if (result === 'inserted') added++
-      else updated++
-      favoriteIds.push(raw.id)
-    }
+  const favorites = tracks.map((raw, i) => {
+    const result = processTrack(raw)
+    if (result === 'inserted') added++
+    else updated++
+    return { id: raw.id, added_at: raw.date_added ?? null, rank: i }
+  })
 
+  setFavorites(favorites)
+  emit({
+    type: 'progress',
+    phase: 'favorites',
+    message: `Synced ${favorites.length} favourites`,
+    current: favorites.length,
+  })
+  return { added, updated }
+}
+
+/**
+ * Sync the user's listening-history mixes (HISTORY_* surfaces) into track_history.
+ * This is the native play-frequency/recency signal: a track's tier(s), how many
+ * monthly mixes it recurs in, and its rank within each mix. Best-effort.
+ */
+async function syncHistory(
+  emit: (event: SyncEvent) => void
+): Promise<{ added: number; updated: number }> {
+  let added = 0
+  let updated = 0
+
+  emit({ type: 'progress', phase: 'history', message: 'Reading your listening history…' })
+
+  const { history_mixes, warning } = await fetchWithRetry(() => getListeningHistory())
+  if (warning || history_mixes.length === 0) {
     emit({
       type: 'progress',
-      phase: 'favorites',
-      message: `Syncing favourites… ${favoriteIds.length} tracks`,
-      current: favoriteIds.length,
+      phase: 'history',
+      message: warning ? `Listening history: ${warning}` : 'No listening-history mixes available.',
     })
+    return { added: 0, updated: 0 }
+  }
 
-    if (page.count < pageSize) break
-    offset += pageSize
+  const rows: TrackHistoryRow[] = []
+
+  for (const mix of history_mixes) {
+    try {
+      const { tracks } = await fetchWithRetry(() => getMixTracks(mix.id, 300))
+      tracks.forEach((raw, i) => {
+        const result = processTrack(raw)
+        if (result === 'inserted') added++
+        else updated++
+        rows.push({
+          trackId: raw.id,
+          tier: mix.tier,
+          monthIndex: mix.month_index,
+          rank: i,
+        })
+      })
+      emit({
+        type: 'progress',
+        phase: 'history',
+        message: `History: ${mix.tier}${mix.month_index != null && mix.month_index >= 0 ? ` (#${mix.month_index})` : ''} — ${tracks.length} tracks`,
+      })
+    } catch (e) {
+      emit({
+        type: 'progress',
+        phase: 'history',
+        message: `Skipped history mix ${mix.id}: ${e instanceof Error ? e.message : String(e)}`,
+      })
+    }
     await sleep(150)
   }
 
-  setFavorites(favoriteIds)
+  replaceTrackHistory(rows)
   return { added, updated }
 }
 
@@ -250,6 +298,49 @@ export async function runBpmEnrichment(
   return { analyzed, failed }
 }
 
+/**
+ * Lightweight sync that populates ONLY the data the local recommender needs —
+ * favourites (with add-dates/rank) and the listening-history mixes — skipping the
+ * slow playlist crawl, mixes, and BPM enrichment. Seconds, not minutes. Ideal for
+ * tuning iterations and as a fallback when a full sync stalls on playlists.
+ */
+export async function runQuickSync(
+  emit: (event: SyncEvent) => void
+): Promise<void> {
+  const startedAt = Date.now()
+  const logId = startSyncLog('quick')
+  let totalAdded = 0
+  let totalUpdated = 0
+
+  try {
+    emit({
+      type: 'progress',
+      phase: 'quick',
+      message: 'Quick sync: favourites + listening history only…',
+    })
+
+    const favStats = await syncFavorites(emit)
+    totalAdded += favStats.added
+    totalUpdated += favStats.updated
+
+    const historyStats = await syncHistory(emit)
+    totalAdded += historyStats.added
+    totalUpdated += historyStats.updated
+
+    completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated })
+    emit({
+      type: 'done',
+      tracksAdded: totalAdded,
+      tracksUpdated: totalUpdated,
+      durationMs: Date.now() - startedAt,
+    })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated }, message)
+    emit({ type: 'error', message })
+  }
+}
+
 export async function runFullSync(
   emit: (event: SyncEvent) => void
 ): Promise<void> {
@@ -313,6 +404,10 @@ export async function runFullSync(
     const mixStats = await syncMixes(emit)
     totalAdded += mixStats.added
     totalUpdated += mixStats.updated
+
+    const historyStats = await syncHistory(emit)
+    totalAdded += historyStats.added
+    totalUpdated += historyStats.updated
 
     completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated })
 
@@ -407,6 +502,10 @@ export async function runIncrementalSync(
     const mixStats = await syncMixes(emit)
     totalAdded += mixStats.added
     totalUpdated += mixStats.updated
+
+    const historyStats = await syncHistory(emit)
+    totalAdded += historyStats.added
+    totalUpdated += historyStats.updated
 
     completeSyncLog(logId, { tracksAdded: totalAdded, tracksUpdated: totalUpdated })
 

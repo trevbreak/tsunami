@@ -133,6 +133,77 @@ On first launch you'll be prompted to connect TIDAL. A browser window opens for 
 
 ---
 
+## 🔁 Restarting & the local recommender
+
+Tsunami syncs your TIDAL library into a local SQLite database (`data/library.db`) and ranks
+playlists **locally** — biased toward tracks you've **added recently** and **play often** —
+before Claude curates. A DJ-style **sequencer** then orders the final list (smooth tempo/key
+transitions, artists spaced apart). Optional Claude **enrichment** (genre/mood) sharpens the
+style-aware sequencing.
+
+### Start it up
+
+```bash
+cd /path/to/tsunami        # the repo root
+npm run dev                # starts tidal-mcp (:5100) + Next.js (:3000)
+```
+
+Wait for **both** lines to appear:
+
+```
+[tidal] Starting Flask app on port 5100
+[next]  ✓ Ready ... Local: http://localhost:3000
+```
+
+> The `tidal` script in `package.json` points at an **absolute** path to your tidal-mcp clone
+> (so it works from any checkout/worktree). Edit it if yours lives elsewhere.
+> If **Connect TIDAL** fails with `fetch failed`, the tidal-mcp backend isn't on `:5100` —
+> check the `[tidal]` logs.
+
+### 1. Sync your library (streams progress over SSE)
+
+```bash
+# Quick — favourites + listening-history mixes only (seconds). Enough for recommendations.
+curl -N -X POST http://localhost:3000/api/library/sync \
+  -H 'Content-Type: application/json' -d '{"mode":"quick"}'
+
+# Full — also crawls all your playlists (slower).
+curl -N -X POST http://localhost:3000/api/library/sync \
+  -H 'Content-Type: application/json' -d '{"mode":"full"}'
+```
+
+A sync also captures **BPM** and **musical key**, which the sequencer uses for harmonic mixing.
+
+### 2. Enrich with genre/mood — optional, powered by Claude
+
+```bash
+curl -N -X POST http://localhost:3000/api/enrich   # labels genre/mood/energy/… (batched, streams)
+curl -s        http://localhost:3000/api/enrich    # coverage: {"enriched":N,"total":M}
+```
+
+This unlocks **style-aware sequencing** (small genre clusters, gradual transitions).
+
+### 3. Generate
+
+* **In the app** — Create / Run / Enhance modes (now recency/frecency-biased and DJ-sequenced).
+* **Locally, no LLM** (fast, for inspection/tuning):
+  ```bash
+  curl -s 'http://localhost:3000/api/recommend?explain=1&limit=25'
+  ```
+* **Weight-tuning harness** — open <http://localhost:3000/tuner.html>.
+
+### How the recommender ranks (tuned)
+
+Your **saved favourites are the spine**, tilted toward **recent adds**, with **listening-history
+play** as reinforcement and a little novelty for variety; popularity is near-zero. The weights
+live in `lib/recommender.ts` (`DEFAULT_WEIGHTS`) and **every weight is overridable** as a query
+param on `/api/recommend` (e.g. `?recencyAdd=3&playMonthly=1.2&novelty=1.5&sequence=1`).
+
+> **Heads-up:** the recommender needs a synced `data/library.db`. After a fresh clone or moving
+> machines, run a sync (step 1) before generating, or `/api/recommend` returns `409`.
+
+---
+
 ## 📜 Available scripts
 
 | Script | Description |
@@ -151,19 +222,29 @@ On first launch you'll be prompted to connect TIDAL. A browser window opens for 
 app/
   page.tsx                 # Main client UI: mode switching, streaming, feedback loop
   api/
-    generate/route.ts      # Create-mode: Claude tool-use loop → curated tracks (SSE)
+    generate/route.ts      # Create-mode: ranked pool → Claude curation → sequenced (SSE)
     enhance/route.ts       # Enhance-mode: suggest additions for a playlist (SSE)
-    run/route.ts           # Run-mode: BPM/duration-matched playlist generation (SSE)
+    run/route.ts           # Run-mode: BPM-matched, recommender-ranked, sequenced (SSE)
+    recommend/route.ts     # Local, LLM-free generation + weight A/B (GET)
+    library/sync/route.ts  # Sync TIDAL → SQLite (quick | full | incremental) (SSE)
+    enrich/route.ts        # LLM genre/mood enrichment over the library (SSE)
+    tuning/route.ts        # Persistence for the weight-tuning harness
     save/route.ts          # Create a new TIDAL playlist
-    add-to-playlist/route.ts
     tidal/                 # Auth, login, playlists, playlist tracks proxies
 components/
   RunnerConfig.tsx         # Distance/pace/BPM input UI for Run mode
   ...                      # Mood selector, playlist views, track cards, feedback bar
 lib/
+  db.ts                    # SQLite layer: tracks, favourites, history, features, feedback
+  sync.ts                  # TIDAL → SQLite sync (favourites recency + history frecency)
+  recommender.ts           # Local weighted scorer (recency + frecency + ISRC merge)
+  sequencer.ts             # DJ sequencing: Camelot key + tempo + artist spacing
+  similarity.ts            # Content-based audio-feature distance
+  enrich.ts                # Batched Claude classification → track_features
   claude.ts                # Anthropic client, tool defs, system prompts, parsing
   tidal.ts                 # Thin client over the tidal-mcp HTTP API
   reddit.ts                # Music-subreddit context fetching
+public/tuner.html          # Standalone recommender weight-tuning harness
 types/index.ts             # Shared TypeScript types (incl. RunConfig)
 ```
 

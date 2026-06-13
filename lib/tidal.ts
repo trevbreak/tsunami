@@ -3,6 +3,8 @@ const TIDAL_API = process.env.TIDAL_API_URL ?? 'http://127.0.0.1:5100'
 async function tidalFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${TIDAL_API}${path}`, {
     ...options,
+    // Guard against a stalled backend request hanging the whole sync forever.
+    signal: options?.signal ?? AbortSignal.timeout(90_000),
     headers: { 'Content-Type': 'application/json', ...options?.headers },
   })
   if (!res.ok) {
@@ -173,5 +175,24 @@ export interface RawTrack {
   popularity?: number
   explicit?: boolean
   release_date?: string
+  date_added?: string
   audio_quality?: string
+  key?: string
+  key_scale?: string
+}
+
+export interface HistoryMix {
+  id: string
+  tier: 'alltime' | 'monthly' | 'yearly'
+  type: string
+  month_index: number | null
+  title: string | null
+}
+
+/**
+ * Fetch the user's listening-history mixes (HISTORY_* surfaces). Native
+ * play-frequency/recency signal — tracks per mix are fetched via getMixTracks.
+ */
+export async function getListeningHistory(): Promise<{ history_mixes: HistoryMix[]; warning?: string }> {
+  return tidalFetch('/api/history')
 }
