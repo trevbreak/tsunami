@@ -59,3 +59,19 @@ export type StreamEvent =
   | { type: 'tracks'; tracks: Track[] }
   | { type: 'done' }
   | { type: 'error'; message: string }
+
+export interface AlternativesRequest {
+  mode: 'create' | 'enhance' | 'run'
+  /** The track the user is removing — alternatives should suit its slot. */
+  removedTrackId: string
+  /** Adjacent track IDs (for context-aware radio seeding in create/enhance). */
+  neighborIds?: string[]
+  /** Tracks already in the playlist or previously rejected — never suggest these. */
+  excludeIds: string[]
+  /** Present in run mode: target cadence to match if the removed track has no local BPM. */
+  runConfig?: RunConfig
+}
+
+export interface AlternativesResponse {
+  alternatives: Track[]
+}

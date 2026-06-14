@@ -2,23 +2,22 @@
 
 import { useState, useEffect } from 'react'
 import TrackCard from './TrackCard'
-import type { PlaylistTrack, Mood } from '@/types'
-
-const MOOD_TITLES: Record<Mood, string> = {
-  romance: 'Tender Moments',
-  energetic: 'High Energy Mix',
-  chill: 'Chill Vibes',
-  melancholy: 'Introspective',
-  focus: 'Deep Focus',
-  party: 'Party Mix',
-}
+import SwapAlternatives from './SwapAlternatives'
+import { MOOD_TITLES, monthYear } from '@/lib/playlistName'
+import type { PlaylistTrack, Mood, Track } from '@/types'
 
 interface Props {
   tracks: PlaylistTrack[]
   mood: Mood | null
   defaultTitle?: string
   onUpdateStatus: (tidalId: string, status: 'accepted' | 'rejected') => void
-  onRejectAndRefresh: (tidalId: string) => void
+  onRequestSwap: (tidalId: string) => void
+  swapForId: string | null
+  alternatives: Track[]
+  loadingAlternatives: boolean
+  onSwap: (oldId: string, alt: Track) => void
+  onRemoveEntirely: (tidalId: string) => void
+  onCancelSwap: () => void
   onSave: (title: string) => void
   saveLabel?: string
   isSaving: boolean
@@ -30,21 +29,29 @@ export default function PlaylistView({
   mood,
   defaultTitle: externalDefaultTitle,
   onUpdateStatus,
-  onRejectAndRefresh,
+  onRequestSwap,
+  swapForId,
+  alternatives,
+  loadingAlternatives,
+  onSwap,
+  onRemoveEntirely,
+  onCancelSwap,
   onSave,
   saveLabel,
   isSaving,
   savedUrl,
 }: Props) {
-  const month = new Date().toLocaleString('default', { month: 'short', year: 'numeric' })
-  const computedDefault = mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`
-  const initialTitle = externalDefaultTitle ?? computedDefault
-  const [title, setTitle] = useState(initialTitle)
+  const month = monthYear()
+  const computedDefault = externalDefaultTitle ?? (mood ? `${MOOD_TITLES[mood]} · ${month}` : `Tsunami Mix · ${month}`)
+  const [title, setTitle] = useState(computedDefault)
   const [editingTitle, setEditingTitle] = useState(false)
+  // Keep the default in sync as mood/run config change — but never clobber a
+  // name the user has typed themselves.
+  const [userEdited, setUserEdited] = useState(false)
 
   useEffect(() => {
-    setTitle(externalDefaultTitle ?? (mood ? `${MOOD_TITLES[mood]} · ${month}` : `AI Curated Mix · ${month}`))
-  }, [mood, externalDefaultTitle])
+    if (!userEdited) setTitle(computedDefault)
+  }, [computedDefault, userEdited])
 
   const visible = tracks.filter((t) => t.status !== 'rejected')
   const accepted = tracks.filter((t) => t.status === 'accepted')
@@ -65,30 +72,37 @@ export default function PlaylistView({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" style={{ animation: 'springIn 0.35s ease both' }}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div>
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="min-w-0">
+            <label className="block text-[10px] font-medium uppercase tracking-wider text-zinc-600">
+              Playlist name
+            </label>
             {editingTitle ? (
               <input
                 autoFocus
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => { setTitle(e.target.value); setUserEdited(true) }}
                 onBlur={() => setEditingTitle(false)}
-                onKeyDown={(e) => e.key === 'Enter' && setEditingTitle(false)}
-                className="bg-transparent text-base font-semibold text-white border-b border-zinc-600 focus:outline-none focus:border-teal-400 pb-0.5 min-w-0 w-64"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') setEditingTitle(false) }}
+                placeholder="Name your playlist…"
+                className="mt-0.5 w-72 max-w-full rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-base font-semibold text-white placeholder-zinc-600 focus:border-teal-400 focus:outline-none"
               />
             ) : (
               <button
                 onClick={() => setEditingTitle(true)}
-                className="text-base font-semibold text-white hover:text-zinc-300 transition-colors text-left"
-                title="Click to rename"
+                className="group/title mt-0.5 flex items-center gap-1.5 rounded-md px-1 -mx-1 py-0.5 text-left text-base font-semibold text-white transition-colors hover:bg-zinc-800/60"
+                title="Click to rename before saving"
               >
-                {title}
+                <span className="truncate">{title}</span>
+                <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3 shrink-0 text-zinc-600 transition-colors group-hover/title:text-teal-400">
+                  <path d="M11.5 1.5l3 3L5 14l-3.5.5L2 11l9.5-9.5zM10 3l3 3" stroke="currentColor" strokeWidth="1.2" fill="none" />
+                </svg>
               </button>
             )}
-            <p className="text-xs text-zinc-500 mt-0.5">
+            <p className="mt-1 text-xs text-zinc-500">
               {accepted.length} confirmed · {pending.length} pending
               {durationDisplay && <span> · {durationDisplay}</span>}
             </p>
@@ -140,13 +154,24 @@ export default function PlaylistView({
       {/* Track list - includes all tracks, rejected ones collapse via TrackCard animation */}
       <div>
         {tracks.map((track, i) => (
-          <TrackCard
-            key={track.tidal_id}
-            track={track}
-            index={i}
-            onAccept={() => onUpdateStatus(track.tidal_id, 'accepted')}
-            onReject={() => onRejectAndRefresh(track.tidal_id)}
-          />
+          <div key={track.tidal_id}>
+            <TrackCard
+              track={track}
+              index={i}
+              isSwapping={swapForId === track.tidal_id}
+              onAccept={() => onUpdateStatus(track.tidal_id, 'accepted')}
+              onReject={() => onRequestSwap(track.tidal_id)}
+            />
+            {swapForId === track.tidal_id && (
+              <SwapAlternatives
+                alternatives={alternatives}
+                loading={loadingAlternatives}
+                onSwap={(alt) => onSwap(track.tidal_id, alt)}
+                onRemove={() => onRemoveEntirely(track.tidal_id)}
+                onCancel={onCancelSwap}
+              />
+            )}
+          </div>
         ))}
       </div>
 

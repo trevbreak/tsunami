@@ -6,11 +6,12 @@ import type { PlaylistTrack } from '@/types'
 interface Props {
   track: PlaylistTrack
   index: number
+  isSwapping?: boolean
   onAccept: () => void
   onReject: () => void
 }
 
-export default function TrackCard({ track, index, onAccept, onReject }: Props) {
+export default function TrackCard({ track, index, isSwapping = false, onAccept, onReject }: Props) {
   const [imgError, setImgError] = useState(false)
   const isAccepted = track.status === 'accepted'
   const isRejected = track.status === 'rejected'
@@ -30,7 +31,9 @@ export default function TrackCard({ track, index, onAccept, onReject }: Props) {
     >
       <div
         className={`flex items-center gap-3 rounded-xl p-3 transition-all duration-200 group ${
-          isAccepted
+          isSwapping
+            ? 'bg-zinc-900/80 border border-teal-600/50 ring-1 ring-teal-600/20'
+            : isAccepted
             ? 'bg-emerald-950/40 border border-emerald-700/30'
             : 'bg-zinc-900/80 border border-zinc-800/60 hover:border-zinc-700/80'
         }`}
@@ -107,11 +110,15 @@ export default function TrackCard({ track, index, onAccept, onReject }: Props) {
             ✓
           </button>
 
-          {/* Reject */}
+          {/* Reject → find alternatives / remove */}
           <button
             onClick={onReject}
-            title="Skip this track"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 hover:bg-red-900/30 hover:text-red-400 transition-all text-sm"
+            title="Not feeling it? Find alternatives or remove"
+            className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all text-sm ${
+              isSwapping
+                ? 'bg-teal-600/20 text-teal-400'
+                : 'text-zinc-600 hover:bg-red-900/30 hover:text-red-400'
+            }`}
           >
             ✕
           </button>
