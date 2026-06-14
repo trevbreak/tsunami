@@ -179,8 +179,10 @@ function initSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_playlist_tracks_playlist ON playlist_tracks(playlist_id);
     CREATE INDEX IF NOT EXISTS idx_playlist_tracks_track ON playlist_tracks(track_id);
     CREATE INDEX IF NOT EXISTS idx_track_history_track ON track_history(track_id);
-    CREATE INDEX IF NOT EXISTS idx_favorites_added_at ON favorites(added_at);
   `)
+  // NOTE: idx_favorites_added_at is created in migrateAddedColumns, AFTER the
+  // added_at column is ensured. Creating it here would throw "no such column:
+  // added_at" on libraries synced before that column existed, aborting init.
 }
 
 /**
@@ -193,6 +195,8 @@ function migrateAddedColumns(db: Database.Database) {
   const have = new Set(cols.map((c) => c.name))
   if (!have.has('added_at')) db.exec('ALTER TABLE favorites ADD COLUMN added_at TEXT')
   if (!have.has('added_rank')) db.exec('ALTER TABLE favorites ADD COLUMN added_rank INTEGER')
+  // Safe now that added_at is guaranteed to exist (see initSchema note).
+  db.exec('CREATE INDEX IF NOT EXISTS idx_favorites_added_at ON favorites(added_at)')
 
   const tcols = db.prepare("PRAGMA table_info(tracks)").all() as Array<{ name: string }>
   const thave = new Set(tcols.map((c) => c.name))
