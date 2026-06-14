@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recommender Tuner</title>
+<style>
+  :root { --bg:#0e1116; --panel:#161b22; --line:#2a313c; --fg:#e6edf3; --mut:#8b949e;
+          --accent:#3b82f6; --good:#22c55e; --mixed:#eab308; --bad:#ef4444; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:14px/1.45 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  header { position:sticky; top:0; background:var(--panel); border-bottom:1px solid var(--line);
+           padding:10px 16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; z-index:5; }
+  header h1 { font-size:15px; margin:0; font-weight:600; }
+  .grow { flex:1; }
+  .pill { background:#0d1117; border:1px solid var(--line); border-radius:999px; padding:3px 10px; color:var(--mut); font-size:12px; }
+  main { max-width:1080px; margin:0 auto; padding:16px; }
+  .nav { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .nav button { background:var(--panel); border:1px solid var(--line); color:var(--mut);
+                border-radius:6px; padding:5px 9px; cursor:pointer; font-size:12px; }
+  .nav button.cur { border-color:var(--accent); color:var(--fg); }
+  .nav button.done { color:var(--good); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .hyp { color:var(--mut); margin:6px 0 2px; }
+  .look { color:#cbd5e1; font-size:13px; margin:2px 0 12px; }
+  .params { width:100%; background:#0d1117; border:1px solid var(--line); color:#9ecbff;
+            border-radius:6px; padding:8px; font:12px ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .row { display:flex; gap:10px; align-items:center; margin:10px 0; flex-wrap:wrap; }
+  button.run { background:var(--accent); border:none; color:#fff; border-radius:6px; padding:8px 14px; cursor:pointer; font-weight:600; }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--mut); border-radius:6px; padding:7px 12px; cursor:pointer; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; font-size:13px; }
+  th,td { text-align:left; padding:5px 7px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--mut); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num { font-variant-numeric:tabular-nums; color:var(--mut); }
+  td.title { white-space:normal; min-width:240px; }
+  .bar { height:6px; background:var(--accent); border-radius:3px; }
+  .flag { cursor:pointer; user-select:none; border:1px solid var(--line); border-radius:5px;
+          padding:1px 6px; font-size:12px; color:var(--mut); }
+  .flag.love { color:var(--good); border-color:var(--good); }
+  .flag.not_played { color:var(--bad); border-color:var(--bad); }
+  .flag.too_old { color:var(--mixed); border-color:var(--mixed); }
+  .flag.unexpected { color:#a78bfa; border-color:#a78bfa; }
+  .verdicts { display:flex; gap:8px; }
+  .verdicts button { border:1px solid var(--line); background:transparent; color:var(--mut);
+                     border-radius:6px; padding:6px 12px; cursor:pointer; }
+  .verdicts button.sel-good { border-color:var(--good); color:var(--good); }
+  .verdicts button.sel-mixed { border-color:var(--mixed); color:var(--mixed); }
+  .verdicts button.sel-bad { border-color:var(--bad); color:var(--bad); }
+  textarea { width:100%; min-height:80px; background:#0d1117; border:1px solid var(--line);
+             color:var(--fg); border-radius:6px; padding:9px; font:13px inherit; resize:vertical; }
+  .applied { color:var(--mut); font-size:11px; font-family:ui-monospace,monospace; margin-top:6px; word-break:break-all; }
+  .err { color:var(--bad); }
+  label.small { color:var(--mut); font-size:12px; }
+  input.lim { width:56px; background:#0d1117; border:1px solid var(--line); color:var(--fg); border-radius:5px; padding:4px 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎛️ Recommender Tuner</h1>
+  <span class="pill" id="roundPill">round 1</span>
+  <label class="small">limit <input class="lim" id="limit" type="number" value="20" min="5" max="60"></label>
+  <span class="grow"></span>
+  <span class="pill" id="saveState">unsaved</span>
+  <button class="ghost" id="exportBtn">Download JSON</button>
+</header>
+<main>
+  <div class="nav" id="nav"></div>
+  <div class="card" id="card"></div>
+</main>
+
+<script>
+const API = '';                 // same origin
+const ROUND = '2';
+const FLAGS = ['', 'love', 'too_old', 'not_played', 'unexpected'];
+const FLAG_LABEL = { '':'flag', love:'👍 love', too_old:'🕰 too old', not_played:'🚫 not played', unexpected:'❓ unexpected' };
+
+// ROUND 2 — blend candidates. Round-1 findings baked in: popularity≈0 (you hated it),
+// monthly-forward (your strongest play signal), all-time downweighted (it lost your
+// metal), τ≈3 (τ=1 was too jumpy), recency BOOSTED so recent adds actually surface in
+// the blend. Same-song instances now merge (ISRC), so recent+played compounds on one row.
+const BATTERY = [
+  { id:'A_balanced', title:'A · Balanced (monthly-forward) ★ proposed default',
+    hyp:'recency↑(2) + monthly-led play, all-time low, popularity≈0, light novelty.',
+    look:'Is this your best overall? Does metal come back vs the old all-time test? Do recently-added favourites now appear mixed in with heavy-rotation tracks? Any same-song duplicates left?',
+    params:'recencyAdd=2&favoriteBoost=0.6&playAlltime=0.5&playYearly=0.5&playMonthly=1.2&playRankBonus=0.3&popularity=0.05&novelty=0.2&recencyHalfLifeDays=120&monthlyDecayTau=3' },
+  { id:'B_recency_fwd', title:'B · Recency-forward',
+    hyp:'Lean harder on recent adds (you trust them); plays support.',
+    look:'vs A — does pushing recent-adds up feel better or does it starve your heavy-rotation tracks?',
+    params:'recencyAdd=3&favoriteBoost=0.8&playAlltime=0.4&playYearly=0.4&playMonthly=1&playRankBonus=0.3&popularity=0&novelty=0.2&recencyHalfLifeDays=120&monthlyDecayTau=3' },
+  { id:'C_no_alltime', title:'C · Monthly-dominant, all-time OFF',
+    hyp:'Kill all-time entirely (it lost your metal); current listening drives it.',
+    look:'Does removing all-time fully restore your harder styles? Or do you miss the enduring staples it brought?',
+    params:'recencyAdd=1.5&favoriteBoost=0.5&playAlltime=0&playYearly=0.6&playMonthly=1.5&playRankBonus=0.3&popularity=0&novelty=0.2&monthlyDecayTau=3' },
+  { id:'D_novelty', title:'D · More novelty/exploration',
+    hyp:'A, but more random exploration (note: jitter/freshness, not styled diversity — that needs genre tags later).',
+    look:'Does the extra unpredictability add welcome variety, or just noise? (Re-running changes order by design.)',
+    params:'recencyAdd=2&favoriteBoost=0.6&playAlltime=0.5&playYearly=0.5&playMonthly=1.2&playRankBonus=0.3&popularity=0.05&novelty=0.6&recencyHalfLifeDays=120&monthlyDecayTau=3' },
+  { id:'E_artist_spread', title:'E · A + tighter artist spread (1 per artist)',
+    hyp:'A, but max 1 track per artist (you flagged ERRA/Sleep Token/Pantera clustering).',
+    look:'Does 1-per-artist fix the clustering, or lose too many good tracks? (True adjacency spreading is the DJ-sequencer job, Phase 3 — this just caps count.)',
+    params:'recencyAdd=2&favoriteBoost=0.6&playAlltime=0.5&playYearly=0.5&playMonthly=1.2&playRankBonus=0.3&popularity=0.05&novelty=0.2&recencyHalfLifeDays=120&monthlyDecayTau=3&maxPerArtist=1' },
+  { id:'F_freeslot', title:'F · Your call (editable)',
+    hyp:'Starts from A — tweak the params box and re-run to explore anything the above raised.',
+    look:'Anything you want to probe: push/cut a weight, change half-life or τ, etc. Note what you changed in the comment.',
+    params:'recencyAdd=2&favoriteBoost=0.6&playAlltime=0.5&playYearly=0.5&playMonthly=1.2&playRankBonus=0.3&popularity=0.05&novelty=0.2&recencyHalfLifeDays=120&monthlyDecayTau=3' },
+];
+
+let state = { round: ROUND, tests: {} };
+let cur = 0;
+let saveTimer = null;
+
+function blank(){ return { ranAt:null, appliedWeights:null, results:[], feedback:{ verdict:null, comment:'', trackFlags:{} } }; }
+function t(id){ return (state.tests[id] ||= blank()); }
+
+async function boot(){
+  document.getElementById('roundPill').textContent = 'round ' + ROUND;
+  try {
+    const r = await fetch(`${API}/api/tuning?round=${ROUND}`);
+    const data = await r.json();
+    if (data && data.tests) state = { round: ROUND, tests: data.tests };
+  } catch(e){ /* fresh start */ }
+  render(); buildNav();
+}
+
+function buildNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '';
+  BATTERY.forEach((b,i)=>{
+    const btn = document.createElement('button');
+    btn.textContent = (i+1);
+    const st = state.tests[b.id];
+    if (st && st.feedback && st.feedback.verdict) btn.classList.add('done');
+    if (i===cur) btn.classList.add('cur');
+    btn.title = b.title;
+    btn.onclick = ()=>{ cur=i; render(); buildNav(); };
+    nav.appendChild(btn);
+  });
+}
+
+function fmt(n){ return (Math.round(n*1000)/1000).toFixed(3); }
+
+function render(){
+  const b = BATTERY[cur];
+  const st = t(b.id);
+  const c = document.getElementById('card');
+  c.innerHTML = '';
+
+  const h = document.createElement('div');
+  h.innerHTML = `<div style="font-size:16px;font-weight:600">${b.title}</div>
+    <div class="hyp"><b>Hypothesis:</b> ${b.hyp}</div>
+    <div class="look"><b>Look for:</b> ${b.look}</div>`;
+  c.appendChild(h);
+
+  const pa = document.createElement('textarea');
+  pa.className='params'; pa.rows=2; pa.value = st.params || b.params;
+  pa.style.minHeight='auto';
+  c.appendChild(pa);
+
+  const ctl = document.createElement('div'); ctl.className='row';
+  const runBtn = document.createElement('button'); runBtn.className='run'; runBtn.textContent='▶ Run test';
+  runBtn.onclick = ()=> runTest(b, pa.value.trim());
+  const status = document.createElement('span'); status.className='applied'; status.id='runStatus';
+  status.textContent = st.ranAt ? `last run ${new Date(st.ranAt).toLocaleTimeString()}` : 'not run yet';
+  ctl.appendChild(runBtn); ctl.appendChild(status);
+  c.appendChild(ctl);
+
+  const results = document.createElement('div'); results.id='results';
+  c.appendChild(results);
+  if (st.results && st.results.length) drawResults(b, st);
+
+  // Feedback block
+  const fb = document.createElement('div');
+  fb.style.marginTop='16px'; fb.style.borderTop='1px solid var(--line)'; fb.style.paddingTop='14px';
+  fb.innerHTML = `<div style="margin-bottom:8px;font-weight:600">Your verdict</div>`;
+  const v = document.createElement('div'); v.className='verdicts';
+  [['good','✓ Good'],['mixed','~ Mixed'],['bad','✗ Bad']].forEach(([val,lab])=>{
+    const vb=document.createElement('button'); vb.textContent=lab;
+    if (st.feedback.verdict===val) vb.classList.add('sel-'+val);
+    vb.onclick=()=>{ st.feedback.verdict = (st.feedback.verdict===val?null:val); render(); buildNav(); scheduleSave(); };
+    v.appendChild(vb);
+  });
+  fb.appendChild(v);
+  const ta=document.createElement('textarea'); ta.placeholder='Commentary: what feels right/wrong and why. Flag specific tracks above by clicking their flag.';
+  ta.value=st.feedback.comment||''; ta.style.marginTop='10px';
+  ta.oninput=()=>{ st.feedback.comment=ta.value; scheduleSave(); };
+  fb.appendChild(ta);
+
+  const navRow=document.createElement('div'); navRow.className='row'; navRow.style.marginTop='12px';
+  const prev=document.createElement('button'); prev.className='ghost'; prev.textContent='← Prev';
+  prev.onclick=()=>{ if(cur>0){cur--; render(); buildNav();} };
+  const next=document.createElement('button'); next.className='run'; next.textContent='Save & next →';
+  next.onclick=()=>{ saveNow().then(()=>{ if(cur<BATTERY.length-1){cur++;} render(); buildNav(); }); };
+  navRow.appendChild(prev); navRow.appendChild(next);
+  fb.appendChild(navRow);
+  c.appendChild(fb);
+}
+
+function drawResults(b, st){
+  const wrap=document.getElementById('results');
+  const max = Math.max(...st.results.map(r=>r.score), 0.0001);
+  let rows = st.results.map((r,i)=>{
+    const fl = st.feedback.trackFlags[r.tidal_id]||'';
+    const bd = r.breakdown||{};
+    return `<tr>
+      <td class="num">${i+1}</td>
+      <td><span class="flag ${fl}" data-id="${r.tidal_id}">${FLAG_LABEL[fl]}</span></td>
+      <td class="title">${esc(r.artist)} — ${esc(r.title)}</td>
+      <td class="num"><div class="bar" style="width:${Math.round(60*r.score/max)}px"></div></td>
+      <td class="num">${r.score}</td>
+      <td class="num">${fmt(bd.recency||0)}</td>
+      <td class="num">${fmt(bd.play||0)}</td>
+      <td class="num">${fmt(bd.popularity||0)}</td>
+      <td class="num">${r.is_favorite?'★':''}</td>
+      <td class="num">${(r.added_at||'—').slice(0,10)}</td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<div class="applied">applied: ${esc(JSON.stringify(st.appliedWeights||{}))}</div>
+    <table><thead><tr>
+      <th>#</th><th>flag</th><th>track</th><th>score</th><th>val</th>
+      <th>rec</th><th>play</th><th>pop</th><th>fav</th><th>added</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+  wrap.querySelectorAll('.flag').forEach(el=>{
+    el.onclick=()=>{
+      const id=el.dataset.id; const c=st.feedback.trackFlags[id]||'';
+      const nx=FLAGS[(FLAGS.indexOf(c)+1)%FLAGS.length];
+      if(nx) st.feedback.trackFlags[id]=nx; else delete st.feedback.trackFlags[id];
+      drawResults(b,st); scheduleSave();
+    };
+  });
+}
+
+async function runTest(b, params){
+  const st=t(b.id); st.params=params;
+  const status=document.getElementById('runStatus'); status.textContent='running…'; status.className='applied';
+  const limit=document.getElementById('limit').value||20;
+  try{
+    const r=await fetch(`${API}/api/recommend?explain=1&limit=${limit}&${params}`);
+    const data=await r.json();
+    if(!r.ok){ status.textContent='error: '+(data.error||r.status); status.className='applied err'; return; }
+    st.results=data.tracks||[]; st.appliedWeights=data.weights||null; st.ranAt=new Date().toISOString();
+    render(); buildNav(); scheduleSave();
+  }catch(e){ status.textContent='fetch failed — is the app + backend running?'; status.className='applied err'; }
+}
+
+function scheduleSave(){
+  document.getElementById('saveState').textContent='saving…';
+  clearTimeout(saveTimer); saveTimer=setTimeout(saveNow, 600);
+}
+async function saveNow(){
+  try{
+    await fetch(`${API}/api/tuning`,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({round:ROUND, tests:state.tests})});
+    const s=document.getElementById('saveState'); s.textContent='saved ✓'; s.style.color='var(--good)';
+  }catch(e){ const s=document.getElementById('saveState'); s.textContent='save failed'; s.style.color='var(--bad)'; }
+}
+
+document.getElementById('exportBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify({round:ROUND,tests:state.tests},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`tuner-round-${ROUND}.json`; a.click();
+};
+document.getElementById('limit').onchange=()=>{};
+
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+boot();
+</script>
+</body>
+</html>

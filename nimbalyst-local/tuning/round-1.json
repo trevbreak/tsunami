@@ -1,0 +1,4046 @@
+{
+  "round": "1",
+  "tests": {
+    "baseline": {
+      "ranAt": "2026-06-11T11:12:13.388Z",
+      "appliedWeights": {
+        "recencyAdd": 1,
+        "favoriteBoost": 0.5,
+        "playAlltime": 1.2,
+        "playYearly": 0.8,
+        "playMonthly": 1,
+        "playRankBonus": 0.3,
+        "popularity": 0.25,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "401317285",
+          "title": "squabble up",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 78,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.9211,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.726131283544961,
+            "popularity": 0.195,
+            "novelty": 0,
+            "total": 3.9211312835449608
+          }
+        },
+        {
+          "tidal_id": "401317281",
+          "title": "wacced out murals",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 74,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.879,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.6939884264021035,
+            "popularity": 0.185,
+            "novelty": 0,
+            "total": 3.8789884264021035
+          }
+        },
+        {
+          "tidal_id": "503203209",
+          "title": "stelliform",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.8549,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.729948429606381,
+            "popularity": 0.125,
+            "novelty": 0,
+            "total": 3.854948429606381
+          }
+        },
+        {
+          "tidal_id": "492095926",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "further eden",
+          "bpm": null,
+          "popularity": 44,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.6149,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.5049484296063813,
+            "popularity": 0.11,
+            "novelty": 0,
+            "total": 3.614948429606381
+          }
+        },
+        {
+          "tidal_id": "77690170",
+          "title": "Hotline Bling",
+          "artist": "Drake",
+          "album": "Views",
+          "bpm": null,
+          "popularity": 83,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.4277,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.2201721630415965,
+            "popularity": 0.2075,
+            "novelty": 0,
+            "total": 3.4276721630415965
+          }
+        },
+        {
+          "tidal_id": "427555495",
+          "title": "Caramel",
+          "artist": "Sleep Token",
+          "album": "Caramel",
+          "bpm": null,
+          "popularity": 69,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.1939,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.0214285714285714,
+            "popularity": 0.1725,
+            "novelty": 0,
+            "total": 3.1939285714285712
+          }
+        },
+        {
+          "tidal_id": "434030392",
+          "title": "Look To Windward",
+          "artist": "Sleep Token",
+          "album": "Even In Arcadia",
+          "bpm": null,
+          "popularity": 67,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.1818,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.0142857142857142,
+            "popularity": 0.1675,
+            "novelty": 0,
+            "total": 3.181785714285714
+          }
+        },
+        {
+          "tidal_id": "452813639",
+          "title": "Useless (Without You)",
+          "artist": "Elmiene",
+          "album": "Useless (Without You)",
+          "bpm": null,
+          "popularity": 40,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.1231,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.023076923076923,
+            "popularity": 0.1,
+            "novelty": 0,
+            "total": 3.123076923076923
+          }
+        },
+        {
+          "tidal_id": "494389866",
+          "title": "Body",
+          "artist": "Don Toliver",
+          "album": "OCTANE",
+          "bpm": null,
+          "popularity": 61,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.9932,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.840685013634966,
+            "popularity": 0.1525,
+            "novelty": 0,
+            "total": 2.993185013634966
+          }
+        },
+        {
+          "tidal_id": "21119746",
+          "title": "We Are",
+          "artist": "Karnivool",
+          "album": "Asymmetry",
+          "bpm": null,
+          "popularity": 63,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.8181,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.6605691059801315,
+            "popularity": 0.1575,
+            "novelty": 0,
+            "total": 2.8180691059801317
+          }
+        },
+        {
+          "tidal_id": "302254857",
+          "title": "Get Free",
+          "artist": "Major Lazer",
+          "album": "Get Free",
+          "bpm": null,
+          "popularity": 61,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.8019,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.649444708817694,
+            "popularity": 0.1525,
+            "novelty": 0,
+            "total": 2.8019447088176936
+          }
+        },
+        {
+          "tidal_id": "453498256",
+          "title": "Man I Need",
+          "artist": "Olivia Dean",
+          "album": "Man I Need",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.7994,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.5844107517452315,
+            "popularity": 0.215,
+            "novelty": 0,
+            "total": 2.7994107517452314
+          }
+        },
+        {
+          "tidal_id": "148912467",
+          "title": "POPSTAR (feat. Drake)",
+          "artist": "DJ Khaled",
+          "album": "POPSTAR (feat. Drake)",
+          "bpm": null,
+          "popularity": 77,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.7259,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.5334171190325923,
+            "popularity": 0.1925,
+            "novelty": 0,
+            "total": 2.725917119032592
+          }
+        },
+        {
+          "tidal_id": "231866033",
+          "title": "Numb",
+          "artist": "Marshmello",
+          "album": "Numb",
+          "bpm": null,
+          "popularity": 72,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.6601,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.480128448689516,
+            "popularity": 0.18,
+            "novelty": 0,
+            "total": 2.660128448689516
+          }
+        },
+        {
+          "tidal_id": "149582735",
+          "title": "t h e . c l i m b . b a c k",
+          "artist": "J. Cole",
+          "album": "Lewis Street",
+          "bpm": null,
+          "popularity": 55,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.5181,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.3805691059801317,
+            "popularity": 0.1375,
+            "novelty": 0,
+            "total": 2.518069105980132
+          }
+        },
+        {
+          "tidal_id": "431469026",
+          "title": "Glenwood",
+          "artist": "Lorna Shore",
+          "album": "I Feel The Everblack Festering Within Me",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4819,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.359410751745232,
+            "popularity": 0.1225,
+            "novelty": 0,
+            "total": 2.481910751745232
+          }
+        },
+        {
+          "tidal_id": "106195267",
+          "title": "Reaching Home",
+          "artist": "Textures",
+          "album": "Dualism",
+          "bpm": null,
+          "popularity": 29,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4591,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.386629441171442,
+            "popularity": 0.0725,
+            "novelty": 0,
+            "total": 2.459129441171442
+          }
+        },
+        {
+          "tidal_id": "435773728",
+          "title": "God Is A Weapon",
+          "artist": "Falling In Reverse",
+          "album": "God Is A Weapon",
+          "bpm": null,
+          "popularity": 60,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4558,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.305839323173803,
+            "popularity": 0.15,
+            "novelty": 0,
+            "total": 2.455839323173803
+          }
+        },
+        {
+          "tidal_id": "22248418",
+          "title": "Do I Wanna Know?",
+          "artist": "Arctic Monkeys",
+          "album": "AM",
+          "bpm": null,
+          "popularity": 91,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4539,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.226375602837562,
+            "popularity": 0.2275,
+            "novelty": 0,
+            "total": 2.453875602837562
+          }
+        },
+        {
+          "tidal_id": "66035607",
+          "title": "Got the Life",
+          "artist": "Korn",
+          "album": "Follow The Leader",
+          "bpm": null,
+          "popularity": 80,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.45,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.25,
+            "popularity": 0.2,
+            "novelty": 0,
+            "total": 2.45
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "good",
+        "comment": "It's got more recently listened to tracks, there are some unexpected results in there (eg. Elmiene — Useless (Without You)) , but on a whole - they seem quite relevant to recent tracks I've added/liked/listened to.",
+        "trackFlags": {}
+      },
+      "params": "novelty=0"
+    },
+    "popularity": {
+      "ranAt": "2026-06-11T11:13:29.675Z",
+      "appliedWeights": {
+        "recencyAdd": 0,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 0,
+        "playRankBonus": 0,
+        "popularity": 1,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "1772295",
+          "title": "Hey Ya!",
+          "artist": "Outkast",
+          "album": "Speakerboxxx/The Love Below",
+          "bpm": null,
+          "popularity": 94,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.94,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.94,
+            "novelty": 0,
+            "total": 0.94
+          }
+        },
+        {
+          "tidal_id": "22248418",
+          "title": "Do I Wanna Know?",
+          "artist": "Arctic Monkeys",
+          "album": "AM",
+          "bpm": null,
+          "popularity": 91,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.91,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.91,
+            "novelty": 0,
+            "total": 0.91
+          }
+        },
+        {
+          "tidal_id": "35748020",
+          "title": "Still D.R.E.",
+          "artist": "Dr. Dre",
+          "album": "2001",
+          "bpm": 93,
+          "popularity": 91,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.91,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.91,
+            "novelty": 0,
+            "total": 0.91
+          }
+        },
+        {
+          "tidal_id": "2098894",
+          "title": "Ain't No Sunshine",
+          "artist": "Bill Withers",
+          "album": "Just As I Am",
+          "bpm": null,
+          "popularity": 90,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.9,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.9,
+            "novelty": 0,
+            "total": 0.9
+          }
+        },
+        {
+          "tidal_id": "35748027",
+          "title": "The Next Episode",
+          "artist": "Dr. Dre",
+          "album": "2001",
+          "bpm": 95,
+          "popularity": 89,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.89,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.89,
+            "novelty": 0,
+            "total": 0.89
+          }
+        },
+        {
+          "tidal_id": "441821360",
+          "title": "Golden",
+          "artist": "HUNTR/X",
+          "album": "KPop Demon Hunters (Soundtrack from the Netflix Film)",
+          "bpm": null,
+          "popularity": 89,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.89,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.89,
+            "novelty": 0,
+            "total": 0.89
+          }
+        },
+        {
+          "tidal_id": "18445266",
+          "title": "All I Want for Christmas Is You",
+          "artist": "Mariah Carey",
+          "album": "Merry Christmas",
+          "bpm": null,
+          "popularity": 88,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.88,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.88,
+            "novelty": 0,
+            "total": 0.88
+          }
+        },
+        {
+          "tidal_id": "390063",
+          "title": "Hypnotize (2007 Remaster)",
+          "artist": "The Notorious B.I.G.",
+          "album": "Greatest Hits",
+          "bpm": 94,
+          "popularity": 88,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.88,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.88,
+            "novelty": 0,
+            "total": 0.88
+          }
+        },
+        {
+          "tidal_id": "49588",
+          "title": "Rock Your Body",
+          "artist": "Justin Timberlake",
+          "album": "Justified",
+          "bpm": null,
+          "popularity": 88,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.88,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.88,
+            "novelty": 0,
+            "total": 0.88
+          }
+        },
+        {
+          "tidal_id": "271200",
+          "title": "Everywhere",
+          "artist": "Fleetwood Mac",
+          "album": "Greatest Hits",
+          "bpm": null,
+          "popularity": 87,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.87,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.87,
+            "novelty": 0,
+            "total": 0.87
+          }
+        },
+        {
+          "tidal_id": "43697107",
+          "title": "Let's Stay Together",
+          "artist": "Al Green",
+          "album": "Let's Stay Together",
+          "bpm": null,
+          "popularity": 87,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.87,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.87,
+            "novelty": 0,
+            "total": 0.87
+          }
+        },
+        {
+          "tidal_id": "50436095",
+          "title": "The Hills",
+          "artist": "The Weeknd",
+          "album": "Beauty Behind The Madness",
+          "bpm": null,
+          "popularity": 87,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.87,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.87,
+            "novelty": 0,
+            "total": 0.87
+          }
+        },
+        {
+          "tidal_id": "119262125",
+          "title": "HIGHEST IN THE ROOM",
+          "artist": "Travis Scott",
+          "album": "HIGHEST IN THE ROOM",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.86,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.86,
+            "novelty": 0,
+            "total": 0.86
+          }
+        },
+        {
+          "tidal_id": "1846150",
+          "title": "Shook Ones, Pt. II",
+          "artist": "Mobb Deep",
+          "album": "The Infamous",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.86,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.86,
+            "novelty": 0,
+            "total": 0.86
+          }
+        },
+        {
+          "tidal_id": "453498256",
+          "title": "Man I Need",
+          "artist": "Olivia Dean",
+          "album": "Man I Need",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.86,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.86,
+            "novelty": 0,
+            "total": 0.86
+          }
+        },
+        {
+          "tidal_id": "77699831",
+          "title": "Ni**as In Paris",
+          "artist": "JAŸ-Z",
+          "album": "Watch The Throne (Deluxe)",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.86,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.86,
+            "novelty": 0,
+            "total": 0.86
+          }
+        },
+        {
+          "tidal_id": "17825562",
+          "title": "Toxicity",
+          "artist": "System Of A Down",
+          "album": "Toxicity",
+          "bpm": 115,
+          "popularity": 85,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.85,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.85,
+            "novelty": 0,
+            "total": 0.85
+          }
+        },
+        {
+          "tidal_id": "354365598",
+          "title": "A Bar Song (Tipsy)",
+          "artist": "Shaboozey",
+          "album": "A Bar Song (Tipsy)",
+          "bpm": null,
+          "popularity": 85,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.85,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.85,
+            "novelty": 0,
+            "total": 0.85
+          }
+        },
+        {
+          "tidal_id": "401317289",
+          "title": "luther",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 85,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.85,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.85,
+            "novelty": 0,
+            "total": 0.85
+          }
+        },
+        {
+          "tidal_id": "92761299",
+          "title": "Nice For What",
+          "artist": "Drake",
+          "album": "Scorpion",
+          "bpm": null,
+          "popularity": 85,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 0.85,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0.85,
+            "novelty": 0,
+            "total": 0.85
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "bad",
+        "comment": "This seems to be what the 'popular' opinion of others might be - but doesn't match my specific tastes. There are artists/tracks in there I  like - but it feels very out of align with my 'ideal' list.",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=0&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=0&playRankBonus=0&popularity=1&novelty=0"
+    },
+    "recency": {
+      "ranAt": "2026-06-11T11:14:26.457Z",
+      "appliedWeights": {
+        "recencyAdd": 1,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 0,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "524730249",
+          "title": "DOOM LOOP",
+          "artist": "PRESIDENT",
+          "album": "DOOM LOOP",
+          "bpm": 105,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-06-08T10:27:14.716000+00:00",
+          "score": 0.9884,
+          "breakdown": {
+            "recency": 0.9883892687379764,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9883892687379764
+          }
+        },
+        {
+          "tidal_id": "453571935",
+          "title": "Reanimation (feat. Guthrie Govan)",
+          "artist": "Karnivool",
+          "album": "IN VERSES",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 1,
+          "added_at": "2026-06-01T11:38:22.751000+00:00",
+          "score": 0.9623,
+          "breakdown": {
+            "recency": 0.9622854362970926,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9622854362970926
+          }
+        },
+        {
+          "tidal_id": "418076955",
+          "title": "Checkers",
+          "artist": "Aesop Rock",
+          "album": "Checkers",
+          "bpm": 84,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-05-25T08:58:54.472000+00:00",
+          "score": 0.9363,
+          "breakdown": {
+            "recency": 0.936293447340224,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.936293447340224
+          }
+        },
+        {
+          "tidal_id": "226009172",
+          "title": "Shivering",
+          "artist": "Illenium",
+          "album": "Shivering",
+          "bpm": 150,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-05-22T20:51:07.001000+00:00",
+          "score": 0.9273,
+          "breakdown": {
+            "recency": 0.9273036373038938,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9273036373038938
+          }
+        },
+        {
+          "tidal_id": "503203210",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 1,
+          "added_at": "2026-03-20T20:49:03.060000+00:00",
+          "score": 0.7275,
+          "breakdown": {
+            "recency": 0.7275436687831326,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7275436687831326
+          }
+        },
+        {
+          "tidal_id": "16807264",
+          "title": "Astronomy",
+          "artist": "Blue Öyster Cult",
+          "album": "Secret Treaties",
+          "bpm": 89,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-02-06T09:32:11.594000+00:00",
+          "score": 0.6178,
+          "breakdown": {
+            "recency": 0.6177782919177698,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.6177782919177698
+          }
+        },
+        {
+          "tidal_id": "208642967",
+          "title": "Head Mounted Sideways",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 127,
+          "popularity": 43,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:26:30.353000+00:00",
+          "score": 0.6167,
+          "breakdown": {
+            "recency": 0.6166795216209684,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.6166795216209684
+          }
+        },
+        {
+          "tidal_id": "208642965",
+          "title": "Straight Lines",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 149,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:23:40.981000+00:00",
+          "score": 0.6167,
+          "breakdown": {
+            "recency": 0.6166748664169729,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.6166748664169729
+          }
+        },
+        {
+          "tidal_id": "469759803",
+          "title": "TANZNEID",
+          "artist": "Electric Callboy",
+          "album": "TANZNEID",
+          "bpm": 172,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T21:48:11.084000+00:00",
+          "score": 0.6166,
+          "breakdown": {
+            "recency": 0.6166163290140784,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.6166163290140784
+          }
+        },
+        {
+          "tidal_id": "53889126",
+          "title": "Drop Top (feat. Travis Porter)",
+          "artist": "Flosstradamus",
+          "album": "HDYNATION RADIO",
+          "bpm": 140,
+          "popularity": 26,
+          "is_favorite": 1,
+          "added_at": "2026-01-31T03:41:11.843000+00:00",
+          "score": 0.6031,
+          "breakdown": {
+            "recency": 0.6031018635603395,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.6031018635603395
+          }
+        },
+        {
+          "tidal_id": "393615",
+          "title": "Floods",
+          "artist": "Pantera",
+          "album": "The Great Southern Trendkill",
+          "bpm": 123,
+          "popularity": 58,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:55.872000+00:00",
+          "score": 0.5768,
+          "breakdown": {
+            "recency": 0.576775640037995,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.576775640037995
+          }
+        },
+        {
+          "tidal_id": "391788",
+          "title": "A New Level",
+          "artist": "Pantera",
+          "album": "Vulgar Display of Power",
+          "bpm": 136,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:54.182000+00:00",
+          "score": 0.5768,
+          "breakdown": {
+            "recency": 0.5767755965936943,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5767755965936943
+          }
+        },
+        {
+          "tidal_id": "61124458",
+          "title": "Believer",
+          "artist": "Myrath",
+          "album": "Legacy",
+          "bpm": 96,
+          "popularity": 37,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T11:24:01.396000+00:00",
+          "score": 0.5766,
+          "breakdown": {
+            "recency": 0.5765799302920108,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5765799302920108
+          }
+        },
+        {
+          "tidal_id": "339265833",
+          "title": "Wondering Why",
+          "artist": "The Red Clay Strays",
+          "album": "Moment of Truth",
+          "bpm": 149,
+          "popularity": 73,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T21:42:09.235000+00:00",
+          "score": 0.5731,
+          "breakdown": {
+            "recency": 0.5731029300845563,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5731029300845563
+          }
+        },
+        {
+          "tidal_id": "346286844",
+          "title": "Warflower",
+          "artist": "The Mayan Factor",
+          "album": "Warflower",
+          "bpm": 94,
+          "popularity": 41,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T00:56:29.101000+00:00",
+          "score": 0.5712,
+          "breakdown": {
+            "recency": 0.5711970193018545,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5711970193018545
+          }
+        },
+        {
+          "tidal_id": "411781857",
+          "title": "Adam and Eve",
+          "artist": "Novelists",
+          "album": "CODA",
+          "bpm": 100,
+          "popularity": 30,
+          "is_favorite": 1,
+          "added_at": "2025-12-31T23:09:56.325000+00:00",
+          "score": 0.5369,
+          "breakdown": {
+            "recency": 0.536913062278484,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.536913062278484
+          }
+        },
+        {
+          "tidal_id": "430783748",
+          "title": "Lachryma",
+          "artist": "Ghost",
+          "album": "Skeletá",
+          "bpm": 111,
+          "popularity": 56,
+          "is_favorite": 1,
+          "added_at": "2025-12-22T22:44:33.401000+00:00",
+          "score": 0.5186,
+          "breakdown": {
+            "recency": 0.5185886313149658,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5185886313149658
+          }
+        },
+        {
+          "tidal_id": "455128515",
+          "title": "my mind is a mountain",
+          "artist": "Deftones",
+          "album": "private music",
+          "bpm": 109,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2025-12-21T09:37:08.854000+00:00",
+          "score": 0.5155,
+          "breakdown": {
+            "recency": 0.5155088445023354,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5155088445023354
+          }
+        },
+        {
+          "tidal_id": "212427051",
+          "title": "The Watcher",
+          "artist": "Arch Enemy",
+          "album": "Deceivers",
+          "bpm": 91,
+          "popularity": 46,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:46.884000+00:00",
+          "score": 0.5119,
+          "breakdown": {
+            "recency": 0.5118954426664318,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5118954426664318
+          }
+        },
+        {
+          "tidal_id": "52028297",
+          "title": "War Eternal",
+          "artist": "Arch Enemy",
+          "album": "War Eternal",
+          "bpm": 155,
+          "popularity": 60,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:34.104000+00:00",
+          "score": 0.5119,
+          "breakdown": {
+            "recency": 0.5118951510908125,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.5118951510908125
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "good",
+        "comment": "This has a good mix of things I've liked/lsitend to recently. It doesn't have a lot of novelty - but doesn't feel like a safe and good list of tracks.",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=1&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=0&playRankBonus=0&popularity=0&novelty=0"
+    },
+    "frecency": {
+      "ranAt": "2026-06-11T11:15:05.186Z",
+      "appliedWeights": {
+        "recencyAdd": 0,
+        "favoriteBoost": 0,
+        "playAlltime": 1.2,
+        "playYearly": 0.8,
+        "playMonthly": 1,
+        "playRankBonus": 0.3,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "503203209",
+          "title": "stelliform",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.7299,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.729948429606381,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.729948429606381
+          }
+        },
+        {
+          "tidal_id": "401317285",
+          "title": "squabble up",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 78,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.7261,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.726131283544961,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.726131283544961
+          }
+        },
+        {
+          "tidal_id": "401317281",
+          "title": "wacced out murals",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 74,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.694,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.6939884264021035,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.6939884264021035
+          }
+        },
+        {
+          "tidal_id": "492095926",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "further eden",
+          "bpm": null,
+          "popularity": 44,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.5049,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.5049484296063813,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.5049484296063813
+          }
+        },
+        {
+          "tidal_id": "77690170",
+          "title": "Hotline Bling",
+          "artist": "Drake",
+          "album": "Views",
+          "bpm": null,
+          "popularity": 83,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.2202,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.2201721630415965,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.2201721630415965
+          }
+        },
+        {
+          "tidal_id": "452813639",
+          "title": "Useless (Without You)",
+          "artist": "Elmiene",
+          "album": "Useless (Without You)",
+          "bpm": null,
+          "popularity": 40,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.0231,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.023076923076923,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.023076923076923
+          }
+        },
+        {
+          "tidal_id": "427555495",
+          "title": "Caramel",
+          "artist": "Sleep Token",
+          "album": "Caramel",
+          "bpm": null,
+          "popularity": 69,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.0214,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.0214285714285714,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.0214285714285714
+          }
+        },
+        {
+          "tidal_id": "434030392",
+          "title": "Look To Windward",
+          "artist": "Sleep Token",
+          "album": "Even In Arcadia",
+          "bpm": null,
+          "popularity": 67,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 3.0143,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 3.0142857142857142,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 3.0142857142857142
+          }
+        },
+        {
+          "tidal_id": "494389866",
+          "title": "Body",
+          "artist": "Don Toliver",
+          "album": "OCTANE",
+          "bpm": null,
+          "popularity": 61,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.8407,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.840685013634966,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.840685013634966
+          }
+        },
+        {
+          "tidal_id": "21119746",
+          "title": "We Are",
+          "artist": "Karnivool",
+          "album": "Asymmetry",
+          "bpm": null,
+          "popularity": 63,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.6606,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.6605691059801315,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.6605691059801315
+          }
+        },
+        {
+          "tidal_id": "302254857",
+          "title": "Get Free",
+          "artist": "Major Lazer",
+          "album": "Get Free",
+          "bpm": null,
+          "popularity": 61,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.6494,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.649444708817694,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.649444708817694
+          }
+        },
+        {
+          "tidal_id": "453498256",
+          "title": "Man I Need",
+          "artist": "Olivia Dean",
+          "album": "Man I Need",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.5844,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.5844107517452315,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.5844107517452315
+          }
+        },
+        {
+          "tidal_id": "148912467",
+          "title": "POPSTAR (feat. Drake)",
+          "artist": "DJ Khaled",
+          "album": "POPSTAR (feat. Drake)",
+          "bpm": null,
+          "popularity": 77,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.5334,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.5334171190325923,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.5334171190325923
+          }
+        },
+        {
+          "tidal_id": "231866033",
+          "title": "Numb",
+          "artist": "Marshmello",
+          "album": "Numb",
+          "bpm": null,
+          "popularity": 72,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4801,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.480128448689516,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.480128448689516
+          }
+        },
+        {
+          "tidal_id": "467961324",
+          "title": "Atrás do Pataco",
+          "artist": "Yan Silvestre",
+          "album": "Atrás do Pataco",
+          "bpm": null,
+          "popularity": 4,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4353,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.4353352832366126,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.4353352832366126
+          }
+        },
+        {
+          "tidal_id": "496186857",
+          "title": "Spike in My Veins",
+          "artist": "Korn",
+          "album": "The Paradigm Shift (Deluxe)",
+          "bpm": null,
+          "popularity": 12,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.4012,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.4012127745047755,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.4012127745047755
+          }
+        },
+        {
+          "tidal_id": "106195267",
+          "title": "Reaching Home",
+          "artist": "Textures",
+          "album": "Dualism",
+          "bpm": null,
+          "popularity": 29,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.3866,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.386629441171442,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.386629441171442
+          }
+        },
+        {
+          "tidal_id": "149582735",
+          "title": "t h e . c l i m b . b a c k",
+          "artist": "J. Cole",
+          "album": "Lewis Street",
+          "bpm": null,
+          "popularity": 55,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.3806,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.3805691059801317,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.3805691059801317
+          }
+        },
+        {
+          "tidal_id": "431469026",
+          "title": "Glenwood",
+          "artist": "Lorna Shore",
+          "album": "I Feel The Everblack Festering Within Me",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.3594,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.359410751745232,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.359410751745232
+          }
+        },
+        {
+          "tidal_id": "102586271",
+          "title": "More or Less",
+          "artist": "Tender",
+          "album": "Fear of Falling Asleep",
+          "bpm": null,
+          "popularity": 15,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.3136,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.3135971381157265,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.3135971381157265
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "mixed",
+        "comment": "This seems to be more diverse in style/tone than others - bringing some older classics in here (eg. Tender — More or Less). There are some tracks I'm not even sure what they are though (Yan Silvestre — Atrás do Pataco), so I'm confused on what that's doing in there.",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=0&favoriteBoost=0&playAlltime=1.2&playYearly=0.8&playMonthly=1&playRankBonus=0.3&popularity=0&novelty=0"
+    },
+    "alltime": {
+      "ranAt": "2026-06-11T11:16:11.439Z",
+      "appliedWeights": {
+        "recencyAdd": 0,
+        "favoriteBoost": 0,
+        "playAlltime": 1,
+        "playYearly": 0,
+        "playMonthly": 0,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "102220804",
+          "title": "Mile High",
+          "artist": "James Blake",
+          "album": "Assume Form",
+          "bpm": null,
+          "popularity": 68,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "102586271",
+          "title": "More or Less",
+          "artist": "Tender",
+          "album": "Fear of Falling Asleep",
+          "bpm": null,
+          "popularity": 15,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "105057205",
+          "title": "Old Fashioned",
+          "artist": "Port Noir",
+          "album": "The New Routine",
+          "bpm": null,
+          "popularity": 31,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "105885520",
+          "title": "In The End",
+          "artist": "Tommee Profitt",
+          "album": "In The End",
+          "bpm": null,
+          "popularity": 68,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "106120216",
+          "title": "From Liquid",
+          "artist": "Mr.Kitty",
+          "album": "Ephemeral",
+          "bpm": null,
+          "popularity": 38,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "106195267",
+          "title": "Reaching Home",
+          "artist": "Textures",
+          "album": "Dualism",
+          "bpm": null,
+          "popularity": 29,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "108804194",
+          "title": "100 Bands",
+          "artist": "Mustard",
+          "album": "100 Bands",
+          "bpm": null,
+          "popularity": 52,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "109505882",
+          "title": "No Devotion",
+          "artist": "Tender",
+          "album": "Fear of Falling Asleep",
+          "bpm": null,
+          "popularity": 9,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "112605030",
+          "title": "Simon Says",
+          "artist": "Pharoahe Monch",
+          "album": "Simon Says",
+          "bpm": null,
+          "popularity": 76,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "11344150",
+          "title": "Heartbeat",
+          "artist": "Nneka",
+          "album": "Heartbeat EP",
+          "bpm": null,
+          "popularity": 56,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "114492495",
+          "title": "A.D.H.D",
+          "artist": "Kendrick Lamar",
+          "album": "Section.80",
+          "bpm": null,
+          "popularity": 79,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "114492496",
+          "title": "No Make-Up (Her Vice)",
+          "artist": "Kendrick Lamar",
+          "album": "Section.80",
+          "bpm": null,
+          "popularity": 58,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "116740447",
+          "title": "UP",
+          "artist": "EARTHGANG",
+          "album": "Mirrorland",
+          "bpm": null,
+          "popularity": 52,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "135506855",
+          "title": "Screw Loose",
+          "artist": "Lime Cordiale",
+          "album": "14 Steps To A Better You",
+          "bpm": null,
+          "popularity": 60,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "139829113",
+          "title": "Hypnodancer",
+          "artist": "Little Big",
+          "album": "Hypnodancer",
+          "bpm": null,
+          "popularity": 45,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "140568491",
+          "title": "Maniac",
+          "artist": "Carpenter Brut",
+          "album": "Maniac",
+          "bpm": null,
+          "popularity": 48,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "143026894",
+          "title": "Parasite Eve",
+          "artist": "Bring Me The Horizon",
+          "album": "Parasite Eve",
+          "bpm": null,
+          "popularity": 70,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "148701431",
+          "title": "Lemon Glow",
+          "artist": "Beach House",
+          "album": "7",
+          "bpm": null,
+          "popularity": 58,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "148912467",
+          "title": "POPSTAR (feat. Drake)",
+          "artist": "DJ Khaled",
+          "album": "POPSTAR (feat. Drake)",
+          "bpm": null,
+          "popularity": 77,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "149582735",
+          "title": "t h e . c l i m b . b a c k",
+          "artist": "J. Cole",
+          "album": "Lewis Street",
+          "bpm": null,
+          "popularity": 55,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "mixed",
+        "comment": "This feels like the 'things I could listen to all day' - that set of tracks for any mood/time of the day. It doesn't really push the boundaries of novelty, style, and it's a bit too skewed to softer styles (all my metal is pretty much gone) - but I could jam to this. ",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=0&favoriteBoost=0&playAlltime=1&playYearly=0&playMonthly=0&playRankBonus=0&popularity=0&novelty=0"
+    },
+    "monthly": {
+      "ranAt": "2026-06-11T11:17:16.963Z",
+      "appliedWeights": {
+        "recencyAdd": 0,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 1,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "492095926",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "further eden",
+          "bpm": null,
+          "popularity": 44,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.2299,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.229948429606381,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.229948429606381
+          }
+        },
+        {
+          "tidal_id": "503203209",
+          "title": "stelliform",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 2.2299,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 2.229948429606381,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 2.229948429606381
+          }
+        },
+        {
+          "tidal_id": "401317291",
+          "title": "hey now",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 71,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.7165,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.7165313105737892,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.7165313105737892
+          }
+        },
+        {
+          "tidal_id": "401317281",
+          "title": "wacced out murals",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 74,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.6511,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.6511312835449607,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.6511312835449607
+          }
+        },
+        {
+          "tidal_id": "494389866",
+          "title": "Body",
+          "artist": "Don Toliver",
+          "album": "OCTANE",
+          "bpm": null,
+          "popularity": 61,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.5978,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.5978278707778237,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.5978278707778237
+          }
+        },
+        {
+          "tidal_id": "431469026",
+          "title": "Glenwood",
+          "artist": "Lorna Shore",
+          "album": "I Feel The Everblack Festering Within Me",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.0844,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.0844107517452315,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.0844107517452315
+          }
+        },
+        {
+          "tidal_id": "435773728",
+          "title": "God Is A Weapon",
+          "artist": "Falling In Reverse",
+          "album": "God Is A Weapon",
+          "bpm": null,
+          "popularity": 60,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.0844,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.0844107517452315,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.0844107517452315
+          }
+        },
+        {
+          "tidal_id": "453498256",
+          "title": "Man I Need",
+          "artist": "Olivia Dean",
+          "album": "Man I Need",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.0844,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.0844107517452315,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.0844107517452315
+          }
+        },
+        {
+          "tidal_id": "77690170",
+          "title": "Hotline Bling",
+          "artist": "Drake",
+          "album": "Views",
+          "bpm": null,
+          "popularity": 83,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.0702,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.0701721630415961,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.0701721630415961
+          }
+        },
+        {
+          "tidal_id": "116740447",
+          "title": "UP",
+          "artist": "EARTHGANG",
+          "album": "Mirrorland",
+          "bpm": null,
+          "popularity": 52,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "182340574",
+          "title": "Fear and Loathing in Los Angeles",
+          "artist": "Caskey",
+          "album": "Fine Art",
+          "bpm": null,
+          "popularity": 24,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "33826097",
+          "title": "Freak On a Leash",
+          "artist": "Korn",
+          "album": "The Essential Korn",
+          "bpm": null,
+          "popularity": 81,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "397767684",
+          "title": "A Martyr Left Alive",
+          "artist": "Counterparts",
+          "album": "Heaven Let Them Die",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "414984157",
+          "title": "Day One",
+          "artist": "Bon Iver",
+          "album": "SABLE, fABLE",
+          "bpm": null,
+          "popularity": 63,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "420319213",
+          "title": "Whiplash",
+          "artist": "Architects",
+          "album": "The Sky, The Earth & All Between",
+          "bpm": null,
+          "popularity": 62,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "427555495",
+          "title": "Caramel",
+          "artist": "Sleep Token",
+          "album": "Caramel",
+          "bpm": null,
+          "popularity": 69,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "434030392",
+          "title": "Look To Windward",
+          "artist": "Sleep Token",
+          "album": "Even In Arcadia",
+          "bpm": null,
+          "popularity": 67,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "449896033",
+          "title": "Runaways (feat. Bonnie McKee)",
+          "artist": "The Midnight",
+          "album": "Runaways (feat. Bonnie McKee)",
+          "bpm": null,
+          "popularity": 38,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "452813639",
+          "title": "Useless (Without You)",
+          "artist": "Elmiene",
+          "album": "Useless (Without You)",
+          "bpm": null,
+          "popularity": 40,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "464381585",
+          "title": "Submerged",
+          "artist": "Gaerea",
+          "album": "Loss",
+          "bpm": null,
+          "popularity": 46,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "good",
+        "comment": "Strong overall list, good diversity - mixing some bangers from different styles (eg. Caskey — Fear and Loathing in Los Angeles alongside Korn — Freak On a Leash)> It does 'group' tracks from the same artist that I'd like to spread out more (eg. ERRA and Sleep Token), but the mix overall is good. ",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=0&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=1&playRankBonus=0&popularity=0&novelty=0"
+    },
+    "hl_short": {
+      "ranAt": "2026-06-11T11:18:32.304Z",
+      "appliedWeights": {
+        "recencyAdd": 1,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 0,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 45,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "524730249",
+          "title": "DOOM LOOP",
+          "artist": "PRESIDENT",
+          "album": "DOOM LOOP",
+          "bpm": 105,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-06-08T10:27:14.716000+00:00",
+          "score": 0.9543,
+          "breakdown": {
+            "recency": 0.9543178576989708,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9543178576989708
+          }
+        },
+        {
+          "tidal_id": "453571935",
+          "title": "Reanimation (feat. Guthrie Govan)",
+          "artist": "Karnivool",
+          "album": "IN VERSES",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 1,
+          "added_at": "2026-06-01T11:38:22.751000+00:00",
+          "score": 0.8574,
+          "breakdown": {
+            "recency": 0.857425937166437,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.857425937166437
+          }
+        },
+        {
+          "tidal_id": "418076955",
+          "title": "Checkers",
+          "artist": "Aesop Rock",
+          "album": "Checkers",
+          "bpm": 84,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-05-25T08:58:54.472000+00:00",
+          "score": 0.7685,
+          "breakdown": {
+            "recency": 0.7684735084030517,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7684735084030517
+          }
+        },
+        {
+          "tidal_id": "226009172",
+          "title": "Shivering",
+          "artist": "Illenium",
+          "album": "Shivering",
+          "bpm": 150,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-05-22T20:51:07.001000+00:00",
+          "score": 0.7394,
+          "breakdown": {
+            "recency": 0.7393819050970128,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7393819050970128
+          }
+        },
+        {
+          "tidal_id": "503203210",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 1,
+          "added_at": "2026-03-20T20:49:03.060000+00:00",
+          "score": 0.2802,
+          "breakdown": {
+            "recency": 0.28016715998374003,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.28016715998374003
+          }
+        },
+        {
+          "tidal_id": "16807264",
+          "title": "Astronomy",
+          "artist": "Blue Öyster Cult",
+          "album": "Secret Treaties",
+          "bpm": 89,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-02-06T09:32:11.594000+00:00",
+          "score": 0.1457,
+          "breakdown": {
+            "recency": 0.14565035217000077,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.14565035217000077
+          }
+        },
+        {
+          "tidal_id": "208642967",
+          "title": "Head Mounted Sideways",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 127,
+          "popularity": 43,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:26:30.353000+00:00",
+          "score": 0.1446,
+          "breakdown": {
+            "recency": 0.1446169080884706,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.1446169080884706
+          }
+        },
+        {
+          "tidal_id": "208642965",
+          "title": "Straight Lines",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 149,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:23:40.981000+00:00",
+          "score": 0.1446,
+          "breakdown": {
+            "recency": 0.14461254138867433,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.14461254138867433
+          }
+        },
+        {
+          "tidal_id": "469759803",
+          "title": "TANZNEID",
+          "artist": "Electric Callboy",
+          "album": "TANZNEID",
+          "bpm": 172,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T21:48:11.084000+00:00",
+          "score": 0.1446,
+          "breakdown": {
+            "recency": 0.14455764025486276,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.14455764025486276
+          }
+        },
+        {
+          "tidal_id": "53889126",
+          "title": "Drop Top (feat. Travis Porter)",
+          "artist": "Flosstradamus",
+          "album": "HDYNATION RADIO",
+          "bpm": 140,
+          "popularity": 26,
+          "is_favorite": 1,
+          "added_at": "2026-01-31T03:41:11.843000+00:00",
+          "score": 0.1323,
+          "breakdown": {
+            "recency": 0.13229506573727867,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.13229506573727867
+          }
+        },
+        {
+          "tidal_id": "393615",
+          "title": "Floods",
+          "artist": "Pantera",
+          "album": "The Great Southern Trendkill",
+          "bpm": 123,
+          "popularity": 58,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:55.872000+00:00",
+          "score": 0.1107,
+          "breakdown": {
+            "recency": 0.11066457077249009,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.11066457077249009
+          }
+        },
+        {
+          "tidal_id": "391788",
+          "title": "A New Level",
+          "artist": "Pantera",
+          "album": "Vulgar Display of Power",
+          "bpm": 136,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:54.182000+00:00",
+          "score": 0.1107,
+          "breakdown": {
+            "recency": 0.11066453743027506,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.11066453743027506
+          }
+        },
+        {
+          "tidal_id": "61124458",
+          "title": "Believer",
+          "artist": "Myrath",
+          "album": "Legacy",
+          "bpm": 96,
+          "popularity": 37,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T11:24:01.396000+00:00",
+          "score": 0.1105,
+          "breakdown": {
+            "recency": 0.1105144457493936,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.1105144457493936
+          }
+        },
+        {
+          "tidal_id": "339265833",
+          "title": "Wondering Why",
+          "artist": "The Red Clay Strays",
+          "album": "Moment of Truth",
+          "bpm": 149,
+          "popularity": 73,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T21:42:09.235000+00:00",
+          "score": 0.1079,
+          "breakdown": {
+            "recency": 0.1078726828994699,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.1078726828994699
+          }
+        },
+        {
+          "tidal_id": "346286844",
+          "title": "Warflower",
+          "artist": "The Mayan Factor",
+          "album": "Warflower",
+          "bpm": 94,
+          "popularity": 41,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T00:56:29.101000+00:00",
+          "score": 0.1064,
+          "breakdown": {
+            "recency": 0.10644485988749595,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.10644485988749595
+          }
+        },
+        {
+          "tidal_id": "411781857",
+          "title": "Adam and Eve",
+          "artist": "Novelists",
+          "album": "CODA",
+          "bpm": 100,
+          "popularity": 30,
+          "is_favorite": 1,
+          "added_at": "2025-12-31T23:09:56.325000+00:00",
+          "score": 0.0831,
+          "breakdown": {
+            "recency": 0.08309920022292668,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.08309920022292668
+          }
+        },
+        {
+          "tidal_id": "430783748",
+          "title": "Lachryma",
+          "artist": "Ghost",
+          "album": "Skeletá",
+          "bpm": 111,
+          "popularity": 56,
+          "is_favorite": 1,
+          "added_at": "2025-12-22T22:44:33.401000+00:00",
+          "score": 0.0723,
+          "breakdown": {
+            "recency": 0.07232241701775198,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.07232241701775198
+          }
+        },
+        {
+          "tidal_id": "455128515",
+          "title": "my mind is a mountain",
+          "artist": "Deftones",
+          "album": "private music",
+          "bpm": 109,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2025-12-21T09:37:08.854000+00:00",
+          "score": 0.0706,
+          "breakdown": {
+            "recency": 0.07061963164698312,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.07061963164698312
+          }
+        },
+        {
+          "tidal_id": "212427051",
+          "title": "The Watcher",
+          "artist": "Arch Enemy",
+          "album": "Deceivers",
+          "bpm": 91,
+          "popularity": 46,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:46.884000+00:00",
+          "score": 0.0687,
+          "breakdown": {
+            "recency": 0.06866035066593386,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.06866035066593386
+          }
+        },
+        {
+          "tidal_id": "52028297",
+          "title": "War Eternal",
+          "artist": "Arch Enemy",
+          "album": "War Eternal",
+          "bpm": 155,
+          "popularity": 60,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:34.104000+00:00",
+          "score": 0.0687,
+          "breakdown": {
+            "recency": 0.0686601942303379,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.0686601942303379
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "good",
+        "comment": "Digging the tracks here a lot - but there is some duplication of artists next to each other (Eg. Pantera), and there could be more novelty from older/other styles. But I would enjoy this list all the same.",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=1&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=0&playRankBonus=0&popularity=0&novelty=0&recencyHalfLifeDays=45"
+    },
+    "hl_long": {
+      "ranAt": "2026-06-11T11:19:34.245Z",
+      "appliedWeights": {
+        "recencyAdd": 1,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 0,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 365,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "524730249",
+          "title": "DOOM LOOP",
+          "artist": "PRESIDENT",
+          "album": "DOOM LOOP",
+          "bpm": 105,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-06-08T10:27:14.716000+00:00",
+          "score": 0.9943,
+          "breakdown": {
+            "recency": 0.9942504867194922,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9942504867194922
+          }
+        },
+        {
+          "tidal_id": "453571935",
+          "title": "Reanimation (feat. Guthrie Govan)",
+          "artist": "Karnivool",
+          "album": "IN VERSES",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 1,
+          "added_at": "2026-06-01T11:38:22.751000+00:00",
+          "score": 0.9812,
+          "breakdown": {
+            "recency": 0.9812131846093523,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9812131846093523
+          }
+        },
+        {
+          "tidal_id": "418076955",
+          "title": "Checkers",
+          "artist": "Aesop Rock",
+          "album": "Checkers",
+          "bpm": 84,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-05-25T08:58:54.472000+00:00",
+          "score": 0.9681,
+          "breakdown": {
+            "recency": 0.9680523916613102,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9680523916613102
+          }
+        },
+        {
+          "tidal_id": "226009172",
+          "title": "Shivering",
+          "artist": "Illenium",
+          "album": "Shivering",
+          "bpm": 150,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-05-22T20:51:07.001000+00:00",
+          "score": 0.9635,
+          "breakdown": {
+            "recency": 0.9634574752689657,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.9634574752689657
+          }
+        },
+        {
+          "tidal_id": "503203210",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 1,
+          "added_at": "2026-03-20T20:49:03.060000+00:00",
+          "score": 0.8548,
+          "breakdown": {
+            "recency": 0.8548162423682363,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.8548162423682363
+          }
+        },
+        {
+          "tidal_id": "16807264",
+          "title": "Astronomy",
+          "artist": "Blue Öyster Cult",
+          "album": "Secret Treaties",
+          "bpm": 89,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-02-06T09:32:11.594000+00:00",
+          "score": 0.7886,
+          "breakdown": {
+            "recency": 0.7885805058307099,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7885805058307099
+          }
+        },
+        {
+          "tidal_id": "208642967",
+          "title": "Head Mounted Sideways",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 127,
+          "popularity": 43,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:26:30.353000+00:00",
+          "score": 0.7879,
+          "breakdown": {
+            "recency": 0.7878885221890701,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7878885221890701
+          }
+        },
+        {
+          "tidal_id": "208642965",
+          "title": "Straight Lines",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 149,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:23:40.981000+00:00",
+          "score": 0.7879,
+          "breakdown": {
+            "recency": 0.7878855891055122,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7878855891055122
+          }
+        },
+        {
+          "tidal_id": "469759803",
+          "title": "TANZNEID",
+          "artist": "Electric Callboy",
+          "album": "TANZNEID",
+          "bpm": 172,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T21:48:11.084000+00:00",
+          "score": 0.7878,
+          "breakdown": {
+            "recency": 0.7878487057480663,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7878487057480663
+          }
+        },
+        {
+          "tidal_id": "53889126",
+          "title": "Drop Top (feat. Travis Porter)",
+          "artist": "Flosstradamus",
+          "album": "HDYNATION RADIO",
+          "bpm": 140,
+          "popularity": 26,
+          "is_favorite": 1,
+          "added_at": "2026-01-31T03:41:11.843000+00:00",
+          "score": 0.7793,
+          "breakdown": {
+            "recency": 0.7792854554188657,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7792854554188657
+          }
+        },
+        {
+          "tidal_id": "393615",
+          "title": "Floods",
+          "artist": "Pantera",
+          "album": "The Great Southern Trendkill",
+          "bpm": 123,
+          "popularity": 58,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:55.872000+00:00",
+          "score": 0.7623,
+          "breakdown": {
+            "recency": 0.7623202490255099,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7623202490255099
+          }
+        },
+        {
+          "tidal_id": "391788",
+          "title": "A New Level",
+          "artist": "Pantera",
+          "album": "Vulgar Display of Power",
+          "bpm": 136,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:54.182000+00:00",
+          "score": 0.7623,
+          "breakdown": {
+            "recency": 0.762320220708786,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.762320220708786
+          }
+        },
+        {
+          "tidal_id": "61124458",
+          "title": "Believer",
+          "artist": "Myrath",
+          "album": "Legacy",
+          "bpm": 96,
+          "popularity": 37,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T11:24:01.396000+00:00",
+          "score": 0.7622,
+          "breakdown": {
+            "recency": 0.7621926756666284,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7621926756666284
+          }
+        },
+        {
+          "tidal_id": "339265833",
+          "title": "Wondering Why",
+          "artist": "The Red Clay Strays",
+          "album": "Moment of Truth",
+          "bpm": 149,
+          "popularity": 73,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T21:42:09.235000+00:00",
+          "score": 0.7599,
+          "breakdown": {
+            "recency": 0.7599225242491435,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7599225242491435
+          }
+        },
+        {
+          "tidal_id": "346286844",
+          "title": "Warflower",
+          "artist": "The Mayan Factor",
+          "album": "Warflower",
+          "bpm": 94,
+          "popularity": 41,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T00:56:29.101000+00:00",
+          "score": 0.7587,
+          "breakdown": {
+            "recency": 0.7586751827467918,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7586751827467918
+          }
+        },
+        {
+          "tidal_id": "411781857",
+          "title": "Adam and Eve",
+          "artist": "Novelists",
+          "album": "CODA",
+          "bpm": 100,
+          "popularity": 30,
+          "is_favorite": 1,
+          "added_at": "2025-12-31T23:09:56.325000+00:00",
+          "score": 0.7359,
+          "breakdown": {
+            "recency": 0.7358664785636186,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7358664785636186
+          }
+        },
+        {
+          "tidal_id": "430783748",
+          "title": "Lachryma",
+          "artist": "Ghost",
+          "album": "Skeletá",
+          "bpm": 111,
+          "popularity": 56,
+          "is_favorite": 1,
+          "added_at": "2025-12-22T22:44:33.401000+00:00",
+          "score": 0.7234,
+          "breakdown": {
+            "recency": 0.7233722177972378,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7233722177972378
+          }
+        },
+        {
+          "tidal_id": "455128515",
+          "title": "my mind is a mountain",
+          "artist": "Deftones",
+          "album": "private music",
+          "bpm": 109,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2025-12-21T09:37:08.854000+00:00",
+          "score": 0.7213,
+          "breakdown": {
+            "recency": 0.721250467752923,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.721250467752923
+          }
+        },
+        {
+          "tidal_id": "212427051",
+          "title": "The Watcher",
+          "artist": "Arch Enemy",
+          "album": "Deceivers",
+          "bpm": 91,
+          "popularity": 46,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:46.884000+00:00",
+          "score": 0.7188,
+          "breakdown": {
+            "recency": 0.7187528878725251,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7187528878725251
+          }
+        },
+        {
+          "tidal_id": "52028297",
+          "title": "War Eternal",
+          "artist": "Arch Enemy",
+          "album": "War Eternal",
+          "bpm": 155,
+          "popularity": 60,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:34.104000+00:00",
+          "score": 0.7188,
+          "breakdown": {
+            "recency": 0.7187526859758115,
+            "favorite": 0,
+            "play": 0,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 0.7187526859758115
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "mixed",
+        "comment": "This doesn't feel any different thank #7 - same commetary applies.",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=1&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=0&playRankBonus=0&popularity=0&novelty=0&recencyHalfLifeDays=365"
+    },
+    "tau_sharp": {
+      "ranAt": "2026-06-11T11:19:58.855Z",
+      "appliedWeights": {
+        "recencyAdd": 0,
+        "favoriteBoost": 0,
+        "playAlltime": 0,
+        "playYearly": 0,
+        "playMonthly": 1,
+        "playRankBonus": 0,
+        "popularity": 0,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 1
+      },
+      "results": [
+        {
+          "tidal_id": "492095926",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "further eden",
+          "bpm": null,
+          "popularity": 44,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.5032,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.5032147244080551,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.5032147244080551
+          }
+        },
+        {
+          "tidal_id": "503203209",
+          "title": "stelliform",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.5032,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.5032147244080551,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.5032147244080551
+          }
+        },
+        {
+          "tidal_id": "401317291",
+          "title": "hey now",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 71,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.3679,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.3678794411714423,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.3678794411714423
+          }
+        },
+        {
+          "tidal_id": "401317290",
+          "title": "man at the garden",
+          "artist": "Kendrick Lamar",
+          "album": "GNX",
+          "bpm": null,
+          "popularity": 71,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1.0092,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1.0092166991757516,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1.0092166991757516
+          }
+        },
+        {
+          "tidal_id": "116740447",
+          "title": "UP",
+          "artist": "EARTHGANG",
+          "album": "Mirrorland",
+          "bpm": null,
+          "popularity": 52,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "182340574",
+          "title": "Fear and Loathing in Los Angeles",
+          "artist": "Caskey",
+          "album": "Fine Art",
+          "bpm": null,
+          "popularity": 24,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "33826097",
+          "title": "Freak On a Leash",
+          "artist": "Korn",
+          "album": "The Essential Korn",
+          "bpm": null,
+          "popularity": 81,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "397767684",
+          "title": "A Martyr Left Alive",
+          "artist": "Counterparts",
+          "album": "Heaven Let Them Die",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "414984157",
+          "title": "Day One",
+          "artist": "Bon Iver",
+          "album": "SABLE, fABLE",
+          "bpm": null,
+          "popularity": 63,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "420319213",
+          "title": "Whiplash",
+          "artist": "Architects",
+          "album": "The Sky, The Earth & All Between",
+          "bpm": null,
+          "popularity": 62,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "427555495",
+          "title": "Caramel",
+          "artist": "Sleep Token",
+          "album": "Caramel",
+          "bpm": null,
+          "popularity": 69,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "434030392",
+          "title": "Look To Windward",
+          "artist": "Sleep Token",
+          "album": "Even In Arcadia",
+          "bpm": null,
+          "popularity": 67,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "449896033",
+          "title": "Runaways (feat. Bonnie McKee)",
+          "artist": "The Midnight",
+          "album": "Runaways (feat. Bonnie McKee)",
+          "bpm": null,
+          "popularity": 38,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "452813639",
+          "title": "Useless (Without You)",
+          "artist": "Elmiene",
+          "album": "Useless (Without You)",
+          "bpm": null,
+          "popularity": 40,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "464381585",
+          "title": "Submerged",
+          "artist": "Gaerea",
+          "album": "Loss",
+          "bpm": null,
+          "popularity": 46,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "470154397",
+          "title": "Stuck In My Head",
+          "artist": "Adi Oasis",
+          "album": "Silver Lining",
+          "bpm": null,
+          "popularity": 34,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "66035605",
+          "title": "It's On!",
+          "artist": "Korn",
+          "album": "Follow The Leader",
+          "bpm": null,
+          "popularity": 67,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "77699831",
+          "title": "Ni**as In Paris",
+          "artist": "JAŸ-Z",
+          "album": "Watch The Throne (Deluxe)",
+          "bpm": null,
+          "popularity": 86,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "79237708",
+          "title": "I Don't Fuck With You",
+          "artist": "Big Sean",
+          "album": "Dark Sky Paradise",
+          "bpm": null,
+          "popularity": 64,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        },
+        {
+          "tidal_id": "82477175",
+          "title": "No Limit (feat. A$AP Rocky & Cardi B)",
+          "artist": "G-Eazy",
+          "album": "The Beautiful & Damned",
+          "bpm": null,
+          "popularity": 74,
+          "is_favorite": 0,
+          "added_at": null,
+          "score": 1,
+          "breakdown": {
+            "recency": 0,
+            "favorite": 0,
+            "play": 1,
+            "popularity": 0,
+            "novelty": 0,
+            "total": 1
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "bad",
+        "comment": "I like the diversity of styles of content, but it doesn't always hit on the tracks I would pick (eg. G-Eazy — No Limit (feat. A$AP Rocky & Cardi B) and Big Sean — I Don't Fuck With You I wouldn't want to listen to)",
+        "trackFlags": {}
+      },
+      "params": "recencyAdd=0&favoriteBoost=0&playAlltime=0&playYearly=0&playMonthly=1&playRankBonus=0&popularity=0&novelty=0&monthlyDecayTau=1"
+    },
+    "favs_only": {
+      "ranAt": "2026-06-11T11:20:43.934Z",
+      "appliedWeights": {
+        "recencyAdd": 1,
+        "favoriteBoost": 0.5,
+        "playAlltime": 1.2,
+        "playYearly": 0.8,
+        "playMonthly": 1,
+        "playRankBonus": 0.3,
+        "popularity": 0.25,
+        "novelty": 0,
+        "recencyHalfLifeDays": 180,
+        "recencyRankHalfLife": 150,
+        "monthlyDecayTau": 3
+      },
+      "results": [
+        {
+          "tidal_id": "524730249",
+          "title": "DOOM LOOP",
+          "artist": "PRESIDENT",
+          "album": "DOOM LOOP",
+          "bpm": 105,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-06-08T10:27:14.716000+00:00",
+          "score": 1.6084,
+          "breakdown": {
+            "recency": 0.9883726400234162,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.12,
+            "novelty": 0,
+            "total": 1.6083726400234162
+          }
+        },
+        {
+          "tidal_id": "453571935",
+          "title": "Reanimation (feat. Guthrie Govan)",
+          "artist": "Karnivool",
+          "album": "IN VERSES",
+          "bpm": null,
+          "popularity": 49,
+          "is_favorite": 1,
+          "added_at": "2026-06-01T11:38:22.751000+00:00",
+          "score": 1.5848,
+          "breakdown": {
+            "recency": 0.9622692467548225,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1225,
+            "novelty": 0,
+            "total": 1.5847692467548224
+          }
+        },
+        {
+          "tidal_id": "226009172",
+          "title": "Shivering",
+          "artist": "Illenium",
+          "album": "Shivering",
+          "bpm": 150,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-05-22T20:51:07.001000+00:00",
+          "score": 1.5573,
+          "breakdown": {
+            "recency": 0.9272880362973034,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.13,
+            "novelty": 0,
+            "total": 1.5572880362973032
+          }
+        },
+        {
+          "tidal_id": "418076955",
+          "title": "Checkers",
+          "artist": "Aesop Rock",
+          "album": "Checkers",
+          "bpm": 84,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-05-25T08:58:54.472000+00:00",
+          "score": 1.5463,
+          "breakdown": {
+            "recency": 0.936277695088583,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.11,
+            "novelty": 0,
+            "total": 1.5462776950885833
+          }
+        },
+        {
+          "tidal_id": "503203210",
+          "title": "further eden",
+          "artist": "ERRA",
+          "album": "silence outlives the earth",
+          "bpm": null,
+          "popularity": 50,
+          "is_favorite": 1,
+          "added_at": "2026-03-20T20:49:03.060000+00:00",
+          "score": 1.3525,
+          "breakdown": {
+            "recency": 0.7275314285490659,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.125,
+            "novelty": 0,
+            "total": 1.352531428549066
+          }
+        },
+        {
+          "tidal_id": "391789",
+          "title": "Walk",
+          "artist": "Pantera",
+          "album": "Vulgar Display of Power",
+          "bpm": 118,
+          "popularity": 81,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:35.841000+00:00",
+          "score": 1.2793,
+          "breakdown": {
+            "recency": 0.576765421411635,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.2025,
+            "novelty": 0,
+            "total": 1.279265421411635
+          }
+        },
+        {
+          "tidal_id": "391813",
+          "title": "Cowboys from Hell",
+          "artist": "Pantera",
+          "album": "Cowboys from Hell",
+          "bpm": 115,
+          "popularity": 77,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T13:30:37.006000+00:00",
+          "score": 1.2693,
+          "breakdown": {
+            "recency": 0.5767654513593964,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1925,
+            "novelty": 0,
+            "total": 1.2692654513593964
+          }
+        },
+        {
+          "tidal_id": "339265833",
+          "title": "Wondering Why",
+          "artist": "The Red Clay Strays",
+          "album": "Moment of Truth",
+          "bpm": 149,
+          "popularity": 73,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T21:42:09.235000+00:00",
+          "score": 1.2556,
+          "breakdown": {
+            "recency": 0.5730932881698376,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1825,
+            "novelty": 0,
+            "total": 1.2555932881698375
+          }
+        },
+        {
+          "tidal_id": "16807264",
+          "title": "Astronomy",
+          "artist": "Blue Öyster Cult",
+          "album": "Secret Treaties",
+          "bpm": 89,
+          "popularity": 52,
+          "is_favorite": 1,
+          "added_at": "2026-02-06T09:32:11.594000+00:00",
+          "score": 1.2478,
+          "breakdown": {
+            "recency": 0.6177678983823452,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.13,
+            "novelty": 0,
+            "total": 1.247767898382345
+          }
+        },
+        {
+          "tidal_id": "469759803",
+          "title": "TANZNEID",
+          "artist": "Electric Callboy",
+          "album": "TANZNEID",
+          "bpm": 172,
+          "popularity": 48,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T21:48:11.084000+00:00",
+          "score": 1.2366,
+          "breakdown": {
+            "recency": 0.6166059550275808,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.12,
+            "novelty": 0,
+            "total": 1.236605955027581
+          }
+        },
+        {
+          "tidal_id": "208642965",
+          "title": "Straight Lines",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 149,
+          "popularity": 44,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:23:40.981000+00:00",
+          "score": 1.2267,
+          "breakdown": {
+            "recency": 0.6166644914456387,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.11,
+            "novelty": 0,
+            "total": 1.2266644914456388
+          }
+        },
+        {
+          "tidal_id": "208642967",
+          "title": "Head Mounted Sideways",
+          "artist": "VOLA",
+          "album": "Witness",
+          "bpm": 127,
+          "popularity": 43,
+          "is_favorite": 1,
+          "added_at": "2026-02-05T22:26:30.353000+00:00",
+          "score": 1.2242,
+          "breakdown": {
+            "recency": 0.6166691465713149,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1075,
+            "novelty": 0,
+            "total": 1.224169146571315
+          }
+        },
+        {
+          "tidal_id": "346286844",
+          "title": "Warflower",
+          "artist": "The Mayan Factor",
+          "album": "Warflower",
+          "bpm": 94,
+          "popularity": 41,
+          "is_favorite": 1,
+          "added_at": "2026-01-17T00:56:29.101000+00:00",
+          "score": 1.1737,
+          "breakdown": {
+            "recency": 0.5711874094522821,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1025,
+            "novelty": 0,
+            "total": 1.173687409452282
+          }
+        },
+        {
+          "tidal_id": "61124458",
+          "title": "Believer",
+          "artist": "Myrath",
+          "album": "Legacy",
+          "bpm": 96,
+          "popularity": 37,
+          "is_favorite": 1,
+          "added_at": "2026-01-19T11:24:01.396000+00:00",
+          "score": 1.1691,
+          "breakdown": {
+            "recency": 0.5765702298800525,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.0925,
+            "novelty": 0,
+            "total": 1.1690702298800526
+          }
+        },
+        {
+          "tidal_id": "53889126",
+          "title": "Drop Top (feat. Travis Porter)",
+          "artist": "Flosstradamus",
+          "album": "HDYNATION RADIO",
+          "bpm": 140,
+          "popularity": 26,
+          "is_favorite": 1,
+          "added_at": "2026-01-31T03:41:11.843000+00:00",
+          "score": 1.1681,
+          "breakdown": {
+            "recency": 0.6030917169419401,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.065,
+            "novelty": 0,
+            "total": 1.16809171694194
+          }
+        },
+        {
+          "tidal_id": "455128515",
+          "title": "my mind is a mountain",
+          "artist": "Deftones",
+          "album": "private music",
+          "bpm": 109,
+          "popularity": 61,
+          "is_favorite": 1,
+          "added_at": "2025-12-21T09:37:08.854000+00:00",
+          "score": 1.168,
+          "breakdown": {
+            "recency": 0.5155001715536301,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.1525,
+            "novelty": 0,
+            "total": 1.1680001715536303
+          }
+        },
+        {
+          "tidal_id": "52028297",
+          "title": "War Eternal",
+          "artist": "Arch Enemy",
+          "album": "War Eternal",
+          "bpm": 155,
+          "popularity": 60,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:46:34.104000+00:00",
+          "score": 1.1619,
+          "breakdown": {
+            "recency": 0.511886538939081,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.15,
+            "novelty": 0,
+            "total": 1.161886538939081
+          }
+        },
+        {
+          "tidal_id": "703989",
+          "title": "My Last Serenade",
+          "artist": "Killswitch Engage",
+          "album": "Alive or Just Breathing",
+          "bpm": 118,
+          "popularity": 60,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:39:31.355000+00:00",
+          "score": 1.1619,
+          "breakdown": {
+            "recency": 0.5118768941791936,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.15,
+            "novelty": 0,
+            "total": 1.1618768941791935
+          }
+        },
+        {
+          "tidal_id": "430783748",
+          "title": "Lachryma",
+          "artist": "Ghost",
+          "album": "Skeletá",
+          "bpm": 111,
+          "popularity": 56,
+          "is_favorite": 1,
+          "added_at": "2025-12-22T22:44:33.401000+00:00",
+          "score": 1.1586,
+          "breakdown": {
+            "recency": 0.5185799065517607,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.14,
+            "novelty": 0,
+            "total": 1.1585799065517608
+          }
+        },
+        {
+          "tidal_id": "19551692",
+          "title": "In Due Time",
+          "artist": "Killswitch Engage",
+          "album": "Disarm the Descent (Special Edition)",
+          "bpm": 172,
+          "popularity": 56,
+          "is_favorite": 1,
+          "added_at": "2025-12-19T13:39:35.365000+00:00",
+          "score": 1.1519,
+          "breakdown": {
+            "recency": 0.5118769856640374,
+            "favorite": 0.5,
+            "play": 0,
+            "popularity": 0.14,
+            "novelty": 0,
+            "total": 1.1518769856640376
+          }
+        }
+      ],
+      "feedback": {
+        "verdict": "mixed",
+        "comment": "Good mix of new/old - strong diversity other than tiny bits of duplication (eg. Pantera). Could use more style diversity of softer styles and harder styles though.",
+        "trackFlags": {}
+      },
+      "params": "favoritesOnly=1&novelty=0"
+    }
+  },
+  "updatedAt": "2026-06-11T11:21:19.703Z"
+}

@@ -2,7 +2,10 @@ import { NextRequest } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, RUN_TOOLS, buildRunSystemPrompt, parseTracksFromMessage } from '@/lib/claude'
 import { getFavoriteTracks, getBatchRecommendations } from '@/lib/tidal'
-import { dbExists, getTracksByBpmRange, getDiscoveryTracks } from '@/lib/db'
+import { dbExists, getDiscoveryTracks, getTracksByIds, getGenreMap, getFeatureVectorMap, logFeedback } from '@/lib/db'
+import { recommend } from '@/lib/recommender'
+import { sequenceTidalTracks } from '@/lib/sequencer'
+import type { SeqAudio } from '@/lib/sequencer'
 import type { RunConfig } from '@/types'
 import type { LibraryTrack } from '@/lib/db'
 
@@ -63,6 +66,15 @@ export async function POST(req: NextRequest) {
     prompt?: string
   }
 
+  // Log the previous round's accept/reject feedback (Phase 5 foundation).
+  if (dbExists() && (acceptedIds.length > 0 || rejectedIds.length > 0)) {
+    const context = `run:${config.label}`
+    logFeedback([
+      ...acceptedIds.map((id) => ({ track_id: id, action: 'accept' as const, context })),
+      ...rejectedIds.map((id) => ({ track_id: id, action: 'reject' as const, context })),
+    ])
+  }
+
   const coverMap = new Map<string, string>()
   const urlMap = new Map<string, string>()
 
@@ -81,14 +93,19 @@ export async function POST(req: NextRequest) {
           const halfBpm = Math.round(config.targetBpm / 2)
           const twoThirdsBpm = Math.round((config.targetBpm * 2) / 3)
           const tol = 8
-          const seen = new Set<string>()
-          for (const t of [
-            ...getTracksByBpmRange(halfBpm - tol, halfBpm + tol),
-            ...getTracksByBpmRange(twoThirdsBpm - tol, twoThirdsBpm + tol),
-            ...getTracksByBpmRange(config.targetBpm - tol, config.targetBpm + tol),
-          ]) {
-            if (!seen.has(t.id)) { seen.add(t.id); libraryPool.push(t) }
-          }
+          // Rank the BPM-compatible library by the tuned recency/frecency recommender
+          // (favourites-spine, recent-add tilt, play reinforcement) rather than popularity.
+          const ranked = recommend({
+            bpmRanges: [
+              [halfBpm - tol, halfBpm + tol],
+              [twoThirdsBpm - tol, twoThirdsBpm + tol],
+              [config.targetBpm - tol, config.targetBpm + tol],
+            ],
+            limit: 120,
+            maxPerArtist: 3,
+          })
+          libraryPool = ranked.map((s) => s.track)
+          const seen = new Set(libraryPool.map((t) => t.id))
           discoveryPool = getDiscoveryTracks().filter(
             (t) => !seen.has(t.id) && t.bpm != null &&
               (Math.abs(t.bpm - halfBpm) <= tol ||
@@ -142,7 +159,14 @@ export async function POST(req: NextRequest) {
                   cover_url: t.cover_url || coverMap.get(t.tidal_id),
                   tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
                 }))
-                send({ type: 'tracks', tracks: enriched })
+                // DJ-sequence the final list: smooth tempo/key transitions, spaced artists.
+                const audio = new Map<string, SeqAudio>(
+                  getTracksByIds(enriched.map((t) => t.tidal_id)).map((r) => [
+                    r.id,
+                    { bpm: r.bpm, music_key: r.music_key, key_scale: r.key_scale },
+                  ])
+                )
+                send({ type: 'tracks', tracks: sequenceTidalTracks(enriched, audio, { artistGap: 3 }, getGenreMap(), getFeatureVectorMap()) })
                 tracksEmitted = true
               }
             }
