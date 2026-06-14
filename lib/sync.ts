@@ -72,6 +72,9 @@ function processTrack(raw: RawTrack): 'inserted' | 'updated' {
     release_date: raw.release_date,
     music_key: raw.key,
     key_scale: raw.key_scale,
+    album_id: raw.album_id,
+    artist_id: raw.artist_id,
+    copyright: raw.copyright,
   })
 }
 

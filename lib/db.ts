@@ -23,6 +23,9 @@ export interface LibraryTrack {
   release_date: string | null
   music_key: string | null
   key_scale: string | null
+  album_id: string | null
+  artist_id: string | null
+  copyright: string | null
   is_favorite: number
 }
 
@@ -92,6 +95,9 @@ function initSchema(db: Database.Database) {
       release_date TEXT,
       music_key TEXT,
       key_scale TEXT,
+      album_id TEXT,
+      artist_id TEXT,
+      copyright TEXT,
       synced_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -202,6 +208,11 @@ function migrateAddedColumns(db: Database.Database) {
   const thave = new Set(tcols.map((c) => c.name))
   if (!thave.has('music_key')) db.exec('ALTER TABLE tracks ADD COLUMN music_key TEXT')
   if (!thave.has('key_scale')) db.exec('ALTER TABLE tracks ADD COLUMN key_scale TEXT')
+  // Extended metadata from the ibeal backend (cover art + relational IDs). These
+  // back richer UI (album art) and future artist/album-graph features.
+  if (!thave.has('album_id')) db.exec('ALTER TABLE tracks ADD COLUMN album_id TEXT')
+  if (!thave.has('artist_id')) db.exec('ALTER TABLE tracks ADD COLUMN artist_id TEXT')
+  if (!thave.has('copyright')) db.exec('ALTER TABLE tracks ADD COLUMN copyright TEXT')
 }
 
 export function upsertTrack(track: {
@@ -209,15 +220,16 @@ export function upsertTrack(track: {
   duration?: number | null; bpm?: number | null; cover_url?: string | null;
   tidal_url?: string | null; isrc?: string | null; popularity?: number | null;
   explicit?: boolean | null; audio_quality?: string | null; release_date?: string | null;
-  music_key?: string | null; key_scale?: string | null
+  music_key?: string | null; key_scale?: string | null;
+  album_id?: string | null; artist_id?: string | null; copyright?: string | null
 }): 'inserted' | 'updated' {
   const db = getDb()
   const id = normalizeId(track.id)
   const existing = db.prepare('SELECT id FROM tracks WHERE id = ?').get(id)
   db.prepare(`
     INSERT OR REPLACE INTO tracks
-      (id, title, artist, album, duration, bpm, cover_url, tidal_url, isrc, popularity, explicit, audio_quality, release_date, music_key, key_scale, synced_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+      (id, title, artist, album, duration, bpm, cover_url, tidal_url, isrc, popularity, explicit, audio_quality, release_date, music_key, key_scale, album_id, artist_id, copyright, synced_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
   `).run(
     id, track.title, track.artist,
     track.album ?? null, track.duration ?? null, track.bpm ?? null,
@@ -225,7 +237,8 @@ export function upsertTrack(track: {
     track.isrc ?? null, track.popularity ?? null,
     track.explicit ? 1 : 0,
     track.audio_quality ?? null, track.release_date ?? null,
-    track.music_key ?? null, track.key_scale ?? null
+    track.music_key ?? null, track.key_scale ?? null,
+    track.album_id ?? null, track.artist_id ?? null, track.copyright ?? null
   )
   return existing ? 'updated' : 'inserted'
 }

@@ -179,6 +179,10 @@ export interface RawTrack {
   audio_quality?: string
   key?: string
   key_scale?: string
+  album_id?: string
+  artist_id?: string
+  artist_ids?: string[]
+  copyright?: string
 }
 
 export interface HistoryMix {
