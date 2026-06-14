@@ -102,7 +102,10 @@ export async function POST(req: NextRequest) {
               [config.targetBpm - tol, config.targetBpm + tol],
             ],
             limit: 120,
-            maxPerArtist: 3,
+            // No per-artist count cap: an artist may appear multiple times in a
+            // run. Clustering is prevented by the DJ-sequencer spacing same-artist
+            // tracks apart (artistGap below), not by restricting the pool.
+            maxPerArtist: Infinity,
           })
           libraryPool = ranked.map((s) => s.track)
           const seen = new Set(libraryPool.map((t) => t.id))

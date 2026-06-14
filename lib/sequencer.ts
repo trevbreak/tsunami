@@ -138,8 +138,11 @@ export function sequence<T extends SeqTrack>(tracks: T[], opts: SequenceOptions<
     }
 
     const cur = tracks[curIdx]
+    const curArtist = cur.artist.toLowerCase()
     let best = -1
     let bestCost = Infinity
+    let nonAdjacent = -1
+    let nonAdjacentCost = Infinity
     let relaxed = -1
     let relaxedCost = Infinity
 
@@ -149,6 +152,11 @@ export function sequence<T extends SeqTrack>(tracks: T[], opts: SequenceOptions<
       if (cost < relaxedCost) {
         relaxedCost = cost
         relaxed = j
+      }
+      // Lowest-cost candidate that isn't by the immediately-previous artist.
+      if (cand.artist.toLowerCase() !== curArtist && cost < nonAdjacentCost) {
+        nonAdjacentCost = cost
+        nonAdjacent = j
       }
       const artistOk = !recentArtists.includes(cand.artist.toLowerCase())
       const styleOk = !(
@@ -163,7 +171,9 @@ export function sequence<T extends SeqTrack>(tracks: T[], opts: SequenceOptions<
       }
     }
 
-    const pick = best >= 0 ? best : relaxed // relax constraints only if forced
+    // Prefer full artist spacing; if forced to relax, still never place two tracks
+    // by the same artist back-to-back unless every remaining track is that artist.
+    const pick = best >= 0 ? best : nonAdjacent >= 0 ? nonAdjacent : relaxed
     order.push(pick)
     remaining.delete(pick)
     curIdx = pick
