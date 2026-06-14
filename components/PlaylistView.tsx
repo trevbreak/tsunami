@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import TrackCard from './TrackCard'
 import SwapAlternatives from './SwapAlternatives'
 import { MOOD_TITLES, monthYear } from '@/lib/playlistName'
+import { useDominantColor } from '@/lib/useDominantColor'
 import type { PlaylistTrack, Mood, Track } from '@/types'
 
 interface Props {
@@ -58,6 +59,11 @@ export default function PlaylistView({
   const pending = tracks.filter((t) => t.status === 'pending')
   const hasAccepted = accepted.length > 0
 
+  // Cinematic hero: the playlist takes on the colour of its cover art.
+  const heroCover = visible.find((t) => t.cover_url)?.cover_url
+  const accent = useDominantColor(heroCover) ?? '#2dd4bf'
+  const [heroImgError, setHeroImgError] = useState(false)
+
   const totalDurationSec = tracks
     .filter((t) => t.status !== 'rejected' && t.duration)
     .reduce((sum, t) => sum + (t.duration ?? 0), 0)
@@ -73,13 +79,33 @@ export default function PlaylistView({
 
   return (
     <div className="flex flex-col gap-4" style={{ animation: 'springIn 0.35s ease both' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="min-w-0">
-            <label className="block text-[10px] font-medium uppercase tracking-wider text-zinc-600">
-              Playlist name
-            </label>
+      {/* Cinematic hero — colour washes in from the cover art */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/10">
+        {/* accent wash + dark veil */}
+        <div
+          className="absolute inset-0 transition-[background] duration-700"
+          style={{ background: `radial-gradient(120% 140% at 0% 0%, ${accent}, transparent 60%), radial-gradient(120% 120% at 100% 0%, ${accent}, transparent 70%)` }}
+        />
+        <div className="absolute inset-0 bg-zinc-950/82" />
+
+        <div className="relative flex items-end gap-4 p-4 sm:gap-5 sm:p-5">
+          {/* Cover */}
+          <div
+            className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl sm:h-32 sm:w-32"
+            style={{ boxShadow: `0 18px 50px -16px ${accent}` }}
+          >
+            {heroCover && !heroImgError ? (
+              <img src={heroCover} alt="" className="h-full w-full object-cover" onError={() => setHeroImgError(true)} />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-700 to-zinc-900 text-3xl">🌊</div>
+            )}
+          </div>
+
+          {/* Meta */}
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em]" style={{ color: accent }}>
+              {saveLabel ? 'Enhancing' : 'Playlist'}
+            </span>
             {editingTitle ? (
               <input
                 autoFocus
@@ -88,66 +114,68 @@ export default function PlaylistView({
                 onBlur={() => setEditingTitle(false)}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === 'Escape') setEditingTitle(false) }}
                 placeholder="Name your playlist…"
-                className="mt-0.5 w-72 max-w-full rounded-md border border-zinc-700 bg-zinc-900 px-2 py-1 text-base font-semibold text-white placeholder-zinc-600 focus:border-teal-400 focus:outline-none"
+                className="mt-1 block w-full max-w-md rounded-md border border-white/20 bg-black/30 px-2 py-1 text-2xl font-extrabold tracking-tight text-white placeholder-zinc-500 focus:border-white/50 focus:outline-none sm:text-3xl"
               />
             ) : (
               <button
                 onClick={() => setEditingTitle(true)}
-                className="group/title mt-0.5 flex items-center gap-1.5 rounded-md px-1 -mx-1 py-0.5 text-left text-base font-semibold text-white transition-colors hover:bg-zinc-800/60"
+                className="group/title mt-0.5 flex items-center gap-2 rounded-md -mx-1 px-1 py-0.5 text-left text-2xl font-extrabold tracking-tight text-white transition-colors hover:bg-white/5 sm:text-3xl"
                 title="Click to rename before saving"
               >
                 <span className="truncate">{title}</span>
-                <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3 shrink-0 text-zinc-600 transition-colors group-hover/title:text-teal-400">
-                  <path d="M11.5 1.5l3 3L5 14l-3.5.5L2 11l9.5-9.5zM10 3l3 3" stroke="currentColor" strokeWidth="1.2" fill="none" />
+                <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0 text-white/40 transition-colors group-hover/title:text-white" fill="none" stroke="currentColor" strokeWidth="1.3">
+                  <path d="M11.5 1.5l3 3L5 14l-3.5.5L2 11l9.5-9.5zM10 3l3 3" />
                 </svg>
               </button>
             )}
-            <p className="mt-1 text-xs text-zinc-500">
-              {accepted.length} confirmed · {pending.length} pending
-              {durationDisplay && <span> · {durationDisplay}</span>}
+            <p className="mt-1.5 text-xs text-zinc-300/90">
+              <span className="font-semibold text-white">{accepted.length}</span> confirmed · {pending.length} pending
+              {durationDisplay && <span> · <span className="font-semibold text-white">{durationDisplay}</span></span>}
             </p>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          {pending.length > 0 && (
-            <button
-              onClick={acceptAll}
-              className="text-xs text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-500 rounded-lg px-3 py-1.5 transition-colors"
-            >
-              Accept all
-            </button>
-          )}
-          {savedUrl ? (
-            <a
-              href={savedUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-600 transition-colors"
-            >
-              <span>✓</span> Open in TIDAL
-            </a>
-          ) : (
-            <button
-              onClick={() => onSave(title)}
-              disabled={isSaving || !hasAccepted}
-              className="flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-teal-500 disabled:opacity-40 transition-colors"
-            >
-              {isSaving ? (
-                <>
-                  <span className="h-3 w-3 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  Saving…
-                </>
+            {/* Actions */}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {savedUrl ? (
+                <a
+                  href={savedUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-500 px-3.5 py-2 text-xs font-bold text-emerald-950 transition-transform hover:scale-[1.03]"
+                >
+                  <span>✓</span> Open in TIDAL
+                </a>
               ) : (
-                <>
-                  <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3">
-                    <path d="M2 14h12V6H2v8zM6 2v3h4V2H6z" />
-                  </svg>
-                  {saveLabel ?? 'Save to TIDAL'}
-                </>
+                <button
+                  onClick={() => onSave(title)}
+                  disabled={isSaving || !hasAccepted}
+                  className="flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-bold text-black transition-transform hover:scale-[1.03] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+                  style={{ background: hasAccepted ? accent : '#3f3f46', color: hasAccepted ? '#08110f' : '#a1a1aa' }}
+                >
+                  {isSaving ? (
+                    <>
+                      <span className="h-3 w-3 rounded-full border-2 border-black/30 border-t-black animate-spin" />
+                      Saving…
+                    </>
+                  ) : (
+                    <>
+                      <svg viewBox="0 0 16 16" fill="currentColor" className="h-3 w-3">
+                        <path d="M2 14h12V6H2v8zM6 2v3h4V2H6z" />
+                      </svg>
+                      {saveLabel ?? 'Save to TIDAL'}
+                    </>
+                  )}
+                </button>
               )}
-            </button>
-          )}
+              {pending.length > 0 && (
+                <button
+                  onClick={acceptAll}
+                  className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-200 transition-colors hover:bg-white/10"
+                >
+                  Accept all
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tsunami — Tactile / Hardware-instrument direction</title>
+<style>
+  :root{
+    --or:#ff5b00; --red:#e23b2e; --blue:#2f6df6; --green:#19c37d; --white:#f3f1ea;
+    --panel:#1c1d22; --panel2:#26282f; --ink:#e9e8e3; --screen:#0c1410;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:#0a0a0c; color:var(--ink);
+    font-family:"SFMono-Regular",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    padding:28px; display:flex; justify-content:center;
+  }
+  .frame{width:860px;max-width:100%;}
+  .cap{color:#7c7c88;font-size:12px;margin-bottom:14px;}
+  .device{
+    border-radius:22px; padding:22px;
+    background:linear-gradient(180deg,#2a2c33,#16171b);
+    border:1px solid #3a3c44;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 30px 60px -20px #000;
+  }
+  .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .logo{display:flex;align-items:center;gap:10px;letter-spacing:0.18em;font-size:13px;text-transform:uppercase;color:#cfcdc6;}
+  .logo b{background:var(--or);color:#1a1205;padding:2px 7px;border-radius:5px;letter-spacing:0.05em;}
+  .mode-leds{display:flex;gap:8px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#83858d;}
+  .led{display:flex;align-items:center;gap:5px;}
+  .led i{width:8px;height:8px;border-radius:50%;background:#43454d;display:inline-block;}
+  .led.on i{background:var(--or);box-shadow:0 0 8px var(--or);} .led.on{color:#e9e8e3;}
+
+  .body{display:grid;grid-template-columns:1.05fr 1fr;gap:20px;}
+
+  /* SCREEN */
+  .screen{
+    background:
+      repeating-linear-gradient(0deg, rgba(25,195,125,0.05) 0 2px, transparent 2px 4px),
+      var(--screen);
+    border:1px solid #0a3a2a; border-radius:12px; padding:14px 16px;
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.7);
+  }
+  .scr-title{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px dashed rgba(25,195,125,0.3);padding-bottom:8px;}
+  .scr-title .nm{color:#3df0a6;font-size:16px;letter-spacing:0.02em;}
+  .scr-title .nm .ed{color:#1a7a55;font-size:12px;margin-left:6px;}
+  .scr-title .bpm{color:var(--or);font-size:13px;text-align:right;}
+  .scr-title .bpm b{font-size:26px;display:block;line-height:1;}
+  .trk{display:grid;grid-template-columns:18px 1fr auto auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(25,195,125,0.08);font-size:12px;}
+  .trk .i{color:#1a7a55;}
+  .trk .n{color:#c7f5e2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trk .n s{color:#5b8f7c;text-decoration:none;}
+  .trk .w{color:var(--or);font-size:10px;}
+  .trk .d{color:#4f8a73;}
+  .trk.swap{background:rgba(255,91,0,0.08);margin:0 -16px;padding:6px 16px;border-left:2px solid var(--or);}
+  .altline{font-size:11px;color:#9fe9c9;padding:3px 0 3px 28px;display:flex;justify-content:space-between;}
+  .altline b{color:var(--or);}
+
+  /* CONTROL PANEL */
+  .controls{display:flex;flex-direction:column;gap:16px;}
+  .knobs{display:flex;justify-content:space-between;gap:10px;}
+  .knob{flex:1;text-align:center;}
+  .dial{
+    width:70px;height:70px;border-radius:50%;margin:0 auto 8px;position:relative;
+    background:radial-gradient(circle at 38% 30%,#42454d,#191a1f 70%);
+    border:2px solid #0d0e11; box-shadow:0 6px 14px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.08);
+  }
+  .dial::after{content:"";position:absolute;width:4px;height:20px;border-radius:3px;left:50%;top:8px;transform:translateX(-50%);background:var(--c,#e9e8e3);}
+  .dial.k1{--c:var(--or);transform:rotate(30deg);} .dial.k2{--c:var(--blue);transform:rotate(-20deg);}
+  .dial.k3{--c:var(--green);transform:rotate(70deg);} .dial.k4{--c:var(--red);transform:rotate(-50deg);}
+  .knob .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:0.1em;color:#83858d;}
+  .knob .val{font-size:13px;color:#e9e8e3;margin-top:2px;}
+
+  .presets{display:flex;flex-wrap:wrap;gap:7px;}
+  .pbtn{
+    font-size:11px;letter-spacing:0.04em;color:#1a1205;font-weight:700;
+    border:none;border-radius:8px;padding:8px 11px;cursor:pointer;
+    background:#cbc9c2; box-shadow:0 3px 0 #8a8983, inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .pbtn.on{background:var(--or);box-shadow:0 3px 0 #a23a00;color:#1a1205;}
+  .pbtn.b{background:var(--blue);color:#fff;box-shadow:0 3px 0 #1c45a8;}
+
+  .faders{display:flex;gap:18px;padding:4px 2px;}
+  .fader{flex:1;}
+  .fader .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:0.1em;color:#83858d;margin-bottom:6px;display:flex;justify-content:space-between;}
+  .fader .lbl b{color:#e9e8e3;}
+  .track-f{height:8px;border-radius:6px;background:#0e0f12;box-shadow:inset 0 1px 2px #000;position:relative;}
+  .track-f .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px;}
+  .track-f .cap{position:absolute;top:50%;width:16px;height:16px;border-radius:4px;transform:translate(-50%,-50%);background:linear-gradient(#f3f1ea,#bdbbb4);box-shadow:0 2px 4px rgba(0,0,0,0.6);}
+
+  .generate{
+    margin-top:2px; width:100%; padding:14px; border:none; border-radius:12px; cursor:pointer;
+    font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#1a1205;
+    background:linear-gradient(180deg,#ff7a2e,var(--or));
+    box-shadow:0 5px 0 #a23a00, 0 10px 20px -6px rgba(255,91,0,0.5);
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="cap">DIRECTION 2 · TACTILE / HARDWARE (Teenage Engineering) — the curator becomes an instrument; cadence &amp; pace are physical controls</div>
+    <div class="device">
+      <div class="head">
+        <div class="logo"><b>TSUNAMI</b> run sequencer</div>
+        <div class="mode-leds">
+          <span class="led"><i></i>create</span>
+          <span class="led"><i></i>enhance</span>
+          <span class="led on"><i></i>run</span>
+        </div>
+      </div>
+
+      <div class="body">
+        <!-- SCREEN -->
+        <div class="screen">
+          <div class="scr-title">
+            <div class="nm">5K Run<span class="ed">✎ rename</span></div>
+            <div class="bpm">CADENCE<b>158</b>BPM</div>
+          </div>
+          <div class="trk"><span class="i">01</span><span class="n">Lose Yourself <s>· Eminem</s></span><span class="w">79·½</span><span class="d">5:26</span></div>
+          <div class="trk"><span class="i">02</span><span class="n">Seven Nation Army <s>· White Stripes</s></span><span class="w">76·½</span><span class="d">3:52</span></div>
+          <div class="trk swap"><span class="i">03</span><span class="n">Are You Gonna Be My Girl</span><span class="w">104·⅔</span><span class="d">3:34</span></div>
+          <div class="altline"><span>↳ Take Me Out · Franz Ferdinand</span><span><b>~104 BPM</b> · swap ▸</span></div>
+          <div class="altline"><span>↳ Last Nite · The Strokes</span><span><b>~104 BPM</b> · swap ▸</span></div>
+          <div class="trk"><span class="i">04</span><span class="n">Bullet · Covenant</span><span class="w">158·1:1</span><span class="d">5:10</span></div>
+          <div class="trk"><span class="i">05</span><span class="n">Power · Kanye West</span><span class="w">77·½</span><span class="d">4:52</span></div>
+          <div style="font-size:11px;color:#1a7a55;margin-top:10px;">▸ 12 tracks · 47:30 · matched to 158 cadence</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+          <div class="knobs">
+            <div class="knob"><div class="dial k1"></div><div class="lbl">cadence</div><div class="val">158</div></div>
+            <div class="knob"><div class="dial k2"></div><div class="lbl">distance</div><div class="val">5.0 km</div></div>
+            <div class="knob"><div class="dial k3"></div><div class="lbl">pace</div><div class="val">5:00</div></div>
+            <div class="knob"><div class="dial k4"></div><div class="lbl">±tol</div><div class="val">±8</div></div>
+          </div>
+
+          <div class="presets">
+            <button class="pbtn">1K</button>
+            <button class="pbtn on">5K</button>
+            <button class="pbtn">10K</button>
+            <button class="pbtn">½ MAR</button>
+            <button class="pbtn">MAR</button>
+            <button class="pbtn b">BPM ▸</button>
+          </div>
+
+          <div class="faders">
+            <div class="fader">
+              <div class="lbl">distance <b>5.0 km</b></div>
+              <div class="track-f"><div class="fill" style="width:42%;background:linear-gradient(90deg,#2f6df6,#5b8bff)"></div><div class="cap" style="left:42%"></div></div>
+            </div>
+            <div class="fader">
+              <div class="lbl">pace <b>5:00/km</b></div>
+              <div class="track-f"><div class="fill" style="width:58%;background:linear-gradient(90deg,#19c37d,#46e0a0)"></div><div class="cap" style="left:58%"></div></div>
+            </div>
+          </div>
+
+          <button class="generate">▶ Generate run playlist</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

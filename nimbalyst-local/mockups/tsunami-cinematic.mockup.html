@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tsunami — Cinematic / Album-art direction</title>
+<style>
+  :root {
+    --bg: #07070a;
+    /* "Dominant color" extracted from the cover art — recolors the whole view */
+    --art-1: #6d28d9;
+    --art-2: #0ea5e9;
+    --art-glow: rgba(124, 58, 237, 0.45);
+    --accent: #2dd4bf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: #fafafa;
+    font-family: -apple-system, system-ui, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 28px;
+    display: flex;
+    justify-content: center;
+  }
+  .frame { width: 860px; max-width: 100%; }
+
+  /* Ambient color wash that "breathes" with the playlist's art */
+  .stage {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 0% 0%, var(--art-glow), transparent 55%),
+      radial-gradient(120% 90% at 100% 0%, rgba(14,165,233,0.35), transparent 55%),
+      #0b0b10;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand .wave { font-size: 18px; }
+  .chip {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; color: #c7c7cf;
+    background: rgba(255,255,255,0.06); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+  /* HERO */
+  .hero { display: flex; gap: 26px; padding: 18px 26px 30px; align-items: flex-end; }
+  .cover {
+    width: 188px; height: 188px; border-radius: 18px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--art-1), var(--art-2));
+    position: relative; overflow: hidden;
+    box-shadow: 0 24px 60px -18px var(--art-glow), 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .cover::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(60% 60% at 30% 25%, rgba(255,255,255,0.35), transparent 60%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.06) 0 8px, transparent 8px 18px);
+    mix-blend-mode: screen;
+  }
+  .cover .ring { position:absolute; inset: 34% ; border-radius:50%; border:2px solid rgba(255,255,255,0.45); }
+  .cover .ring::before{content:"";position:absolute;inset:38%;border-radius:50%;background:rgba(0,0,0,0.55);}
+
+  .meta { padding-bottom: 4px; min-width: 0; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .title-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .title { font-size: 46px; line-height: 1.02; font-weight: 800; letter-spacing: -0.03em; }
+  .pencil { color: rgba(255,255,255,0.4); font-size: 18px; cursor: pointer; }
+  .substats { margin-top: 12px; color: #b9b9c4; font-size: 13.5px; }
+  .substats b { color: #fff; font-weight: 600; }
+  .hero-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #04201c; font-weight: 700; font-size: 13.5px;
+    border: none; padding: 11px 18px; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 8px 24px -8px var(--accent);
+  }
+  .btn-ghost {
+    font-size: 13px; color: #d6d6de; background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1); padding: 11px 16px; border-radius: 12px; cursor: pointer;
+  }
+
+  /* TRACK LIST */
+  .list { background: rgba(8,8,12,0.55); backdrop-filter: blur(10px); padding: 8px 14px 18px; }
+  .track {
+    display: grid; grid-template-columns: 26px 46px 1fr auto auto; align-items: center;
+    gap: 14px; padding: 10px 12px; border-radius: 14px; transition: background .15s;
+  }
+  .track:hover { background: rgba(255,255,255,0.05); }
+  .track.accepted { background: linear-gradient(90deg, rgba(45,212,191,0.10), transparent); }
+  .num { color: #6b6b78; font-size: 13px; text-align: center; font-variant-numeric: tabular-nums; }
+  .thumb { width: 46px; height: 46px; border-radius: 10px; background: linear-gradient(135deg,#334155,#0f172a); position: relative; overflow:hidden;}
+  .thumb.a{background:linear-gradient(135deg,#7c3aed,#2563eb);} .thumb.b{background:linear-gradient(135deg,#0ea5e9,#14b8a6);}
+  .thumb.c{background:linear-gradient(135deg,#db2777,#7c3aed);} .thumb.d{background:linear-gradient(135deg,#f59e0b,#db2777);}
+  .thumb.e{background:linear-gradient(135deg,#14b8a6,#22c55e);}
+  .ti { min-width: 0; }
+  .ti .name { font-weight: 600; font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ti .artist { color: #a8a8b3; font-size: 12.5px; margin-top: 2px; }
+  .dur { color: #7c7c88; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .row-actions { display: flex; gap: 6px; }
+  .ico {
+    width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+    color: #cfcfd8; font-size: 13px; cursor: pointer;
+  }
+  .ico.ok { background: var(--accent); color: #04201c; border-color: transparent; }
+  .ico.swap { background: rgba(45,212,191,0.16); color: var(--accent); border-color: rgba(45,212,191,0.4); }
+
+  /* SWAP PANEL */
+  .swap {
+    margin: 2px 12px 10px 86px; border-radius: 14px;
+    border: 1px solid rgba(45,212,191,0.28); background: rgba(6,12,14,0.7);
+    padding: 12px 14px;
+  }
+  .swap .hd { display:flex; justify-content:space-between; font-size: 11px; letter-spacing:0.12em; text-transform:uppercase; color:#8a8a95; margin-bottom: 9px; }
+  .alt { display:flex; align-items:center; gap:12px; padding:7px 8px; border-radius:10px; background: rgba(255,255,255,0.04); margin-bottom:7px; }
+  .alt .t { flex:1; min-width:0;}
+  .alt .t .n{font-size:13.5px;font-weight:600;}
+  .alt .t .a{font-size:12px;color:#9a9aa5;}
+  .alt .swapbtn{font-size:12px;font-weight:700;background:var(--accent);color:#04201c;border:none;padding:6px 12px;border-radius:9px;cursor:pointer;}
+  .remove { font-size:12px;color:#9a9aa5;background:none;border:none;cursor:pointer;margin-top:2px;}
+  .caption{ text-align:center; color:#5a5a66; font-size:11px; margin-top:18px;}
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="caption" style="margin:0 0 14px;color:#7c7c88;">DIRECTION 1 · CINEMATIC / ALBUM-ART — color is extracted from the playlist's artwork and washes the whole view</div>
+    <div class="stage">
+      <div class="topbar">
+        <div class="brand"><span class="wave">🌊</span> Tsunami</div>
+        <div style="display:flex;gap:8px;">
+          <div class="chip">↻ 2,735 tracks</div>
+          <div class="chip"><span class="dot"></span> tdevroome</div>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="cover"><div class="ring"></div></div>
+        <div class="meta">
+          <div class="eyebrow">✦ New Playlist · Focus</div>
+          <div class="title-row">
+            <div class="title">Deep Focus</div>
+            <span class="pencil">✎</span>
+          </div>
+          <div class="substats"><b>8</b> confirmed · 4 pending · <b>47 min</b></div>
+          <div class="hero-actions">
+            <button class="btn-primary">▣ Save to TIDAL</button>
+            <button class="btn-ghost">Accept all</button>
+            <button class="btn-ghost">↻ Regenerate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list">
+        <div class="track accepted">
+          <div class="num">1</div><div class="thumb a"></div>
+          <div class="ti"><div class="name">Weightless</div><div class="artist">Marconi Union</div></div>
+          <div class="dur">8:08</div>
+          <div class="row-actions"><div class="ico">▷</div><div class="ico ok">✓</div><div class="ico">✕</div></div>
+        </div>
+        <div class="track accepted">
+          <div class="num">2</div><div class="thumb b"></div>
+          <div class="ti"><div class="name">An Ending (Ascent)</div><div class="artist">Brian Eno</div></div>
+          <div class="dur">4:24</div>
+          <div class="row-actions"><div class="ico">▷</div><div class="ico ok">✓</div><div class="ico">✕</div></div>
+        </div>
+
+        <div class="track">
+          <div class="num">3</div><div class="thumb c"></div>
+          <div class="ti"><div class="name">Avril 14th</div><div class="artist">Aphex Twin</div></div>
+          <div class="dur">2:01</div>
+          <div class="row-actions"><div class="ico">▷</div><div class="ico">✓</div><div class="ico swap">✕</div></div>
+        </div>
+        <div class="swap">
+          <div class="hd"><span>Swap in a better fit</span><span>Cancel ✕</span></div>
+          <div class="alt"><div class="thumb d" style="width:34px;height:34px"></div><div class="t"><div class="n">Nightswimming</div><div class="a">R.E.M. · Fits the same vibe</div></div><button class="swapbtn">Swap in</button></div>
+          <div class="alt"><div class="thumb e" style="width:34px;height:34px"></div><div class="t"><div class="n">Teardrop</div><div class="a">Massive Attack · Fits the same vibe</div></div><button class="swapbtn">Swap in</button></div>
+          <button class="remove">Remove entirely</button>
+        </div>
+
+        <div class="track">
+          <div class="num">4</div><div class="thumb d"></div>
+          <div class="ti"><div class="name">re: stacks</div><div class="artist">Bon Iver</div></div>
+          <div class="dur">6:41</div>
+          <div class="row-actions"><div class="ico">▷</div><div class="ico">✓</div><div class="ico">✕</div></div>
+        </div>
+        <div class="track">
+          <div class="num">5</div><div class="thumb e"></div>
+          <div class="ti"><div class="name">Saturn</div><div class="artist">Sleeping at Last</div></div>
+          <div class="dur">4:50</div>
+          <div class="row-actions"><div class="ico">▷</div><div class="ico">✓</div><div class="ico">✕</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

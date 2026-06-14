@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tsunami — Vibrant gradient &amp; glass direction</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;
+    color:#fff; padding:28px; display:flex; justify-content:center;
+    background:#080611;
+  }
+  .frame{width:860px;max-width:100%;}
+  .cap{color:#8a86a8;font-size:12px;margin-bottom:14px;}
+
+  .stage{
+    position:relative; border-radius:28px; overflow:hidden; padding:22px;
+    background:
+      radial-gradient(70% 60% at 12% 8%, rgba(236,72,153,0.55), transparent 60%),
+      radial-gradient(60% 55% at 92% 4%, rgba(56,189,248,0.5), transparent 55%),
+      radial-gradient(80% 70% at 70% 100%, rgba(168,85,247,0.5), transparent 60%),
+      radial-gradient(60% 60% at 20% 100%, rgba(251,191,36,0.35), transparent 55%),
+      #0c0a1a;
+  }
+  .glass{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.16);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border-radius:20px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-0.01em;}
+  .pill{font-size:12px;color:#fff;padding:7px 13px;border-radius:999px;}
+  .pills{display:flex;gap:8px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:#34d399;display:inline-block;box-shadow:0 0 8px #34d399;margin-right:6px;vertical-align:middle;}
+
+  /* mood strip */
+  .moodstrip{display:flex;gap:8px;margin-bottom:16px;}
+  .mood{flex:1;text-align:center;padding:11px 0;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);}
+  .mood .ic{display:block;font-size:18px;margin-bottom:3px;}
+  .mood.sel{background:linear-gradient(135deg,#38bdf8,#a855f7);border-color:transparent;color:#fff;box-shadow:0 8px 24px -6px rgba(168,85,247,0.6);transform:translateY(-2px);}
+
+  /* hero */
+  .hero{padding:20px 22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;}
+  .eyebrow{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:700;}
+  .title{font-size:40px;font-weight:800;letter-spacing:-0.03em;margin-top:6px;
+    background:linear-gradient(90deg,#fff,#e9d5ff 60%,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .title .ed{font-size:18px;-webkit-text-fill-color:rgba(255,255,255,0.55);margin-left:8px;cursor:pointer;}
+  .stats{margin-top:10px;color:rgba(255,255,255,0.8);font-size:13px;}
+  .stats b{font-weight:700;}
+  .save{
+    flex-shrink:0;display:inline-flex;align-items:center;gap:9px;
+    font-size:14px;font-weight:800;color:#1a0a2e;border:none;cursor:pointer;
+    padding:14px 22px;border-radius:16px;
+    background:linear-gradient(135deg,#f0abfc,#a5f3fc);
+    box-shadow:0 10px 30px -6px rgba(165,243,252,0.6);
+  }
+
+  /* tracks */
+  .tracks{display:flex;flex-direction:column;gap:9px;}
+  .track{display:grid;grid-template-columns:48px 1fr auto auto;gap:14px;align-items:center;padding:11px 14px;}
+  .track.sel{border-color:rgba(52,211,153,0.5);box-shadow:0 0 0 1px rgba(52,211,153,0.3), inset 0 1px 0 rgba(255,255,255,0.25);}
+  .track.swp{border-color:rgba(56,189,248,0.6);}
+  .art{width:48px;height:48px;border-radius:12px;}
+  .a1{background:linear-gradient(135deg,#f472b6,#a855f7);} .a2{background:linear-gradient(135deg,#38bdf8,#34d399);}
+  .a3{background:linear-gradient(135deg,#fb923c,#f472b6);} .a4{background:linear-gradient(135deg,#a855f7,#38bdf8);}
+  .a5{background:linear-gradient(135deg,#fbbf24,#fb923c);}
+  .nm{font-weight:700;font-size:14.5px;} .ar{color:rgba(255,255,255,0.72);font-size:12.5px;margin-top:2px;}
+  .du{color:rgba(255,255,255,0.6);font-size:12.5px;}
+  .acts{display:flex;gap:7px;}
+  .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:13px;cursor:pointer;
+    background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.16);color:#fff;}
+  .ic.ok{background:linear-gradient(135deg,#34d399,#10b981);border-color:transparent;}
+  .ic.sw{background:linear-gradient(135deg,#38bdf8,#818cf8);border-color:transparent;}
+
+  .swap{margin:2px 0 4px;padding:13px 15px;}
+  .swap .hd{display:flex;justify-content:space-between;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:10px;}
+  .alt{display:flex;align-items:center;gap:12px;padding:8px;border-radius:12px;background:rgba(255,255,255,0.07);margin-bottom:8px;}
+  .alt .ar2{color:rgba(255,255,255,0.65);font-size:12px;}
+  .alt .b{flex:1;min-width:0;}
+  .alt .sb{font-size:12px;font-weight:800;color:#0a1a2e;border:none;cursor:pointer;padding:7px 13px;border-radius:10px;background:linear-gradient(135deg,#7dd3fc,#a5f3fc);}
+  .rm{font-size:12px;color:rgba(255,255,255,0.7);background:none;border:none;cursor:pointer;}
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="cap">DIRECTION 3 · VIBRANT GRADIENT &amp; GLASS — the mood you pick colours the whole session; glassy cards, glow, celebratory motion</div>
+    <div class="stage">
+      <div class="topbar">
+        <div class="brand">🌊 Tsunami</div>
+        <div class="pills">
+          <span class="pill glass">↻ 2,735 tracks</span>
+          <span class="pill glass"><span class="dot"></span>tdevroome</span>
+        </div>
+      </div>
+
+      <div class="moodstrip">
+        <div class="mood"><span class="ic">♡</span>Romance</div>
+        <div class="mood"><span class="ic">⚡</span>Energetic</div>
+        <div class="mood"><span class="ic">🌴</span>Chill</div>
+        <div class="mood sel"><span class="ic">◎</span>Focus</div>
+        <div class="mood"><span class="ic">◉</span>Melancholy</div>
+        <div class="mood"><span class="ic">✦</span>Party</div>
+      </div>
+
+      <div class="hero glass">
+        <div>
+          <div class="eyebrow">✦ New Playlist · Focus</div>
+          <div class="title">Deep Focus<span class="ed">✎</span></div>
+          <div class="stats"><b>8</b> confirmed · 4 pending · <b>47 min</b></div>
+        </div>
+        <button class="save">▣ Save to TIDAL</button>
+      </div>
+
+      <div class="tracks">
+        <div class="track glass sel"><div class="art a1"></div><div><div class="nm">Weightless</div><div class="ar">Marconi Union</div></div><div class="du">8:08</div><div class="acts"><div class="ic">▷</div><div class="ic ok">✓</div><div class="ic">✕</div></div></div>
+        <div class="track glass sel"><div class="art a2"></div><div><div class="nm">An Ending (Ascent)</div><div class="ar">Brian Eno</div></div><div class="du">4:24</div><div class="acts"><div class="ic">▷</div><div class="ic ok">✓</div><div class="ic">✕</div></div></div>
+        <div class="track glass swp"><div class="art a3"></div><div><div class="nm">Avril 14th</div><div class="ar">Aphex Twin</div></div><div class="du">2:01</div><div class="acts"><div class="ic">▷</div><div class="ic">✓</div><div class="ic sw">✕</div></div></div>
+
+        <div class="swap glass">
+          <div class="hd"><span>Swap in a better fit</span><span>Cancel ✕</span></div>
+          <div class="alt"><div class="art a4" style="width:36px;height:36px"></div><div class="b"><div class="nm" style="font-size:13.5px">Nightswimming</div><div class="ar2">R.E.M. · Fits the same vibe</div></div><button class="sb">Swap in</button></div>
+          <div class="alt"><div class="art a5" style="width:36px;height:36px"></div><div class="b"><div class="nm" style="font-size:13.5px">Teardrop</div><div class="ar2">Massive Attack · Fits the same vibe</div></div><button class="sb">Swap in</button></div>
+          <button class="rm">Remove entirely</button>
+        </div>
+
+        <div class="track glass"><div class="art a4"></div><div><div class="nm">re: stacks</div><div class="ar">Bon Iver</div></div><div class="du">6:41</div><div class="acts"><div class="ic">▷</div><div class="ic">✓</div><div class="ic">✕</div></div></div>
+        <div class="track glass"><div class="art a5"></div><div><div class="nm">Saturn</div><div class="ar">Sleeping at Last</div></div><div class="du">4:50</div><div class="acts"><div class="ic">▷</div><div class="ic">✓</div><div class="ic">✕</div></div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -129,18 +129,64 @@ export default function RunnerConfig({ onGenerate }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Mode toggle */}
-      <div className="flex rounded-xl border border-zinc-800 bg-zinc-900/40 p-1 gap-1">
+    <div
+      className="flex flex-col gap-5 rounded-2xl border border-zinc-700/70 p-4 sm:p-5"
+      style={{
+        background: 'linear-gradient(180deg, #2a2c33, #16171b)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 50px -24px #000',
+        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+      }}
+    >
+      {/* Device header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5 text-[13px] uppercase tracking-[0.16em] text-zinc-300">
+          <span className="rounded bg-[#ff5b00] px-1.5 py-0.5 text-[11px] font-bold tracking-[0.05em] text-[#1a1205]">TSUNAMI</span>
+          run sequencer
+        </div>
+        <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-zinc-200">
+          <span className="h-2 w-2 rounded-full bg-[#ff5b00] shadow-[0_0_8px_#ff5b00]" /> run
+        </span>
+      </div>
+
+      {/* CRT cadence screen */}
+      <div
+        className="rounded-xl border border-[#0a3a2a] px-4 py-3"
+        style={{ background: 'repeating-linear-gradient(0deg, rgba(25,195,125,0.05) 0 2px, transparent 2px 4px), #0c1410', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.7)' }}
+      >
+        <div className="flex items-end justify-between">
+          <span className="text-[12px] uppercase tracking-[0.12em] text-[#1a7a55]">
+            {inputMode === 'pace' ? 'pace target' : 'cadence target'}
+          </span>
+          <div className="text-right leading-none text-[#ff5b00]">
+            <div className="text-[10px] uppercase tracking-[0.12em]">cadence</div>
+            <div className="text-3xl font-bold tabular-nums">{targetBpm ?? '—'}</div>
+            <div className="text-[10px] uppercase tracking-[0.12em]">bpm</div>
+          </div>
+        </div>
+        <div className="mt-2 border-t border-dashed border-[rgba(25,195,125,0.25)] pt-2 text-[12px] text-[#9fe9c9]">
+          {isValid
+            ? <>▸ {configLabel} · playlist ~{formatDuration(bufferedDurationSec!)}</>
+            : <span className="text-[#3f7a64]">▸ set {inputMode === 'pace' ? 'distance + pace' : 'BPM + duration'} to arm…</span>}
+        </div>
+        {compatibleBpms && (
+          <div className="mt-1 text-[11px] text-[#4f8a73]">
+            music windows · {compatibleBpms.half}½ · {compatibleBpms.twoThirds}⅔ · {compatibleBpms.full} 1:1
+          </div>
+        )}
+      </div>
+
+      {/* Mode toggle — illuminated device buttons */}
+      <div className="flex gap-2">
         {(['pace', 'bpm'] as const).map((m) => (
           <button
             key={m}
             onClick={() => setInputMode(m)}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+            className="flex-1 rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] transition-all"
+            style={
               inputMode === m
-                ? 'bg-zinc-800 text-white shadow-sm'
-                : 'text-zinc-500 hover:text-zinc-300'
-            }`}
+                ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
+                : { background: '#cbc9c2', color: '#1a1205', boxShadow: '0 3px 0 #8a8983' }
+            }
           >
             {m === 'pace' ? 'By Pace' : 'By BPM'}
           </button>
@@ -157,22 +203,24 @@ export default function RunnerConfig({ onGenerate }: Props) {
                 <button
                   key={p.label}
                   onClick={() => { setSelectedPreset(i); setCustomDistanceStr('') }}
-                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-150 ${
+                  className="rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition-all active:translate-y-0.5"
+                  style={
                     selectedPreset === i
-                      ? 'bg-teal-500/20 border border-teal-500/60 text-teal-400'
-                      : 'border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'
-                  }`}
+                      ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
+                      : { background: '#cbc9c2', color: '#1a1205', boxShadow: '0 3px 0 #8a8983' }
+                  }
                 >
                   {p.label}
                 </button>
               ))}
               <button
                 onClick={() => setSelectedPreset(null)}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-150 ${
+                className="rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition-all active:translate-y-0.5"
+                style={
                   selectedPreset === null && customDistanceStr
-                    ? 'bg-teal-500/20 border border-teal-500/60 text-teal-400'
-                    : 'border border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-600'
-                }`}
+                    ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
+                    : { background: '#2f6df6', color: '#fff', boxShadow: '0 3px 0 #1c45a8' }
+                }
               >
                 Custom
               </button>
@@ -295,36 +343,18 @@ export default function RunnerConfig({ onGenerate }: Props) {
         </>
       )}
 
-      {/* Summary */}
-      {isValid && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-zinc-300">{configLabel}</span>
-              <span className="text-xs text-zinc-500">
-                Playlist: ~{formatDuration(bufferedDurationSec!)} (with 15% buffer)
-              </span>
-              {compatibleBpms && (
-                <span className="text-xs text-zinc-600 mt-0.5">
-                  Music targets: {compatibleBpms.half} BPM (÷2) · {compatibleBpms.twoThirds} BPM (⅔) · {compatibleBpms.full} BPM
-                </span>
-              )}
-            </div>
-            <div className="shrink-0 rounded-lg bg-teal-500/10 border border-teal-500/30 px-3 py-1.5 text-center">
-              <div className="text-lg font-bold text-teal-400 leading-none">{targetBpm}</div>
-              <div className="text-[10px] text-teal-500/70 uppercase tracking-wider mt-0.5">cadence</div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Generate button */}
+      {/* Generate — chunky physical button */}
       <button
         onClick={handleGenerate}
         disabled={!isValid}
-        className="w-full rounded-xl py-3 text-sm font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-teal-600 hover:bg-teal-500 text-white"
+        className="w-full rounded-xl py-3.5 text-sm font-extrabold uppercase tracking-[0.08em] transition-all duration-150 disabled:cursor-not-allowed enabled:active:translate-y-0.5"
+        style={
+          isValid
+            ? { background: 'linear-gradient(180deg, #ff7a2e, #ff5b00)', color: '#1a1205', boxShadow: '0 5px 0 #a23a00, 0 10px 24px -8px rgba(255,91,0,0.5)' }
+            : { background: '#3a3c44', color: '#6b6d75', boxShadow: '0 4px 0 #25272d' }
+        }
       >
-        Generate Run Playlist
+        ▶ Generate run playlist
       </button>
     </div>
   )
