@@ -8,6 +8,7 @@ import MoodSelector from '@/components/MoodSelector'
 import GeneratingView from '@/components/GeneratingView'
 import PlaylistPicker from '@/components/PlaylistPicker'
 import RunnerConfig from '@/components/RunnerConfig'
+import { defaultPlaylistName } from '@/lib/playlistName'
 import type { ExistingPlaylist, Message, Mood, PlaylistTrack, RunConfig, StreamEvent, Track } from '@/types'
 
 type AppStatus = 'checking' | 'disconnected' | 'connected'
@@ -63,6 +64,11 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false)
   const [savedUrl, setSavedUrl] = useState('')
 
+  // Track-swap state (remove a track → suggest fitting alternatives)
+  const [swapForId, setSwapForId] = useState<string | null>(null)
+  const [alternatives, setAlternatives] = useState<Track[]>([])
+  const [loadingAlternatives, setLoadingAlternatives] = useState(false)
+
   // Library sync state
   const [libraryStatus, setLibraryStatus] = useState<{
     synced: boolean; trackCount: number; lastSync: string | null; bpmTracksCount: number
@@ -73,12 +79,11 @@ export default function Home() {
   const [syncEta, setSyncEta] = useState('')
 
   const bpmStartRef = useRef<{ t: number; base: number } | null>(null)
-  const rejectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const isGeneratingRef = useRef(false)
 
   useEffect(() => { checkAuth() }, [])
   useEffect(() => { fetchLibraryStatus() }, [])
-  useEffect(() => { isGeneratingRef.current = isGenerating }, [isGenerating])
+  // Any new generation invalidates an open swap panel.
+  useEffect(() => { if (isGenerating) closeSwap() }, [isGenerating])
 
   async function fetchLibraryStatus() {
     try {
@@ -163,6 +168,7 @@ export default function Home() {
     setTargetPlaylist(null)
     setPlaylistTracks([])
     setRunConfig(null)
+    closeSwap()
   }, [mode])
 
   async function checkAuth() {
@@ -195,20 +201,62 @@ export default function Home() {
     setTracks((prev) => prev.map((t) => (t.tidal_id === tidalId ? { ...t, status } : t)))
   }
 
-  function handleRejectAndRefresh(tidalId: string) {
+  function closeSwap() {
+    setSwapForId(null)
+    setAlternatives([])
+    setLoadingAlternatives(false)
+  }
+
+  // Removing a track first offers alternatives that suit its slot.
+  async function requestAlternatives(tidalId: string) {
+    if (swapForId === tidalId) { closeSwap(); return } // toggle off
+    setSwapForId(tidalId)
+    setAlternatives([])
+    setLoadingAlternatives(true)
+
+    const visible = tracks.filter((t) => t.status !== 'rejected')
+    const idx = visible.findIndex((t) => t.tidal_id === tidalId)
+    const neighborIds = [visible[idx - 1]?.tidal_id, visible[idx + 1]?.tidal_id].filter(
+      (id): id is string => !!id
+    )
+    const excludeIds = tracks.map((t) => t.tidal_id)
+
+    try {
+      const res = await fetch('/api/alternatives', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode,
+          removedTrackId: tidalId,
+          neighborIds,
+          excludeIds,
+          runConfig: mode === 'run' ? runConfig : undefined,
+        }),
+      })
+      const data = await res.json()
+      // Ignore if the user moved on to a different track meanwhile.
+      setSwapForId((cur) => {
+        if (cur === tidalId) setAlternatives(data.alternatives ?? [])
+        return cur
+      })
+    } catch {
+      setAlternatives([])
+    } finally {
+      setLoadingAlternatives(false)
+    }
+  }
+
+  // Replace the track in place (same slot) so the surrounding flow is preserved.
+  function swapTrack(oldId: string, alt: Track) {
+    setTracks((prev) =>
+      prev.map((t) => (t.tidal_id === oldId ? { ...alt, status: 'accepted' as const } : t))
+    )
+    closeSwap()
+  }
+
+  function removeTrackEntirely(tidalId: string) {
     updateTrackStatus(tidalId, 'rejected')
-    if (rejectTimerRef.current) clearTimeout(rejectTimerRef.current)
-    rejectTimerRef.current = setTimeout(() => {
-      if (!isGeneratingRef.current) {
-        if (mode === 'create') {
-          runGenerate('Swap in a fresh discovery to replace the track I just skipped.')
-        } else if (mode === 'enhance') {
-          runEnhance('Swap in a fresh discovery to replace the track I just skipped.')
-        } else if (mode === 'run') {
-          runRun('Swap in a fresh discovery to replace the track I just skipped.')
-        }
-      }
-    }, 500)
+    closeSwap()
   }
 
   // ---------- CREATE mode ----------
@@ -455,8 +503,8 @@ export default function Home() {
               </button>
             )}
             {appStatus === 'connected' && tidalUser && (
-              <div className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-3 py-1 text-xs text-zinc-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
+              <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.7)]" />
                 {tidalUser}
               </div>
             )}
@@ -494,15 +542,15 @@ export default function Home() {
         ) : (
           <div className="flex flex-col gap-6">
             {/* Mode switcher */}
-            <div className="flex rounded-xl border border-zinc-800 bg-zinc-900/40 p-1 gap-1">
+            <div className="flex gap-1 rounded-xl border border-zinc-800 bg-zinc-900/40 p-1">
               {(['create', 'enhance', 'run'] as AppMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
                   className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                     mode === m
-                      ? 'bg-zinc-800 text-white shadow-sm'
-                      : 'text-zinc-500 hover:text-zinc-300'
+                      ? 'bg-zinc-800 text-white shadow-sm ring-1 ring-inset ring-teal-500/20'
+                      : 'text-zinc-500 hover:bg-zinc-800/40 hover:text-zinc-300'
                   }`}
                 >
                   {m === 'create' ? '✨ New Playlist' : m === 'enhance' ? '🎵 Enhance Existing' : '🏃 Run'}
@@ -515,9 +563,15 @@ export default function Home() {
               <PlaylistView
                 tracks={tracks}
                 mood={selectedMood}
-                defaultTitle={mode === 'run' && runConfig ? `${runConfig.label}` : undefined}
+                defaultTitle={defaultPlaylistName({ mode, mood: selectedMood, runConfig, enhanceTitle: targetPlaylist?.title })}
                 onUpdateStatus={updateTrackStatus}
-                onRejectAndRefresh={handleRejectAndRefresh}
+                onRequestSwap={requestAlternatives}
+                swapForId={swapForId}
+                alternatives={alternatives}
+                loadingAlternatives={loadingAlternatives}
+                onSwap={swapTrack}
+                onRemoveEntirely={removeTrackEntirely}
+                onCancelSwap={closeSwap}
                 onSave={isEnhanceMode ? addToPlaylist : savePlaylist}
                 saveLabel={isEnhanceMode ? `Add to "${targetPlaylist?.title}"` : undefined}
                 isSaving={isSaving}
