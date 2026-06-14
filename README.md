@@ -8,6 +8,26 @@ The ranking is **not hard-coded magic** — it's a transparent weighted scorer y
 
 ---
 
+## 📸 A look inside
+
+**Create mode** — pick a mood, and Claude builds a playlist from your locally-ranked library. The result streams in with a per-track *reason*, a smart editable name, and one-tap accept / skip before you save to TIDAL.
+
+| Pick a mood | Curated, sequenced & named |
+| --- | --- |
+| [![Create mode mood selector](docs/screenshots/01-create-mood.png)](docs/screenshots/01-create-mood.png) | [![Generated playlist with editable name](docs/screenshots/02-create-playlist.png)](docs/screenshots/02-create-playlist.png) |
+
+**Smart track swap** — don't like a track? Skipping it surfaces 3–5 alternatives that fit *that slot* in the flow (run playlists match it locally by BPM; create/enhance use TIDAL radio). Swap one in, or remove it entirely. **Run mode** turns a distance + pace into a running cadence and tempo-matched windows.
+
+| Skip → swap in a better fit | Run to your cadence |
+| --- | --- |
+| [![Smart track swap alternatives](docs/screenshots/03-swap-alternatives.png)](docs/screenshots/03-swap-alternatives.png) | [![Run mode cadence config](docs/screenshots/04-run-config.png)](docs/screenshots/04-run-config.png) |
+
+**Enhance mode** — point Tsunami at a playlist you already have and it suggests tracks that match its style without duplicating what's there.
+
+[![Enhance: choose a playlist](docs/screenshots/05-enhance-picker.png)](docs/screenshots/05-enhance-picker.png)
+
+---
+
 ## ✨ Features
 
 *   **Create mode** — Pick a mood (romance, energetic, chill, melancholy, focus, party) and Claude generates a 15–20 track playlist seeded from your locally-ranked favourites.
@@ -17,9 +37,10 @@ The ranking is **not hard-coded magic** — it's a transparent weighted scorer y
 *   **DJ-style sequencing** — The chosen tracks are ordered for smooth tempo/key transitions, with the same artist spaced apart and style clusters kept short.
 *   **Tunable to your taste** — A built-in [`/tuner.html`](#-tailoring-recommendations-the-tuning-page) harness lets you A/B weight configs against your real library, flag tracks, and bake the winners into the defaults.
 *   **Discovery-first curation** — A deliberate prompt mandate ensures the majority of Claude's suggestions are _new_ discoveries and deeper cuts, not just the obvious hits.
-*   **Interactive feedback loop** — Accept or reject individual tracks; rejecting swaps in a fresh discovery. Free-form feedback ("more upbeat", "less mainstream") steers the next round.
+*   **Interactive feedback loop** — Accept or skip individual tracks; free-form feedback ("more upbeat", "less mainstream") steers the next round.
+*   **Smart track swap** — Skipping a track first offers 3–5 alternatives that suit its slot in the flow (Run matches them locally by BPM; Create/Enhance use TIDAL radio seeded from the track and its neighbours). Swap one in-place, or remove it entirely.
 *   **Real-time streaming** — Curation progress and tracks stream into the UI live via Server-Sent Events.
-*   **Save back to TIDAL** — Create a new playlist from accepted tracks, or append to the playlist you're enhancing.
+*   **Name & save back to TIDAL** — Every playlist gets a smart default name (mood + month, or the run cadence) you can edit inline before saving; create a new playlist from accepted tracks, or append to the playlist you're enhancing.
 
 ---
 
@@ -294,6 +315,7 @@ This unlocks **style-aware sequencing** (small genre clusters, gradual transitio
 
 ## 🆕 Recent changes
 
+*   **Smart track swap + named saves + UI pass** — Skipping a track now suggests fitting alternatives to swap in-place (Run: instant local BPM match; Create/Enhance: TIDAL radio); playlists get an editable smart-default name before saving; and a Linear-style visual refresh (design tokens, focus rings, motion). See [A look inside](#-a-look-inside).
 *   **Local recommendation engine** — TIDAL library is synced to SQLite and ranked locally by recency-of-add + play-frecency + novelty, with same-recording (ISRC) de-duplication and per-artist diversity caps. See [How recommendation ranking works](#-how-recommendation-ranking-works).
 *   **DJ sequencer** — final tracklists are ordered for smooth tempo/key/style transitions with artist spacing (`lib/sequencer.ts`).
 *   **Tuning harness** — `public/tuner.html` + `/api/tuning` persistence let you A/B weight configs against your own library and bake in the winners. The shipped defaults were trained here over two rounds (`nimbalyst-local/tuning/`).
