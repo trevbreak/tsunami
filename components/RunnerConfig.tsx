@@ -1,14 +1,15 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import Knob from './Knob'
+import Fader from './Fader'
 import type { RunConfig } from '@/types'
 
 const PRESETS = [
-  { label: '1 km', km: 1 },
-  { label: '1 mi', km: 1.60934 },
-  { label: '5 km', km: 5 },
-  { label: '10 km', km: 10 },
-  { label: '½ Marathon', km: 21.0975 },
+  { label: '1K', km: 1 },
+  { label: '5K', km: 5 },
+  { label: '10K', km: 10 },
+  { label: '½ Mar', km: 21.0975 },
   { label: 'Marathon', km: 42.195 },
 ]
 
@@ -18,18 +19,16 @@ function paceToTargetBpm(paceMinPerKm: number): number {
   return Math.max(150, Math.min(200, bpm))
 }
 
-function formatDuration(seconds: number): string {
+function fmtDuration(seconds: number): string {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
-  if (h > 0) return `${h}h ${m}m`
-  return `${m}m`
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
 }
 
-function formatPaceDisplay(paceMinPerKm: number, unit: 'km' | 'mile'): string {
-  const pace = unit === 'mile' ? paceMinPerKm * 1.60934 : paceMinPerKm
-  const m = Math.floor(pace)
-  const s = Math.round((pace - m) * 60)
-  return `${m}:${s.toString().padStart(2, '0')}/${unit}`
+function fmtPace(secPerKm: number): string {
+  const m = Math.floor(secPerKm / 60)
+  const s = Math.round(secPerKm % 60)
+  return `${m}:${s.toString().padStart(2, '0')}`
 }
 
 interface Props {
@@ -37,322 +36,146 @@ interface Props {
 }
 
 export default function RunnerConfig({ onGenerate }: Props) {
-  const [inputMode, setInputMode] = useState<'pace' | 'bpm'>('pace')
+  const [mode, setMode] = useState<'pace' | 'bpm'>('pace')
+  const [distanceKm, setDistanceKm] = useState(5)
+  const [paceSec, setPaceSec] = useState(300) // sec / km
+  const [bpm, setBpm] = useState(160)
+  const [durationMin, setDurationMin] = useState(45)
+  const [tolerance, setTolerance] = useState(8)
 
-  // Pace mode
-  const [selectedPreset, setSelectedPreset] = useState<number | null>(null)
-  const [customDistanceStr, setCustomDistanceStr] = useState('')
-  const [customDistanceUnit, setCustomDistanceUnit] = useState<'km' | 'mile'>('km')
-  const [paceMin, setPaceMin] = useState('')
-  const [paceSec, setPaceSec] = useState('')
-  const [paceUnit, setPaceUnit] = useState<'km' | 'mile'>('km')
-
-  // BPM mode
-  const [directBpmStr, setDirectBpmStr] = useState('')
-  const [durationHoursStr, setDurationHoursStr] = useState('')
-  const [durationMinsStr, setDurationMinsStr] = useState('')
-
-  const distanceKm = useMemo(() => {
-    if (inputMode !== 'pace') return null
-    if (selectedPreset !== null) return PRESETS[selectedPreset].km
-    const val = parseFloat(customDistanceStr)
-    if (!val || val <= 0) return null
-    return customDistanceUnit === 'mile' ? val * 1.60934 : val
-  }, [inputMode, selectedPreset, customDistanceStr, customDistanceUnit])
-
-  const paceMinPerKm = useMemo(() => {
-    if (inputMode !== 'pace') return null
-    const mins = parseInt(paceMin) || 0
-    const secs = parseInt(paceSec) || 0
-    const total = mins + secs / 60
-    if (total <= 0) return null
-    return paceUnit === 'mile' ? total / 1.60934 : total
-  }, [inputMode, paceMin, paceSec, paceUnit])
-
-  const targetBpm = useMemo(() => {
-    if (inputMode === 'bpm') {
-      const val = parseInt(directBpmStr)
-      return val >= 60 && val <= 220 ? val : null
-    }
-    return paceMinPerKm ? paceToTargetBpm(paceMinPerKm) : null
-  }, [inputMode, directBpmStr, paceMinPerKm])
-
-  const totalDurationSec = useMemo(() => {
-    if (inputMode === 'pace') {
-      if (!distanceKm || !paceMinPerKm) return null
-      return Math.round(distanceKm * paceMinPerKm * 60)
-    }
-    const h = parseInt(durationHoursStr) || 0
-    const m = parseInt(durationMinsStr) || 0
-    const total = h * 3600 + m * 60
-    return total > 0 ? total : null
-  }, [inputMode, distanceKm, paceMinPerKm, durationHoursStr, durationMinsStr])
-
-  const bufferedDurationSec = useMemo(
-    () => (totalDurationSec ? Math.round(totalDurationSec * 1.15) : null),
-    [totalDurationSec]
+  const targetBpm = useMemo(
+    () => (mode === 'pace' ? paceToTargetBpm(paceSec / 60) : bpm),
+    [mode, paceSec, bpm]
+  )
+  const totalDurationSec = useMemo(
+    () => (mode === 'pace' ? Math.round(distanceKm * paceSec) : durationMin * 60),
+    [mode, distanceKm, paceSec, durationMin]
+  )
+  const bufferedDurationSec = Math.round(totalDurationSec * 1.15)
+  const windows = useMemo(
+    () => ({ half: Math.round(targetBpm / 2), twoThirds: Math.round((targetBpm * 2) / 3), full: targetBpm }),
+    [targetBpm]
   )
 
-  const compatibleBpms = useMemo(() => {
-    if (!targetBpm) return null
-    return {
-      half: Math.round(targetBpm / 2),
-      twoThirds: Math.round((targetBpm * 2) / 3),
-      full: targetBpm,
-    }
-  }, [targetBpm])
-
-  const isValid = !!targetBpm && !!totalDurationSec
-
-  const distanceLabel = useMemo(() => {
-    if (selectedPreset !== null) return PRESETS[selectedPreset].label
-    if (customDistanceStr) return `${customDistanceStr} ${customDistanceUnit}`
-    return ''
-  }, [selectedPreset, customDistanceStr, customDistanceUnit])
-
   const configLabel = useMemo(() => {
-    if (!isValid) return ''
-    if (inputMode === 'pace' && paceMinPerKm) {
-      return `${distanceLabel} at ${formatPaceDisplay(paceMinPerKm, paceUnit)} (${targetBpm} BPM)`
+    if (mode === 'pace') {
+      const d = distanceKm >= 1 ? `${distanceKm.toFixed(distanceKm % 1 ? 1 : 0)} km` : `${(distanceKm * 1000).toFixed(0)} m`
+      return `${d} at ${fmtPace(paceSec)}/km (${targetBpm} BPM)`
     }
-    return `${formatDuration(totalDurationSec!)} run at ${targetBpm} BPM`
-  }, [isValid, inputMode, distanceLabel, paceMinPerKm, paceUnit, targetBpm, totalDurationSec])
+    return `${fmtDuration(totalDurationSec)} run at ${targetBpm} BPM`
+  }, [mode, distanceKm, paceSec, targetBpm, totalDurationSec])
+
+  const isValid = totalDurationSec > 0 && targetBpm > 0
 
   function handleGenerate() {
     if (!isValid) return
-    onGenerate({
-      targetBpm: targetBpm!,
-      bpmTolerance: 10,
-      targetDurationSec: bufferedDurationSec!,
-      label: configLabel,
-    })
+    onGenerate({ targetBpm, bpmTolerance: tolerance, targetDurationSec: bufferedDurationSec, label: configLabel })
   }
 
+  const activePreset = PRESETS.findIndex((p) => Math.abs(p.km - distanceKm) < 0.01)
+
   return (
-    <div
-      className="flex flex-col gap-5 rounded-2xl border border-zinc-700/70 p-4 sm:p-5"
-      style={{
-        background: 'linear-gradient(180deg, #2a2c33, #16171b)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 50px -24px #000',
-        fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-      }}
-    >
-      {/* Device header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2.5 text-[13px] uppercase tracking-[0.16em] text-zinc-300">
-          <span className="rounded bg-[#ff5b00] px-1.5 py-0.5 text-[11px] font-bold tracking-[0.05em] text-[#1a1205]">TSUNAMI</span>
-          run sequencer
+    <div className="glass overflow-hidden rounded-3xl p-5 sm:p-6" style={{ animation: 'springIn 0.4s ease both' }}>
+      {/* Header + cadence badge */}
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold tracking-tight gradient-text">Run Sequencer</h2>
+          <p className="mt-1 text-xs text-white/60">Dial in your run — music locks to your cadence</p>
         </div>
-        <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.1em] text-zinc-200">
-          <span className="h-2 w-2 rounded-full bg-[#ff5b00] shadow-[0_0_8px_#ff5b00]" /> run
-        </span>
+        <div className="shrink-0 rounded-2xl border border-white/18 px-4 py-2 text-center"
+          style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(168,85,247,0.25))' }}>
+          <div className="gradient-text text-3xl font-black leading-none" style={{ backgroundImage: 'linear-gradient(90deg,#7dd3fc,#f0abfc)' }}>{targetBpm}</div>
+          <div className="mt-1 text-[9px] uppercase tracking-[0.14em] text-white/60">cadence bpm</div>
+        </div>
       </div>
 
-      {/* CRT cadence screen */}
-      <div
-        className="rounded-xl border border-[#0a3a2a] px-4 py-3"
-        style={{ background: 'repeating-linear-gradient(0deg, rgba(25,195,125,0.05) 0 2px, transparent 2px 4px), #0c1410', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.7)' }}
-      >
-        <div className="flex items-end justify-between">
-          <span className="text-[12px] uppercase tracking-[0.12em] text-[#1a7a55]">
-            {inputMode === 'pace' ? 'pace target' : 'cadence target'}
-          </span>
-          <div className="text-right leading-none text-[#ff5b00]">
-            <div className="text-[10px] uppercase tracking-[0.12em]">cadence</div>
-            <div className="text-3xl font-bold tabular-nums">{targetBpm ?? '—'}</div>
-            <div className="text-[10px] uppercase tracking-[0.12em]">bpm</div>
-          </div>
-        </div>
-        <div className="mt-2 border-t border-dashed border-[rgba(25,195,125,0.25)] pt-2 text-[12px] text-[#9fe9c9]">
-          {isValid
-            ? <>▸ {configLabel} · playlist ~{formatDuration(bufferedDurationSec!)}</>
-            : <span className="text-[#3f7a64]">▸ set {inputMode === 'pace' ? 'distance + pace' : 'BPM + duration'} to arm…</span>}
-        </div>
-        {compatibleBpms && (
-          <div className="mt-1 text-[11px] text-[#4f8a73]">
-            music windows · {compatibleBpms.half}½ · {compatibleBpms.twoThirds}⅔ · {compatibleBpms.full} 1:1
-          </div>
-        )}
-      </div>
-
-      {/* Mode toggle — illuminated device buttons */}
-      <div className="flex gap-2">
+      {/* Mode toggle */}
+      <div className="mb-5 inline-flex gap-1.5 rounded-2xl border border-white/12 bg-white/5 p-1.5">
         {(['pace', 'bpm'] as const).map((m) => (
           <button
             key={m}
-            onClick={() => setInputMode(m)}
-            className="flex-1 rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] transition-all"
-            style={
-              inputMode === m
-                ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
-                : { background: '#cbc9c2', color: '#1a1205', boxShadow: '0 3px 0 #8a8983' }
-            }
+            onClick={() => setMode(m)}
+            className="rounded-xl px-5 py-2 text-sm font-semibold transition-all"
+            style={mode === m
+              ? { background: 'linear-gradient(135deg,#38bdf8,#a855f7)', color: '#fff', boxShadow: '0 8px 20px -6px rgba(168,85,247,0.6)' }
+              : { color: 'rgba(255,255,255,0.65)' }}
           >
             {m === 'pace' ? 'By Pace' : 'By BPM'}
           </button>
         ))}
       </div>
 
-      {inputMode === 'pace' ? (
+      {mode === 'pace' ? (
         <>
-          {/* Distance presets */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs text-zinc-600 uppercase tracking-wider">Distance</p>
-            <div className="flex flex-wrap gap-2">
-              {PRESETS.map((p, i) => (
-                <button
-                  key={p.label}
-                  onClick={() => { setSelectedPreset(i); setCustomDistanceStr('') }}
-                  className="rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition-all active:translate-y-0.5"
-                  style={
-                    selectedPreset === i
-                      ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
-                      : { background: '#cbc9c2', color: '#1a1205', boxShadow: '0 3px 0 #8a8983' }
-                  }
-                >
-                  {p.label}
-                </button>
-              ))}
-              <button
-                onClick={() => setSelectedPreset(null)}
-                className="rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition-all active:translate-y-0.5"
-                style={
-                  selectedPreset === null && customDistanceStr
-                    ? { background: '#ff5b00', color: '#1a1205', boxShadow: '0 3px 0 #a23a00' }
-                    : { background: '#2f6df6', color: '#fff', boxShadow: '0 3px 0 #1c45a8' }
-                }
-              >
-                Custom
-              </button>
-            </div>
-            {selectedPreset === null && (
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  value={customDistanceStr}
-                  onChange={(e) => setCustomDistanceStr(e.target.value)}
-                  placeholder="0"
-                  min="0"
-                  className="w-24 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-                />
-                <div className="flex rounded-lg border border-zinc-700 overflow-hidden">
-                  {(['km', 'mile'] as const).map((u) => (
-                    <button
-                      key={u}
-                      onClick={() => setCustomDistanceUnit(u)}
-                      className={`px-3 py-2 text-xs font-medium transition-colors ${
-                        customDistanceUnit === u
-                          ? 'bg-zinc-700 text-white'
-                          : 'text-zinc-500 hover:text-zinc-300'
-                      }`}
-                    >
-                      {u}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+          <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
+            <Fader
+              label="distance" display={`${distanceKm.toFixed(distanceKm % 1 ? 1 : 0)} km`}
+              value={distanceKm} min={0.5} max={42.2} step={0.1}
+              onChange={setDistanceKm} from="#f472b6" to="#a855f7"
+              ticks={['0', '21', '42 km']}
+            />
+            <Fader
+              label="pace" display={`${fmtPace(paceSec)} /km`}
+              value={paceSec} min={180} max={480} step={5}
+              onChange={setPaceSec} from="#34d399" to="#38bdf8"
+              ticks={['3:00', '5:30', '8:00']}
+            />
+            <Knob
+              label="tolerance" display={`±${tolerance}`}
+              value={tolerance} min={4} max={15} step={1}
+              onChange={setTolerance} from="#fbbf24" to="#f472b6"
+            />
           </div>
 
-          {/* Pace input */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs text-zinc-600 uppercase tracking-wider">Pace</p>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={paceMin}
-                onChange={(e) => setPaceMin(e.target.value)}
-                placeholder="5"
-                min="1"
-                max="30"
-                className="w-16 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-center text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-              />
-              <span className="text-zinc-600 text-sm">:</span>
-              <input
-                type="number"
-                value={paceSec}
-                onChange={(e) => setPaceSec(e.target.value)}
-                placeholder="00"
-                min="0"
-                max="59"
-                className="w-16 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-center text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-              />
-              <div className="flex rounded-lg border border-zinc-700 overflow-hidden">
-                {(['km', 'mile'] as const).map((u) => (
-                  <button
-                    key={u}
-                    onClick={() => setPaceUnit(u)}
-                    className={`px-3 py-2 text-xs font-medium transition-colors ${
-                      paceUnit === u
-                        ? 'bg-zinc-700 text-white'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                  >
-                    /{u}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map((p, i) => (
+              <button
+                key={p.label}
+                onClick={() => setDistanceKm(p.km)}
+                className="rounded-xl border px-3.5 py-2 text-xs font-bold transition-all"
+                style={activePreset === i
+                  ? { background: 'linear-gradient(135deg,#f0abfc,#a5f3fc)', color: '#1a0a2e', borderColor: 'transparent', boxShadow: '0 8px 20px -6px rgba(165,243,252,0.5)' }
+                  : { background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.72)', borderColor: 'rgba(255,255,255,0.14)' }}
+              >
+                {p.label}
+              </button>
+            ))}
           </div>
         </>
       ) : (
-        <>
-          {/* BPM input */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs text-zinc-600 uppercase tracking-wider">Target BPM</p>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={directBpmStr}
-                onChange={(e) => setDirectBpmStr(e.target.value)}
-                placeholder="175"
-                min="60"
-                max="220"
-                className="w-24 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-              />
-              <span className="text-xs text-zinc-600">BPM</span>
-            </div>
-          </div>
-
-          {/* Duration input */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs text-zinc-600 uppercase tracking-wider">Run Duration</p>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                value={durationHoursStr}
-                onChange={(e) => setDurationHoursStr(e.target.value)}
-                placeholder="0"
-                min="0"
-                max="24"
-                className="w-16 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-center text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-              />
-              <span className="text-xs text-zinc-500">h</span>
-              <input
-                type="number"
-                value={durationMinsStr}
-                onChange={(e) => setDurationMinsStr(e.target.value)}
-                placeholder="45"
-                min="0"
-                max="59"
-                className="w-16 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-center text-sm text-white placeholder-zinc-600 focus:border-teal-500/60 focus:outline-none"
-              />
-              <span className="text-xs text-zinc-500">min</span>
-            </div>
-          </div>
-        </>
+        <div className="mb-1 grid grid-cols-1 gap-3 sm:grid-cols-[auto_1fr_auto]">
+          <Knob
+            label="cadence" display={`${bpm}`}
+            value={bpm} min={120} max={200} step={1}
+            onChange={setBpm} from="#38bdf8" to="#a855f7"
+          />
+          <Fader
+            label="run duration" display={fmtDuration(durationMin * 60)}
+            value={durationMin} min={10} max={180} step={5}
+            onChange={setDurationMin} from="#f472b6" to="#fbbf24"
+            ticks={['10m', '90m', '3h']}
+          />
+          <Knob
+            label="tolerance" display={`±${tolerance}`}
+            value={tolerance} min={4} max={15} step={1}
+            onChange={setTolerance} from="#fbbf24" to="#f472b6"
+          />
+        </div>
       )}
 
-      {/* Generate — chunky physical button */}
+      {/* Readout */}
+      <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs text-white/80">
+        <span className="text-white/55">▸ </span>
+        <span className="font-semibold text-white">{configLabel}</span>
+        <span className="text-white/55"> · playlist ~{fmtDuration(bufferedDurationSec)} · windows {windows.half}½ · {windows.twoThirds}⅔ · {windows.full}</span>
+      </div>
+
+      {/* Generate */}
       <button
         onClick={handleGenerate}
         disabled={!isValid}
-        className="w-full rounded-xl py-3.5 text-sm font-extrabold uppercase tracking-[0.08em] transition-all duration-150 disabled:cursor-not-allowed enabled:active:translate-y-0.5"
-        style={
-          isValid
-            ? { background: 'linear-gradient(180deg, #ff7a2e, #ff5b00)', color: '#1a1205', boxShadow: '0 5px 0 #a23a00, 0 10px 24px -8px rgba(255,91,0,0.5)' }
-            : { background: '#3a3c44', color: '#6b6d75', boxShadow: '0 4px 0 #25272d' }
-        }
+        className="mt-4 w-full rounded-2xl py-4 text-sm font-extrabold text-[#10031f] transition-transform enabled:hover:scale-[1.01] enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+        style={{ background: 'linear-gradient(135deg,#f0abfc,#a5f3fc 55%,#7dd3fc)', boxShadow: '0 14px 34px -8px rgba(165,243,252,0.55)' }}
       >
         ▶ Generate run playlist
       </button>

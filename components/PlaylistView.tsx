@@ -80,13 +80,13 @@ export default function PlaylistView({
   return (
     <div className="flex flex-col gap-4" style={{ animation: 'springIn 0.35s ease both' }}>
       {/* Cinematic hero — colour washes in from the cover art */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10">
-        {/* accent wash + dark veil */}
+      <div className="glass relative overflow-hidden rounded-2xl">
+        {/* accent wash + translucent veil (glassy, lets vibrant bg through) */}
         <div
           className="absolute inset-0 transition-[background] duration-700"
-          style={{ background: `radial-gradient(120% 140% at 0% 0%, ${accent}, transparent 60%), radial-gradient(120% 120% at 100% 0%, ${accent}, transparent 70%)` }}
+          style={{ background: `radial-gradient(120% 150% at 0% 0%, ${accent}, transparent 55%), radial-gradient(120% 130% at 100% 10%, ${accent}, transparent 65%)` }}
         />
-        <div className="absolute inset-0 bg-zinc-950/82" />
+        <div className="absolute inset-0 bg-black/45 backdrop-blur-2xl" />
 
         <div className="relative flex items-end gap-4 p-4 sm:gap-5 sm:p-5">
           {/* Cover */}

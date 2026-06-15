@@ -42,14 +42,14 @@ export default function FeedbackBar({ onSend, onRegenerate, isGenerating, hasPla
             : 'Optional: describe the vibe (e.g. "late night study session", "summer road trip")…'
         }
         rows={2}
-        className="flex-1 resize-none rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-teal-500 focus:outline-none"
+        className="flex-1 resize-none rounded-xl border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder-white/40 backdrop-blur focus:border-fuchsia-400/60 focus:outline-none"
         disabled={isGenerating}
       />
       <div className="flex flex-col gap-1.5">
         {hasPlaylist && !isGenerating && (
           <button
             onClick={onRegenerate}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors"
+            className="rounded-xl border border-white/12 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
             Regenerate
           </button>
@@ -57,7 +57,8 @@ export default function FeedbackBar({ onSend, onRegenerate, isGenerating, hasPla
         <button
           onClick={handleSubmit}
           disabled={isGenerating || (!text.trim() && !canGenerate)}
-          className="rounded-lg bg-teal-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-teal-500 disabled:opacity-40 transition-colors"
+          className="rounded-xl px-4 py-2 text-sm font-bold text-[#10031f] transition-transform enabled:hover:scale-[1.03] disabled:opacity-40"
+          style={{ background: 'linear-gradient(135deg,#f0abfc,#a5f3fc)' }}
         >
           {isGenerating ? '…' : hasPlaylist ? 'Send' : 'Generate'}
         </button>

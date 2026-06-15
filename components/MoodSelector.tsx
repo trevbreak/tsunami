@@ -31,7 +31,7 @@ interface Props {
 export default function MoodSelector({ selected, onSelect }: Props) {
   return (
     <div className="flex flex-col items-center gap-3">
-      <p className="text-sm text-zinc-400 tracking-wide">Pick a mood</p>
+      <p className="text-sm tracking-wide text-white/70">Pick a mood</p>
 
       <div className="relative" style={{ width: SIZE, height: SIZE }}>
         {/* Outer gradient ring */}
@@ -50,9 +50,9 @@ export default function MoodSelector({ selected, onSelect }: Props) {
           style={{ inset: '12%' }}
         />
 
-        {/* Inner dark circle (center) */}
+        {/* Inner glass circle (center) */}
         <div
-          className="absolute rounded-full bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center gap-1"
+          className="glass absolute flex flex-col items-center justify-center gap-1 rounded-full"
           style={{ inset: '30%' }}
         >
           <span className="text-xl select-none">🌊</span>

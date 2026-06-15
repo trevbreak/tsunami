@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tsunami — Run as a vibrant DJ mixing desk</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;
+    color:#fff;padding:28px;display:flex;justify-content:center;background:#080611;
+  }
+  .frame{width:880px;max-width:100%;}
+  .cap{color:#8a86a8;font-size:12px;margin-bottom:14px;}
+
+  .stage{
+    position:relative;border-radius:28px;overflow:hidden;padding:24px;
+    background:
+      radial-gradient(70% 60% at 10% 6%, rgba(236,72,153,0.55), transparent 60%),
+      radial-gradient(60% 55% at 92% 2%, rgba(56,189,248,0.5), transparent 55%),
+      radial-gradient(85% 75% at 75% 105%, rgba(168,85,247,0.55), transparent 60%),
+      radial-gradient(60% 60% at 12% 100%, rgba(251,191,36,0.32), transparent 55%),
+      #0c0a1a;
+  }
+  .glass{
+    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);
+    backdrop-filter:blur(18px);border-radius:20px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;}
+  .pill{font-size:12px;padding:7px 13px;border-radius:999px;}
+  .seg{display:flex;gap:6px;padding:5px;border-radius:16px;}
+  .seg button{border:none;cursor:pointer;font-size:13px;font-weight:600;padding:8px 16px;border-radius:12px;background:transparent;color:rgba(255,255,255,0.65);}
+  .seg button.on{background:linear-gradient(135deg,#38bdf8,#a855f7);color:#fff;box-shadow:0 8px 20px -6px rgba(168,85,247,0.6);}
+
+  .desk{padding:22px;margin-bottom:16px;}
+  .deck-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+  .deck-title{font-size:22px;font-weight:800;letter-spacing:-0.02em;
+    background:linear-gradient(90deg,#fff,#e9d5ff 55%,#a5f3fc);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .deck-sub{font-size:12px;color:rgba(255,255,255,0.6);}
+
+  /* KNOBS */
+  .knobs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .knob{display:flex;flex-direction:column;align-items:center;gap:9px;padding:14px 8px;border-radius:18px;
+    background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);}
+  .dial{position:relative;width:92px;height:92px;}
+  .dial svg{transform:rotate(0deg);}
+  .knobcap{position:absolute;inset:20px;border-radius:50%;
+    background:radial-gradient(circle at 38% 30%, rgba(255,255,255,0.25), rgba(10,8,20,0.9) 70%);
+    border:1px solid rgba(255,255,255,0.18);box-shadow:inset 0 2px 6px rgba(0,0,0,0.5);}
+  .knobcap::after{content:"";position:absolute;left:50%;top:8px;width:3px;height:16px;border-radius:3px;
+    background:#fff;transform:translateX(-50%);box-shadow:0 0 8px rgba(255,255,255,0.8);}
+  .knob .val{font-size:18px;font-weight:800;letter-spacing:-0.02em;}
+  .knob .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.55);}
+
+  /* FADERS */
+  .faders{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+  .fader{padding:14px 16px;border-radius:18px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);}
+  .fader .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+  .fader .name{font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.55);}
+  .fader .read{font-size:16px;font-weight:800;}
+  .rail{position:relative;height:12px;border-radius:8px;background:rgba(0,0,0,0.35);box-shadow:inset 0 1px 3px rgba(0,0,0,0.6);}
+  .rail .fill{position:absolute;left:0;top:0;bottom:0;border-radius:8px;}
+  .rail .thumb{position:absolute;top:50%;width:26px;height:26px;border-radius:9px;transform:translate(-50%,-50%);
+    background:linear-gradient(180deg,#fff,#dbe4ff);box-shadow:0 4px 12px rgba(0,0,0,0.5), 0 0 0 4px rgba(255,255,255,0.12);}
+  .ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:rgba(255,255,255,0.4);}
+
+  /* presets */
+  .presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+  .preset{font-size:12px;font-weight:700;padding:9px 14px;border-radius:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);}
+  .preset.on{background:linear-gradient(135deg,#f0abfc,#a5f3fc);color:#1a0a2e;border-color:transparent;box-shadow:0 8px 20px -6px rgba(165,243,252,0.5);}
+
+  /* readout strip + generate */
+  .readout{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;margin-bottom:14px;}
+  .readout .big{font-size:13px;color:rgba(255,255,255,0.85);}
+  .readout .big b{color:#fff;}
+  .cadence-badge{text-align:center;padding:8px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(168,85,247,0.25));border:1px solid rgba(255,255,255,0.18);}
+  .cadence-badge .n{font-size:26px;font-weight:900;line-height:1;background:linear-gradient(90deg,#7dd3fc,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .cadence-badge .u{font-size:9px;text-transform:uppercase;letter-spacing:0.14em;color:rgba(255,255,255,0.6);margin-top:3px;}
+  .generate{width:100%;border:none;cursor:pointer;padding:16px;border-radius:18px;font-size:15px;font-weight:800;color:#10031f;
+    background:linear-gradient(135deg,#f0abfc,#a5f3fc 55%,#7dd3fc);box-shadow:0 14px 34px -8px rgba(165,243,252,0.55);}
+
+  .hint{font-size:11px;color:rgba(255,255,255,0.45);margin-top:10px;text-align:center;}
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="cap">RUN as a DJ mixing desk — vibrant gradient/glass aesthetic, with interactive knobs (rotary drag) + faders (drag)</div>
+    <div class="stage">
+      <div class="topbar">
+        <div class="brand">🌊 Tsunami</div>
+        <div class="seg glass">
+          <button>✨ Create</button>
+          <button>🎵 Enhance</button>
+          <button class="on">🏃 Run</button>
+        </div>
+      </div>
+
+      <div class="desk glass">
+        <div class="deck-head">
+          <div>
+            <div class="deck-title">Run Sequencer</div>
+            <div class="deck-sub">Dial in your run — music locks to your cadence</div>
+          </div>
+          <div class="cadence-badge"><div class="n">158</div><div class="u">cadence bpm</div></div>
+        </div>
+
+        <!-- KNOBS -->
+        <div class="knobs">
+          <!-- each knob: arc value via stroke-dasharray -->
+          <div class="knob">
+            <div class="dial">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
+                <circle cx="46" cy="46" r="38" fill="none" stroke="url(#g1)" stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="179 239" transform="rotate(135 46 46)"/>
+                <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+              </svg>
+              <div class="knobcap" style="transform:rotate(40deg)"></div>
+            </div>
+            <div class="val">158</div><div class="lbl">cadence</div>
+          </div>
+
+          <div class="knob">
+            <div class="dial">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
+                <circle cx="46" cy="46" r="38" fill="none" stroke="url(#g2)" stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="110 239" transform="rotate(135 46 46)"/>
+                <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs>
+              </svg>
+              <div class="knobcap" style="transform:rotate(-20deg)"></div>
+            </div>
+            <div class="val">5.0<span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5)"> km</span></div><div class="lbl">distance</div>
+          </div>
+
+          <div class="knob">
+            <div class="dial">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
+                <circle cx="46" cy="46" r="38" fill="none" stroke="url(#g3)" stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="150 239" transform="rotate(135 46 46)"/>
+                <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs>
+              </svg>
+              <div class="knobcap" style="transform:rotate(15deg)"></div>
+            </div>
+            <div class="val">5:00<span style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5)">/km</span></div><div class="lbl">pace</div>
+          </div>
+
+          <div class="knob">
+            <div class="dial">
+              <svg width="92" height="92" viewBox="0 0 92 92">
+                <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="7"/>
+                <circle cx="46" cy="46" r="38" fill="none" stroke="url(#g4)" stroke-width="7" stroke-linecap="round"
+                  stroke-dasharray="70 239" transform="rotate(135 46 46)"/>
+                <defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+              </svg>
+              <div class="knobcap" style="transform:rotate(-55deg)"></div>
+            </div>
+            <div class="val">±8</div><div class="lbl">tolerance</div>
+          </div>
+        </div>
+
+        <!-- FADERS -->
+        <div class="faders">
+          <div class="fader">
+            <div class="top"><span class="name">distance</span><span class="read">5.0 km</span></div>
+            <div class="rail"><div class="fill" style="width:42%;background:linear-gradient(90deg,#f472b6,#a855f7)"></div><div class="thumb" style="left:42%"></div></div>
+            <div class="ticks"><span>0</span><span>21</span><span>42 km</span></div>
+          </div>
+          <div class="fader">
+            <div class="top"><span class="name">pace</span><span class="read">5:00 /km</span></div>
+            <div class="rail"><div class="fill" style="width:60%;background:linear-gradient(90deg,#34d399,#38bdf8)"></div><div class="thumb" style="left:60%"></div></div>
+            <div class="ticks"><span>3:00</span><span>5:30</span><span>8:00</span></div>
+          </div>
+        </div>
+
+        <div class="presets">
+          <span class="preset">1K</span><span class="preset on">5K</span><span class="preset">10K</span>
+          <span class="preset">½ Marathon</span><span class="preset">Marathon</span><span class="preset">Custom</span>
+        </div>
+      </div>
+
+      <div class="readout glass">
+        <div class="big">▸ <b>5K Run · 158 BPM</b> · playlist ~34 min · windows 79½ · 105⅔ · 158</div>
+        <div class="cadence-badge"><div class="n">158</div><div class="u">bpm</div></div>
+      </div>
+
+      <button class="generate">▶ Generate run playlist</button>
+      <div class="hint">drag knobs up/down to adjust · drag faders left/right · tap a preset to snap distance</div>
+    </div>
+  </div>
+</body>
+</html>

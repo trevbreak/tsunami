@@ -35,8 +35,8 @@ export default function PlaylistPicker({ onSelect }: Props) {
   if (loading) {
     return (
       <div className="flex flex-col items-center gap-3 py-10">
-        <div className="h-6 w-6 rounded-full border-2 border-zinc-700 border-t-teal-400 animate-spin" />
-        <p className="text-sm text-zinc-500">Loading your playlists…</p>
+        <div className="h-6 w-6 rounded-full border-2 border-white/20 border-t-fuchsia-300 animate-spin" />
+        <p className="text-sm text-white/60">Loading your playlists…</p>
       </div>
     )
   }
@@ -52,8 +52,8 @@ export default function PlaylistPicker({ onSelect }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 className="text-base font-semibold text-white">Choose a playlist to enhance</h2>
-        <p className="text-xs text-zinc-500">
+        <h2 className="text-lg font-bold gradient-text">Choose a playlist to enhance</h2>
+        <p className="text-xs text-white/55">
           Select a playlist and Tsunami will find new tracks that match its style
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function PlaylistPicker({ onSelect }: Props) {
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search playlists…"
-        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-teal-500 focus:outline-none"
+        className="w-full rounded-xl border border-white/12 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/40 backdrop-blur focus:border-fuchsia-400/60 focus:outline-none"
       />
 
       {/* List */}
@@ -76,24 +76,24 @@ export default function PlaylistPicker({ onSelect }: Props) {
             <button
               key={p.id}
               onClick={() => onSelect(p)}
-              className="flex items-center gap-4 rounded-xl border border-zinc-800/60 bg-zinc-900/60 p-4 text-left transition-all hover:border-teal-700/40 hover:bg-zinc-800/60 group"
+              className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 text-left backdrop-blur transition-all hover:border-white/20 hover:bg-white/10"
             >
               {/* Playlist icon */}
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-xl group-hover:bg-zinc-700 transition-colors">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/10 text-xl transition-colors group-hover:bg-white/15">
                 🎵
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-white text-sm">{p.title}</p>
-                <p className="text-xs text-zinc-500 mt-0.5">
+                <p className="truncate text-sm font-semibold text-white">{p.title}</p>
+                <p className="mt-0.5 text-xs text-white/55">
                   {p.track_count} tracks
                   {p.description && (
-                    <span className="text-zinc-600"> · {p.description.slice(0, 60)}</span>
+                    <span className="text-white/40"> · {p.description.slice(0, 60)}</span>
                   )}
                 </p>
               </div>
 
-              <div className="shrink-0 text-zinc-600 group-hover:text-teal-400 transition-colors text-lg">
+              <div className="shrink-0 text-lg text-white/40 transition-colors group-hover:text-fuchsia-300">
                 →
               </div>
             </button>

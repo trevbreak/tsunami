@@ -30,12 +30,12 @@ export default function TrackCard({ track, index, isSwapping = false, onAccept, 
       }}
     >
       <div
-        className={`flex items-center gap-3 rounded-xl p-3 transition-all duration-200 group ${
+        className={`flex items-center gap-3 rounded-xl p-3 transition-all duration-200 group backdrop-blur ${
           isSwapping
-            ? 'bg-zinc-900/80 border border-teal-600/50 ring-1 ring-teal-600/20'
+            ? 'bg-white/8 border border-sky-400/50 ring-1 ring-sky-400/25'
             : isAccepted
-            ? 'bg-emerald-950/40 border border-emerald-700/30'
-            : 'bg-zinc-900/80 border border-zinc-800/60 hover:border-zinc-700/80'
+            ? 'border border-emerald-400/40 bg-emerald-400/10'
+            : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20'
         }`}
         style={{
           animation: `fadeUp 0.3s ease ${index * 0.04}s both`,
@@ -51,7 +51,7 @@ export default function TrackCard({ track, index, isSwapping = false, onAccept, 
               onError={() => setImgError(true)}
             />
           ) : (
-            <div className="h-12 w-12 rounded-lg bg-zinc-800 flex items-center justify-center text-zinc-600 text-xs font-bold select-none">
+            <div className="h-12 w-12 rounded-lg bg-white/10 flex items-center justify-center text-white/50 text-xs font-bold select-none">
               {track.artist?.[0] ?? '♪'}
             </div>
           )}
@@ -65,18 +65,18 @@ export default function TrackCard({ track, index, isSwapping = false, onAccept, 
         {/* Track info */}
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-white leading-tight">{track.title}</p>
-          <p className="truncate text-xs text-zinc-400 mt-0.5">
+          <p className="truncate text-xs text-white/65 mt-0.5">
             {track.artist}
-            {track.album && <span className="text-zinc-600"> · {track.album}</span>}
+            {track.album && <span className="text-white/40"> · {track.album}</span>}
           </p>
           {track.reason && (
-            <p className="truncate text-[11px] text-zinc-500 mt-1 italic">{track.reason}</p>
+            <p className="truncate text-[11px] text-white/55 mt-1 italic">{track.reason}</p>
           )}
         </div>
 
         {/* Duration */}
         {track.duration ? (
-          <span className="shrink-0 text-xs text-zinc-600 tabular-nums">
+          <span className="shrink-0 text-xs text-white/45 tabular-nums">
             {Math.floor(track.duration / 60)}:{String(track.duration % 60).padStart(2, '0')}
           </span>
         ) : null}
@@ -89,7 +89,7 @@ export default function TrackCard({ track, index, isSwapping = false, onAccept, 
             target="_blank"
             rel="noreferrer"
             title="Play in TIDAL"
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-700 hover:text-teal-400 transition-all"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 hover:bg-white/15 hover:text-sky-300 transition-all"
             onClick={(e) => e.stopPropagation()}
           >
             <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
@@ -103,8 +103,8 @@ export default function TrackCard({ track, index, isSwapping = false, onAccept, 
             title="Add to playlist"
             className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all text-sm font-medium ${
               isAccepted
-                ? 'bg-emerald-600 text-white'
-                : 'text-zinc-500 hover:bg-emerald-800/40 hover:text-emerald-400'
+                ? 'bg-emerald-500 text-emerald-950'
+                : 'text-white/50 hover:bg-emerald-400/20 hover:text-emerald-300'
             }`}
           >
             ✓

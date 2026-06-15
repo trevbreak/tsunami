@@ -1,77 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: #09090b;
+  --background: #0c0a1a;
   --foreground: #fafafa;
-  /* Single accent — restrained, Linear-style */
-  --accent: #2dd4bf;        /* teal-400 */
-  --accent-strong: #14b8a6; /* teal-500 */
-  --ring: rgba(45, 212, 191, 0.55);
+  --ring: rgba(168, 85, 247, 0.55);
 }
 
-@theme inline {
-  --color-accent: var(--accent);
-}
-
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
   color: var(--foreground);
   font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  background: var(--background);
 }
 
-::selection {
-  background: rgba(45, 212, 191, 0.25);
+/* Vibrant ambient backdrop — fixed gradient blobs behind everything.
+   page.tsx can shift the hue via --glow-1 / --glow-2 (mood-reactive). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 8% 4%, var(--glow-1, rgba(236, 72, 153, 0.40)), transparent 60%),
+    radial-gradient(55% 50% at 94% 2%, var(--glow-2, rgba(56, 189, 248, 0.38)), transparent 55%),
+    radial-gradient(75% 65% at 78% 102%, rgba(168, 85, 247, 0.42), transparent 60%),
+    radial-gradient(55% 55% at 10% 100%, rgba(251, 191, 36, 0.22), transparent 55%);
+  transition: background 0.8s ease;
 }
+body > * { position: relative; z-index: 1; }
 
-/* Quiet, consistent scrollbars */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #3f3f46 transparent;
-}
+::selection { background: rgba(168, 85, 247, 0.3); }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent; }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 8px; }
-*::-webkit-scrollbar-thumb:hover { background: #52525b; }
+*::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 8px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
-/* One crisp focus treatment across interactive elements */
-button:focus-visible,
-a:focus-visible,
-[role="button"]:focus-visible {
+button:focus-visible, a:focus-visible, [role="button"]:focus-visible, [role="slider"]:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
-  border-radius: 0.5rem;
 }
 
-/* Shared surface so components stop hand-rolling card styles */
-.card {
-  background: rgba(24, 24, 27, 0.6);
-  border: 1px solid rgba(39, 39, 42, 0.7);
-  border-radius: 0.75rem;
+/* ---- Vibrant design system ---- */
+.glass {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.gradient-text {
+  background-image: linear-gradient(90deg, #ffffff, #e9d5ff 55%, #a5f3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-@keyframes eq {
-  0%, 100% { transform: scaleY(0.15); }
-  50% { transform: scaleY(1); }
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+@keyframes eq { 0%, 100% { transform: scaleY(0.15); } 50% { transform: scaleY(1); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes springIn {
-  0% { opacity: 0; transform: translateY(10px) scale(0.98); }
-  60% { opacity: 1; transform: translateY(-1px) scale(1.005); }
+  0% { opacity: 0; transform: translateY(10px) scale(0.985); }
+  60% { opacity: 1; transform: translateY(-1px) scale(1.004); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }

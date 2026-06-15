@@ -461,7 +461,7 @@ export default function Home() {
 
   if (appStatus === 'checking') {
     return (
-      <div className="flex h-screen items-center justify-center bg-zinc-950 text-zinc-500 text-sm">
+      <div className="flex h-screen items-center justify-center text-white/60 text-sm">
         Connecting…
       </div>
     )
@@ -471,14 +471,13 @@ export default function Home() {
   const isEnhanceMode = mode === 'enhance'
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <header className="sticky top-0 z-10 border-b border-zinc-800/60 bg-zinc-950/95 backdrop-blur">
+    <div className="min-h-screen text-white">
+      <header className="sticky top-0 z-10 border-b border-white/10 bg-black/20 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <span className="text-xl">🌊</span>
-            <span className="font-semibold tracking-tight">Tsunami</span>
-            <span className="text-xs text-zinc-600">·</span>
-            <span className="text-xs text-zinc-500">AI Playlist Curator</span>
+            <span className="font-bold tracking-tight gradient-text">Tsunami</span>
+            <span className="hidden text-xs text-white/40 sm:inline">· AI Playlist Curator</span>
           </div>
           <div className="flex items-center gap-2">
             {appStatus === 'connected' && libraryStatus !== null && (
@@ -486,25 +485,25 @@ export default function Home() {
                 onClick={() => triggerSync(libraryStatus.synced ? 'incremental' : 'full')}
                 disabled={isSyncing}
                 title={isSyncing ? syncMessage : libraryStatus.synced ? `Sync library · ${libraryStatus.bpmTracksCount.toLocaleString()} tracks with BPM` : 'Library not synced — click to sync'}
-                className="flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-2.5 py-1 text-xs text-white/60 transition-colors hover:bg-white/10 hover:text-white/90 disabled:opacity-60"
               >
                 {isSyncing ? (
-                  <span className="h-2.5 w-2.5 rounded-full border border-zinc-600 border-t-teal-400 animate-spin shrink-0" />
+                  <span className="h-2.5 w-2.5 rounded-full border border-white/30 border-t-fuchsia-300 animate-spin shrink-0" />
                 ) : (
-                  <span className={`text-[10px] ${libraryStatus.synced ? 'text-zinc-600' : 'text-amber-500'}`}>↻</span>
+                  <span className={`text-[10px] ${libraryStatus.synced ? 'text-white/50' : 'text-amber-400'}`}>↻</span>
                 )}
                 {isSyncing ? (
                   <span className="hidden sm:inline max-w-[140px] truncate">{syncMessage}</span>
                 ) : libraryStatus.synced ? (
                   <span className="hidden sm:inline">{libraryStatus.trackCount.toLocaleString()} tracks</span>
                 ) : (
-                  <span className="hidden sm:inline text-amber-500/80">Sync library</span>
+                  <span className="hidden sm:inline text-amber-400/90">Sync library</span>
                 )}
               </button>
             )}
             {appStatus === 'connected' && tidalUser && (
-              <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-400">
-                <span className="h-1.5 w-1.5 rounded-full bg-teal-400 shadow-[0_0_6px_rgba(45,212,191,0.7)]" />
+              <div className="flex items-center gap-1.5 rounded-full border border-white/12 bg-white/5 px-3 py-1 text-xs text-white/70">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 {tidalUser}
               </div>
             )}
@@ -513,22 +512,22 @@ export default function Home() {
       </header>
 
       {isSyncing && syncProgress && (
-        <div className="sticky top-[49px] z-10 border-b border-zinc-800/60 bg-zinc-950/95 backdrop-blur">
+        <div className="sticky top-[49px] z-10 border-b border-white/10 bg-black/30 backdrop-blur-xl">
           <div className="mx-auto max-w-3xl px-4 py-2.5">
             <div className="flex items-center justify-between gap-3 text-xs">
-              <span className="text-zinc-300 truncate">
+              <span className="text-white/80 truncate">
                 {syncProgress.phase === 'bpm' ? '🎚️ Analysing BPM' : '↻ Syncing library'} — {syncProgress.current.toLocaleString()} of {syncProgress.total.toLocaleString()}
               </span>
-              {syncEta && <span className="shrink-0 tabular-nums text-zinc-500">{syncEta}</span>}
+              {syncEta && <span className="shrink-0 tabular-nums text-white/50">{syncEta}</span>}
             </div>
-            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-teal-400 transition-all duration-500"
-                style={{ width: `${Math.min(100, (syncProgress.current / syncProgress.total) * 100)}%` }}
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, (syncProgress.current / syncProgress.total) * 100)}%`, background: 'linear-gradient(90deg,#38bdf8,#a855f7)' }}
               />
             </div>
             {syncProgress.phase === 'bpm' && (
-              <p className="mt-1 text-[11px] text-zinc-600">
+              <p className="mt-1 text-[11px] text-white/45">
                 One-time analysis — keep this window open. Your library is being prepared for BPM-matched running playlists.
               </p>
             )}
@@ -542,16 +541,15 @@ export default function Home() {
         ) : (
           <div className="flex flex-col gap-6">
             {/* Mode switcher */}
-            <div className="flex gap-1 rounded-xl border border-zinc-800 bg-zinc-900/40 p-1">
+            <div className="flex gap-1.5 rounded-2xl border border-white/12 bg-white/5 p-1.5 backdrop-blur">
               {(['create', 'enhance', 'run'] as AppMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
-                  className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                    mode === m
-                      ? 'bg-zinc-800 text-white shadow-sm ring-1 ring-inset ring-teal-500/20'
-                      : 'text-zinc-500 hover:bg-zinc-800/40 hover:text-zinc-300'
-                  }`}
+                  className="flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200"
+                  style={mode === m
+                    ? { background: 'linear-gradient(135deg,#38bdf8,#a855f7)', color: '#fff', boxShadow: '0 8px 22px -8px rgba(168,85,247,0.7)' }
+                    : { color: 'rgba(255,255,255,0.6)' }}
                 >
                   {m === 'create' ? '✨ New Playlist' : m === 'enhance' ? '🎵 Enhance Existing' : '🏃 Run'}
                 </button>
@@ -595,12 +593,12 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => { setRunConfig(null); setTracks([]); setSavedUrl('') }}
-                    className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
+                    className="text-xs text-white/50 hover:text-white transition-colors"
                   >
                     ← Change settings
                   </button>
-                  <span className="text-xs text-zinc-600">·</span>
-                  <span className="text-xs text-zinc-400">{runConfig?.label}</span>
+                  <span className="text-xs text-white/30">·</span>
+                  <span className="text-xs text-white/70">{runConfig?.label}</span>
                 </div>
               ) : (
                 <RunnerConfig onGenerate={(cfg) => { setRunConfig(cfg); runRun(undefined, cfg) }} />
@@ -613,16 +611,16 @@ export default function Home() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => { setTargetPlaylist(null); setTracks([]); setSavedUrl('') }}
-                      className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
+                      className="text-xs text-white/50 hover:text-white transition-colors"
                     >
                       ← Change playlist
                     </button>
-                    <span className="text-xs text-zinc-600">·</span>
-                    <span className="text-xs text-zinc-400">Enhancing: {targetPlaylist.title}</span>
+                    <span className="text-xs text-white/30">·</span>
+                    <span className="text-xs text-white/70">Enhancing: {targetPlaylist.title}</span>
                   </div>
                 ) : loadingPlaylistTracks ? (
-                  <div className="flex items-center gap-3 py-4 text-sm text-zinc-500">
-                    <div className="h-4 w-4 rounded-full border-2 border-zinc-700 border-t-teal-400 animate-spin shrink-0" />
+                  <div className="flex items-center gap-3 py-4 text-sm text-white/60">
+                    <div className="h-4 w-4 rounded-full border-2 border-white/20 border-t-fuchsia-300 animate-spin shrink-0" />
                     Loading playlist tracks…
                   </div>
                 ) : null
@@ -634,7 +632,7 @@ export default function Home() {
               hasPlaylist ? (
                 /* Compact mood strip */
                 <div className="flex flex-col gap-2">
-                  <p className="text-xs text-zinc-600 uppercase tracking-wider">Refine by mood</p>
+                  <p className="text-[11px] uppercase tracking-[0.12em] text-white/45">Refine by mood</p>
                   <div className="flex flex-wrap gap-2">
                     {(Object.keys(MOOD_COLORS) as Mood[]).map((mood) => {
                       const isSelected = selectedMood === mood
@@ -642,11 +640,12 @@ export default function Home() {
                         <button
                           key={mood}
                           onClick={() => setSelectedMood(isSelected ? null : mood)}
-                          className="rounded-full px-3 py-1 text-xs font-medium capitalize transition-all duration-150"
+                          className="rounded-full px-3.5 py-1.5 text-xs font-semibold capitalize transition-all duration-150"
                           style={{
-                            background: isSelected ? MOOD_COLORS[mood] + '22' : 'transparent',
-                            border: `1px solid ${isSelected ? MOOD_COLORS[mood] : 'rgba(255,255,255,0.1)'}`,
-                            color: isSelected ? MOOD_COLORS[mood] : 'rgba(255,255,255,0.4)',
+                            background: isSelected ? MOOD_COLORS[mood] + '33' : 'rgba(255,255,255,0.05)',
+                            border: `1px solid ${isSelected ? MOOD_COLORS[mood] : 'rgba(255,255,255,0.14)'}`,
+                            color: isSelected ? '#fff' : 'rgba(255,255,255,0.6)',
+                            boxShadow: isSelected ? `0 6px 18px -6px ${MOOD_COLORS[mood]}` : 'none',
                           }}
                         >
                           {mood}
