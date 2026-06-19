@@ -11,6 +11,7 @@ const PRESETS = [
   { label: '10K', km: 10 },
   { label: '½ Mar', km: 21.0975 },
   { label: 'Marathon', km: 42.195 },
+  { label: '50K', km: 50 },
 ]
 
 function paceToTargetBpm(paceMinPerKm: number): number {
@@ -110,18 +111,18 @@ export default function RunnerConfig({ onGenerate }: Props) {
           <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
             <Fader
               label="distance" display={`${distanceKm.toFixed(distanceKm % 1 ? 1 : 0)} km`}
-              value={distanceKm} min={0.5} max={42.2} step={0.1}
+              value={distanceKm} min={0.5} max={100} step={0.5}
               onChange={setDistanceKm} from="#f472b6" to="#a855f7"
-              ticks={['0', '21', '42 km']}
+              ticks={['1', '50', '100 km']}
             />
             <Fader
               label="pace" display={`${fmtPace(paceSec)} /km`}
-              value={paceSec} min={180} max={480} step={5}
+              value={paceSec} min={150} max={600} step={5}
               onChange={setPaceSec} from="#34d399" to="#38bdf8"
-              ticks={['3:00', '5:30', '8:00']}
+              ticks={['2:30', '6:15', '10:00']}
             />
             <Knob
-              label="tolerance" display={`±${tolerance}`}
+              label="bpm tolerance" display={`±${tolerance}`}
               value={tolerance} min={4} max={15} step={1}
               onChange={setTolerance} from="#fbbf24" to="#f472b6"
             />
@@ -151,12 +152,12 @@ export default function RunnerConfig({ onGenerate }: Props) {
           />
           <Fader
             label="run duration" display={fmtDuration(durationMin * 60)}
-            value={durationMin} min={10} max={180} step={5}
+            value={durationMin} min={10} max={600} step={5}
             onChange={setDurationMin} from="#f472b6" to="#fbbf24"
-            ticks={['10m', '90m', '3h']}
+            ticks={['10m', '5h', '10h']}
           />
           <Knob
-            label="tolerance" display={`±${tolerance}`}
+            label="bpm tolerance" display={`±${tolerance}`}
             value={tolerance} min={4} max={15} step={1}
             onChange={setTolerance} from="#fbbf24" to="#f472b6"
           />
