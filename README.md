@@ -8,23 +8,33 @@ The ranking is **not hard-coded magic** — it's a transparent weighted scorer y
 
 ---
 
-## 📸 A look inside
+## 🎧 Three ways to build a playlist
 
-**Create mode** — pick a mood, and Claude builds a playlist from your locally-ranked library. The result streams in with a per-track *reason*, a smart editable name, and one-tap accept / skip before you save to TIDAL.
+Tsunami is three modes behind one tab bar. They share the same engine — your locally-ranked TIDAL library, Claude's curation, and DJ-style sequencing — but each is tuned for a different moment.
 
-| Pick a mood | Curated, sequenced & named |
+### ✨ New Playlist — start from a mood
+
+Spin the mood wheel — romance, energetic, chill, melancholy, focus, party — and Claude assembles a 15–20 track playlist from your locally-ranked favourites, deliberately leaning into deeper cuts over the obvious hits. Tracks stream in live, each with a one-line *reason* for the pick, a smart editable name, and one-tap **accept / skip** before you save straight back to TIDAL.
+
+| Spin the mood wheel | Curated, sequenced & named |
 | --- | --- |
-| [![Create mode mood selector](docs/screenshots/01-create-mood.png)](docs/screenshots/01-create-mood.png) | [![Generated playlist with editable name](docs/screenshots/02-create-playlist.png)](docs/screenshots/02-create-playlist.png) |
+| [![New Playlist mood wheel](docs/screenshots/01-create-mood.png)](docs/screenshots/01-create-mood.png) | [![Generated playlist with cover art and per-track reasons](docs/screenshots/02-create-playlist.png)](docs/screenshots/02-create-playlist.png) |
 
-**Smart track swap** — don't like a track? Skipping it surfaces 3–5 alternatives that fit *that slot* in the flow (run playlists match it locally by BPM; create/enhance use TIDAL radio). Swap one in, or remove it entirely. **Run mode** turns a distance + pace into a running cadence and tempo-matched windows.
+### 🎵 Enhance Existing — grow a playlist you already love
 
-| Skip → swap in a better fit | Run to your cadence |
+Point Tsunami at any playlist in your TIDAL account and it reads that playlist's "musical DNA," then suggests new tracks that match its style **without duplicating what's already there**. Keep the ones that land and append them in place — your existing order stays intact.
+
+| Pick a playlist | Additions that match its style |
 | --- | --- |
-| [![Smart track swap alternatives](docs/screenshots/03-swap-alternatives.png)](docs/screenshots/03-swap-alternatives.png) | [![Run mode cadence config](docs/screenshots/04-run-config.png)](docs/screenshots/04-run-config.png) |
+| [![Choose a playlist to enhance](docs/screenshots/03-enhance-picker.png)](docs/screenshots/03-enhance-picker.png) | [![Suggested additions that fit the playlist](docs/screenshots/04-enhance-result.png)](docs/screenshots/04-enhance-result.png) |
 
-**Enhance mode** — point Tsunami at a playlist you already have and it suggests tracks that match its style without duplicating what's there.
+### 🏃 Run — music locked to your cadence
 
-[![Enhance: choose a playlist](docs/screenshots/05-enhance-picker.png)](docs/screenshots/05-enhance-picker.png)
+Dial in a distance and pace (or a direct BPM) and the DJ-desk turns it into a running cadence with tempo-matched windows (half-time / two-thirds / full). The sliders stretch all the way — a 1K sprint to a **100K ultra**, world-record marathon pace down to a 10:00/km plod, and runs up to **10 hours** — and Tsunami fills a playlist long enough to cover the whole distance, BPM-matched and beat-sequenced so the tempo carries you.
+
+[![Run sequencer with distance, pace and BPM-tolerance controls](docs/screenshots/05-run-config.png)](docs/screenshots/05-run-config.png)
+
+> **Don't like a pick?** In every mode, skipping a track surfaces 3–5 alternatives that fit *that slot* in the flow — Run matches them locally by BPM, Create/Enhance use TIDAL radio seeded from the track and its neighbours. Swap one in-place, or drop it entirely.
 
 ---
 
@@ -315,7 +325,7 @@ This unlocks **style-aware sequencing** (small genre clusters, gradual transitio
 
 ## 🆕 Recent changes
 
-*   **Smart track swap + named saves + UI pass** — Skipping a track now suggests fitting alternatives to swap in-place (Run: instant local BPM match; Create/Enhance: TIDAL radio); playlists get an editable smart-default name before saving; and a Linear-style visual refresh (design tokens, focus rings, motion). See [A look inside](#-a-look-inside).
+*   **Smart track swap + named saves + UI pass** — Skipping a track now suggests fitting alternatives to swap in-place (Run: instant local BPM match; Create/Enhance: TIDAL radio); playlists get an editable smart-default name before saving; and a Linear-style visual refresh (design tokens, focus rings, motion). See [Three ways to build a playlist](#-three-ways-to-build-a-playlist).
 *   **Local recommendation engine** — TIDAL library is synced to SQLite and ranked locally by recency-of-add + play-frecency + novelty, with same-recording (ISRC) de-duplication and per-artist diversity caps. See [How recommendation ranking works](#-how-recommendation-ranking-works).
 *   **DJ sequencer** — final tracklists are ordered for smooth tempo/key/style transitions with artist spacing (`lib/sequencer.ts`).
 *   **Tuning harness** — `public/tuner.html` + `/api/tuning` persistence let you A/B weight configs against your own library and bake in the winners. The shipped defaults were trained here over two rounds (`nimbalyst-local/tuning/`).

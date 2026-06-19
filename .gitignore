@@ -44,3 +44,6 @@ yarn-error.log*
 next-env.d.ts
 *.local
 data/
+
+# nimbalyst editor workspace scratch (transcript images, browser sessions)
+/.nimbalyst/
