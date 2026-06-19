@@ -157,14 +157,20 @@ export async function POST(req: NextRequest) {
               const rawTracks = parseTracksFromMessage(block.text)
               if (rawTracks.length > 0) {
                 send({ type: 'status', phase: 'curating', message: 'Assembling your run playlist…' })
+                // Library/discovery picks arrive as bare IDs from the model — their
+                // cover art lives in the local DB, so look those rows up and use them
+                // as a fallback for art/links the TIDAL tool calls never captured.
+                const dbRows = new Map(
+                  getTracksByIds(rawTracks.map((t) => t.tidal_id)).map((r) => [r.id, r])
+                )
                 const enriched = rawTracks.map((t) => ({
                   ...t,
-                  cover_url: t.cover_url || coverMap.get(t.tidal_id),
-                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
+                  cover_url: t.cover_url || coverMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.cover_url || undefined,
+                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.tidal_url || undefined,
                 }))
                 // DJ-sequence the final list: smooth tempo/key transitions, spaced artists.
                 const audio = new Map<string, SeqAudio>(
-                  getTracksByIds(enriched.map((t) => t.tidal_id)).map((r) => [
+                  [...dbRows.values()].map((r) => [
                     r.id,
                     { bpm: r.bpm, music_key: r.music_key, key_scale: r.key_scale },
                   ])
