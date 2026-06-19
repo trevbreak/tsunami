@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently --names \"tidal,bpm,next\" --prefix-colors \"cyan,yellow,magenta\" \"npm run tidal\" \"npm run bpm\" \"next dev\"",
-    "tidal": "cd /Users/trev/GIT/tidal-mcp && TIDAL_MCP_PORT=5100 uv run python tidal_api/app.py",
+    "tidal": "cd \"${TIDAL_MCP_DIR:-../tidal-mcp}\" && TIDAL_MCP_PORT=5100 uv run python tidal_api/app.py",
     "bpm": "cd bpm-service && BPM_SERVICE_PORT=5101 uv run python bpm_service.py",
     "build": "next build",
     "start": "next start",

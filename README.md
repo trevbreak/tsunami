@@ -196,7 +196,7 @@ The committed `nimbalyst-local/tuning/round-1.json` and `round-2.json` are the r
 
 Tsunami's TIDAL connectivity is built on top of the excellent [**tidal-mcp**](https://github.com/yuhuacheng/tidal-mcp) project by [**yuhuacheng**](https://github.com/yuhuacheng), which handles TIDAL authentication, favourites, recommendations, and playlist management over a local HTTP API. Please go star their repo. 🌟
 
-> Tsunami talks to tidal-mcp's HTTP REST API (`tidal_api/app.py`), which it runs as a local sidecar process.
+> Tsunami talks to tidal-mcp's HTTP REST API (`tidal_api/app.py`), which it runs as a local sidecar process. **BPM analysis runs in a second local sidecar** ([`bpm-service/`](bpm-service/)) — ffmpeg + librosa kept out of the lean TIDAL shim — that fills gaps where TIDAL has no native BPM. Both start automatically with `npm run dev`.
 
 ---
 
@@ -240,10 +240,15 @@ TIDAL_API_URL=http://127.0.0.1:5100
 
 ### 4. Point the dev script at your tidal-mcp clone
 
-The `tidal` script in `package.json` launches the MCP server. Edit the path if your clone lives elsewhere or `uv` isn't on your `PATH`:
+The `tidal` script in `package.json` launches the MCP server. It defaults to a sibling `../tidal-mcp` clone — if yours lives elsewhere, set `TIDAL_MCP_DIR` instead of editing `package.json`:
 
 ```jsonc
-"tidal": "cd ../tidal-mcp && TIDAL_MCP_PORT=5100 uv run python tidal_api/app.py",
+"tidal": "cd \"${TIDAL_MCP_DIR:-../tidal-mcp}\" && TIDAL_MCP_PORT=5100 uv run python tidal_api/app.py",
+```
+
+```bash
+# Clone is somewhere other than ../tidal-mcp? Point at it (and make sure uv is on PATH):
+TIDAL_MCP_DIR=/path/to/tidal-mcp npm run dev
 ```
 
 ### 5. Run everything
@@ -399,4 +404,4 @@ types/index.ts             # Shared TypeScript types (incl. RunConfig)
 
 *   This is a personal/local project: the tidal-mcp server runs on your own machine and stores your TIDAL session locally.
 *   `data/` (including `library.db`) is git-ignored — your synced library never leaves your machine.
-*   The `tidal` npm script ships with a machine-specific path — edit it (step 4) before running.
+*   The `tidal` npm script defaults to a sibling `../tidal-mcp` clone; set `TIDAL_MCP_DIR` if yours lives elsewhere (see step 4).

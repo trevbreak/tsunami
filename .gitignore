@@ -48,8 +48,7 @@ data/
 # nimbalyst editor workspace scratch (transcript images, browser sessions)
 /.nimbalyst/
 
-# bpm-service (Python sidecar) — venv + bytecode + lockfile cache
+# bpm-service (Python sidecar) — venv + bytecode (uv.lock IS committed for reproducible installs)
 /bpm-service/.venv/
 __pycache__/
 *.pyc
-/bpm-service/uv.lock
