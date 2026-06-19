@@ -1,4 +1,6 @@
 const TIDAL_API = process.env.TIDAL_API_URL ?? 'http://127.0.0.1:5100'
+// Local BPM-analysis sidecar (ffmpeg + librosa), separate from the TIDAL API shim.
+const BPM_SERVICE_URL = process.env.BPM_SERVICE_URL ?? 'http://127.0.0.1:5101'
 
 async function tidalFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${TIDAL_API}${path}`, {
@@ -123,13 +125,21 @@ export async function createPlaylist(
   })
 }
 
+/**
+ * Stream local BPM analysis for the given track IDs. Talks to the standalone BPM
+ * sidecar (bpm-service/), not the TIDAL API shim — BPM is computed locally via
+ * ffmpeg + librosa to fill gaps where TIDAL has no native bpm.
+ *
+ * Per-track events carry `processed` (running count handled); the final event's
+ * `analyzed` is successes only — distinct fields, never the same key for both.
+ */
 export async function* enrichBpmBatch(
   trackIds: string[]
 ): AsyncGenerator<
-  | { done: false; trackId: string; bpm: number | null; analyzed: number; total: number }
+  | { done: false; trackId: string; bpm: number | null; processed: number; total: number }
   | { done: true; analyzed: number; failed: number; total: number }
 > {
-  const res = await fetch(`${TIDAL_API}/api/bpm/batch`, {
+  const res = await fetch(`${BPM_SERVICE_URL}/api/bpm/batch`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ track_ids: trackIds }),
@@ -156,7 +166,7 @@ export async function* enrichBpmBatch(
       if (data.done) {
         yield { done: true, analyzed: data.analyzed, failed: data.failed, total: data.total }
       } else {
-        yield { done: false, trackId: data.track_id, bpm: data.bpm ?? null, analyzed: data.analyzed, total: data.total }
+        yield { done: false, trackId: data.track_id, bpm: data.bpm ?? null, processed: data.processed, total: data.total }
       }
     }
   }

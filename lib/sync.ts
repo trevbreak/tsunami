@@ -291,8 +291,8 @@ export async function runBpmEnrichment(
       emit({
         type: 'progress',
         phase: 'bpm',
-        message: `Analysing BPM… ${event.analyzed}/${event.total}`,
-        current: event.analyzed,
+        message: `Analysing BPM… ${event.processed}/${event.total}`,
+        current: event.processed,
         total: event.total,
       })
     }
