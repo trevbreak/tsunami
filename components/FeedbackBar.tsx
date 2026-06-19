@@ -31,6 +31,9 @@ export default function FeedbackBar({ onSend, onRegenerate, isGenerating, hasPla
 
   return (
     <div className="flex gap-2 items-end">
+      {/* Stay editable while generating: keeps focus in the box (so the focus
+          ring doesn't jump onto a mode tab) and lets the user compose their
+          next prompt. handleSubmit + the Send button still gate sending. */}
       <textarea
         ref={textareaRef}
         value={text}
@@ -43,7 +46,6 @@ export default function FeedbackBar({ onSend, onRegenerate, isGenerating, hasPla
         }
         rows={2}
         className="flex-1 resize-none rounded-xl border border-white/12 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder-white/40 backdrop-blur focus:border-fuchsia-400/60 focus:outline-none"
-        disabled={isGenerating}
       />
       <div className="flex flex-col gap-1.5">
         {hasPlaylist && !isGenerating && (
