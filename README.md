@@ -194,7 +194,7 @@ The committed `nimbalyst-local/tuning/round-1.json` and `round-2.json` are the r
 
 ## 🙏 Acknowledgements
 
-Tsunami's TIDAL connectivity is built on top of the excellent [**tidal-mcp**](https://github.com/yuhuacheng/tidal-mcp) project by [**yuhuacheng**](https://github.com/yuhuacheng), which handles TIDAL authentication, favourites, recommendations, and playlist management over a local HTTP API. Please go star their repo. 🌟
+Tsunami's TIDAL connectivity is built on top of [**ibeal/tidal-mcp**](https://github.com/ibeal/tidal-mcp) — a fork of the excellent original [**tidal-mcp**](https://github.com/yuhuacheng/tidal-mcp) by [**yuhuacheng**](https://github.com/yuhuacheng) — which handles TIDAL authentication, favourites, recommendations, and playlist management over a local HTTP API. Please go star both repos. 🌟
 
 > Tsunami talks to tidal-mcp's HTTP REST API (`tidal_api/app.py`), which it runs as a local sidecar process. **BPM analysis runs in a second local sidecar** ([`bpm-service/`](bpm-service/)) — ffmpeg + librosa kept out of the lean TIDAL shim — that fills gaps where TIDAL has no native BPM. Both start automatically with `npm run dev`.
 
@@ -203,8 +203,9 @@ Tsunami's TIDAL connectivity is built on top of the excellent [**tidal-mcp**](ht
 ## 📋 Prerequisites
 
 *   **Node.js 20+** (Next.js 16 requires Node 20.9+)
-*   **Python** with [**uv**](https://github.com/astral-sh/uv) — to run the tidal-mcp server
-*   A local clone of [**tidal-mcp**](https://github.com/yuhuacheng/tidal-mcp)
+*   **Python** with [**uv**](https://github.com/astral-sh/uv) — runs both the tidal-mcp server and the BPM sidecar
+*   **`ffmpeg`** on your `PATH` — used by the BPM sidecar to decode audio for analysis
+*   A local clone of [**ibeal/tidal-mcp**](https://github.com/ibeal/tidal-mcp)
 *   An **Anthropic API key**
 *   A **TIDAL account**
 
@@ -215,7 +216,7 @@ Tsunami's TIDAL connectivity is built on top of the excellent [**tidal-mcp**](ht
 ### 1. Clone the TIDAL MCP server
 
 ```bash
-git clone https://github.com/yuhuacheng/tidal-mcp.git
+git clone https://github.com/ibeal/tidal-mcp.git
 ```
 
 Follow its README to install dependencies (it uses `uv`).
@@ -236,6 +237,9 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 # Optional — where the tidal-mcp HTTP server is reachable (default: http://127.0.0.1:5100)
 TIDAL_API_URL=http://127.0.0.1:5100
+
+# Optional — where the BPM sidecar is reachable (default: http://127.0.0.1:5101)
+BPM_SERVICE_URL=http://127.0.0.1:5101
 ```
 
 ### 4. Point the dev script at your tidal-mcp clone
@@ -257,15 +261,17 @@ TIDAL_MCP_DIR=/path/to/tidal-mcp npm run dev
 npm run dev
 ```
 
-`concurrently` starts both:
+`concurrently` starts all three:
 
 *   the **tidal-mcp** server on port `5100` (label `tidal`, cyan)
+*   the **BPM sidecar** ([`bpm-service/`](bpm-service/)) on port `5101` (label `bpm`, yellow)
 *   the **Next.js** dev server on port `3000` (label `next`, magenta)
 
-Wait for **both** lines, then open <http://localhost:3000>:
+Wait for the **next** line, then open <http://localhost:3000>:
 
 ```
 [tidal] Starting Flask app on port 5100
+[bpm]   Tsunami BPM sidecar starting on port 5101
 [next]  ✓ Ready ... Local: http://localhost:3000
 ```
 
@@ -345,8 +351,9 @@ This unlocks **style-aware sequencing** (small genre clusters, gradual transitio
 
 | Script | Description |
 | --- | --- |
-| `npm run dev` | Run the tidal-mcp server and Next.js dev server together |
-| `npm run tidal` | Run only the tidal-mcp server (edit the path first) |
+| `npm run dev` | Run the tidal-mcp server, the BPM sidecar, and the Next.js dev server together |
+| `npm run tidal` | Run only the tidal-mcp server (set `TIDAL_MCP_DIR` if the clone isn't at `../tidal-mcp`) |
+| `npm run bpm` | Run only the BPM sidecar (`bpm-service/`, port 5101) |
 | `npm run build` | Production build |
 | `npm run start` | Start the production server |
 | `npm run lint` | Run ESLint |
@@ -383,6 +390,7 @@ lib/
   tidal.ts                 # Thin client over the tidal-mcp HTTP API
   reddit.ts                # Music-subreddit context fetching
 public/tuner.html          # Standalone recommender weight-tuning harness
+bpm-service/               # Local BPM-analysis sidecar (ffmpeg + librosa, port 5101)
 nimbalyst-local/tuning/    # Saved tuning rounds (round-<N>.json) that trained the defaults
 types/index.ts             # Shared TypeScript types (incl. RunConfig)
 ```
@@ -396,7 +404,7 @@ types/index.ts             # Shared TypeScript types (incl. RunConfig)
 *   **TypeScript**
 *   [**better-sqlite3**](https://github.com/WiseLibs/better-sqlite3) — local library + ranking store
 *   [**Anthropic SDK**](https://docs.anthropic.com/) — Claude with tool use (model: `claude-sonnet-4-6`)
-*   [**tidal-mcp**](https://github.com/yuhuacheng/tidal-mcp) — TIDAL integration
+*   [**ibeal/tidal-mcp**](https://github.com/ibeal/tidal-mcp) — TIDAL integration (fork of [yuhuacheng/tidal-mcp](https://github.com/yuhuacheng/tidal-mcp))
 
 ---
 
