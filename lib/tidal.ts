@@ -35,6 +35,20 @@ export async function getFavoriteTracksPage(
   return tidalFetch(`/api/tracks?limit=${limit}&offset=${offset}`)
 }
 
+export async function getTrackCovers(
+  trackIds: string[]
+): Promise<Record<string, string | null>> {
+  if (trackIds.length === 0) return {}
+  const data = await tidalFetch('/api/tracks/lookup', {
+    method: 'POST',
+    body: JSON.stringify({ track_ids: trackIds }),
+  })
+  const tracks: Record<string, { cover_url?: string | null }> = data.tracks ?? {}
+  return Object.fromEntries(
+    Object.entries(tracks).map(([id, t]) => [id, t?.cover_url ?? null])
+  )
+}
+
 export async function getBatchRecommendations(
   trackIds: string[],
   limitPerTrack = 10
