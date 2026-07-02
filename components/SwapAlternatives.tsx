@@ -55,12 +55,20 @@ export default function SwapAlternatives({ alternatives, loading, onSwap, onRemo
         <p className="text-[11px] font-semibold uppercase tracking-wider text-white/55">
           {loading ? 'Finding alternatives…' : alternatives.length ? 'Swap in a better fit' : 'No close matches'}
         </p>
-        <button
-          onClick={onCancel}
-          className="text-xs text-white/50 transition-colors hover:text-white"
-        >
-          Cancel
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onRemove}
+            className="text-xs text-red-400/70 transition-colors hover:text-red-300"
+          >
+            Just remove it
+          </button>
+          <button
+            onClick={onCancel}
+            className="text-xs text-white/50 transition-colors hover:text-white"
+          >
+            Cancel
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -76,16 +84,9 @@ export default function SwapAlternatives({ alternatives, loading, onSwap, onRemo
         </div>
       ) : (
         <p className="py-1 text-xs text-white/55">
-          Couldn&apos;t find a close match for this spot. You can still remove it.
+          Couldn&apos;t find a close match for this spot.
         </p>
       )}
-
-      <button
-        onClick={onRemove}
-        className="mt-1 self-start rounded-lg px-2 py-1 text-xs text-white/55 transition-colors hover:bg-red-500/15 hover:text-red-300"
-      >
-        Remove entirely
-      </button>
     </div>
   )
 }

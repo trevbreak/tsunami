@@ -68,6 +68,8 @@ export default function Home() {
   const [swapForId, setSwapForId] = useState<string | null>(null)
   const [alternatives, setAlternatives] = useState<Track[]>([])
   const [loadingAlternatives, setLoadingAlternatives] = useState(false)
+  // Tracks shown ≥3 times as an alternative without being picked are suppressed for the rest of the session.
+  const [altImpressions, setAltImpressions] = useState<Map<string, number>>(new Map())
 
   // Library sync state
   const [libraryStatus, setLibraryStatus] = useState<{
@@ -168,6 +170,7 @@ export default function Home() {
     setTargetPlaylist(null)
     setPlaylistTracks([])
     setRunConfig(null)
+    setAltImpressions(new Map())
     closeSwap()
   }, [mode])
 
@@ -195,6 +198,22 @@ export default function Home() {
         status: prevMap.get(t.tidal_id)?.status ?? defaultStatus,
       }))
     })
+    // Fill cover art for any tracks that arrived without it.
+    const missing = incoming.filter((t) => !t.cover_url).map((t) => t.tidal_id)
+    if (missing.length > 0) {
+      fetch('/api/track-covers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: missing }),
+      })
+        .then((r) => r.json())
+        .then((covers: Record<string, string | null>) => {
+          setTracks((prev) =>
+            prev.map((t) => (covers[t.tidal_id] ? { ...t, cover_url: covers[t.tidal_id]! } : t))
+          )
+        })
+        .catch(() => {})
+    }
   }
 
   function updateTrackStatus(tidalId: string, status: 'accepted' | 'rejected') {
@@ -219,7 +238,10 @@ export default function Home() {
     const neighborIds = [visible[idx - 1]?.tidal_id, visible[idx + 1]?.tidal_id].filter(
       (id): id is string => !!id
     )
-    const excludeIds = tracks.map((t) => t.tidal_id)
+    const burnedIds = Array.from(altImpressions.entries())
+      .filter(([, count]) => count >= 3)
+      .map(([id]) => id)
+    const excludeIds = [...new Set([...tracks.map((t) => t.tidal_id), ...burnedIds])]
 
     try {
       const res = await fetch('/api/alternatives', {
@@ -234,11 +256,20 @@ export default function Home() {
         }),
       })
       const data = await res.json()
+      const fetched: Track[] = data.alternatives ?? []
       // Ignore if the user moved on to a different track meanwhile.
       setSwapForId((cur) => {
-        if (cur === tidalId) setAlternatives(data.alternatives ?? [])
+        if (cur === tidalId) setAlternatives(fetched)
         return cur
       })
+      // Record impressions for each alternative shown.
+      if (fetched.length > 0) {
+        setAltImpressions((prev) => {
+          const next = new Map(prev)
+          for (const t of fetched) next.set(t.tidal_id, (next.get(t.tidal_id) ?? 0) + 1)
+          return next
+        })
+      }
     } catch {
       setAlternatives([])
     } finally {
@@ -292,6 +323,7 @@ export default function Home() {
   async function selectPlaylistForEnhance(playlist: ExistingPlaylist) {
     setTargetPlaylist(playlist)
     setTracks([])
+    setAltImpressions(new Map())
     setSavedUrl('')
     setEnhanceMessages([])
     setLoadingPlaylistTracks(true)
@@ -592,7 +624,7 @@ export default function Home() {
               hasPlaylist ? (
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => { setRunConfig(null); setTracks([]); setSavedUrl('') }}
+                    onClick={() => { setRunConfig(null); setTracks([]); setAltImpressions(new Map()); setSavedUrl('') }}
                     className="text-xs text-white/50 hover:text-white transition-colors"
                   >
                     ← Change settings
@@ -610,7 +642,7 @@ export default function Home() {
                   /* Compact back button + playlist name */
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => { setTargetPlaylist(null); setTracks([]); setSavedUrl('') }}
+                      onClick={() => { setTargetPlaylist(null); setTracks([]); setAltImpressions(new Map()); setSavedUrl('') }}
                       className="text-xs text-white/50 hover:text-white transition-colors"
                     >
                       ← Change playlist

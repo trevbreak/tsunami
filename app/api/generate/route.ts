@@ -175,10 +175,13 @@ export async function POST(req: NextRequest) {
               const rawTracks = parseTracksFromMessage(block.text)
               if (rawTracks.length > 0) {
                 send({ type: 'status', phase: 'curating', message: 'Handpicking tracks just for you…' })
+                const dbRows = new Map(
+                  getTracksByIds(rawTracks.map((t) => t.tidal_id)).map((r) => [r.id, r])
+                )
                 const enriched = rawTracks.map((t) => ({
                   ...t,
-                  cover_url: t.cover_url || coverMap.get(t.tidal_id),
-                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id),
+                  cover_url: t.cover_url || coverMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.cover_url || undefined,
+                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.tidal_url || undefined,
                 }))
                 // DJ-sequence the final list: smooth transitions, spaced artists.
                 const audio = new Map<string, SeqAudio>(
