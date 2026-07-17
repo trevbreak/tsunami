@@ -259,17 +259,19 @@ export default function Home() {
       const fetched: Track[] = data.alternatives ?? []
       // Ignore if the user moved on to a different track meanwhile.
       setSwapForId((cur) => {
-        if (cur === tidalId) setAlternatives(fetched)
+        if (cur === tidalId) {
+          setAlternatives(fetched)
+          // Record impressions only for alternatives actually shown to the user.
+          if (fetched.length > 0) {
+            setAltImpressions((prev) => {
+              const next = new Map(prev)
+              for (const t of fetched) next.set(t.tidal_id, (next.get(t.tidal_id) ?? 0) + 1)
+              return next
+            })
+          }
+        }
         return cur
       })
-      // Record impressions for each alternative shown.
-      if (fetched.length > 0) {
-        setAltImpressions((prev) => {
-          const next = new Map(prev)
-          for (const t of fetched) next.set(t.tidal_id, (next.get(t.tidal_id) ?? 0) + 1)
-          return next
-        })
-      }
     } catch {
       setAlternatives([])
     } finally {

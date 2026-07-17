@@ -3,7 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { anthropic, TIDAL_TOOLS, SYSTEM_PROMPT, MOOD_DESCRIPTIONS, parseTracksFromMessage } from '@/lib/claude'
 import { getFavoriteTracks, getBatchRecommendations, getUserPlaylists, getPlaylistTracks } from '@/lib/tidal'
 import { getMusicRecommendations, formatRedditContext } from '@/lib/reddit'
-import { dbExists, getTracksByIds, getGenreMap, getFeatureVectorMap, logFeedback } from '@/lib/db'
+import { dbExists, getTracksByIds, getGenreMap, getFeatureVectorMap, logFeedback, normalizeId } from '@/lib/db'
 import { recommend } from '@/lib/recommender'
 import { sequenceTidalTracks } from '@/lib/sequencer'
 import type { SeqAudio } from '@/lib/sequencer'
@@ -180,12 +180,12 @@ export async function POST(req: NextRequest) {
                 )
                 const enriched = rawTracks.map((t) => ({
                   ...t,
-                  cover_url: t.cover_url || coverMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.cover_url || undefined,
-                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id) || dbRows.get(t.tidal_id)?.tidal_url || undefined,
+                  cover_url: t.cover_url || coverMap.get(t.tidal_id) || dbRows.get(normalizeId(t.tidal_id))?.cover_url || undefined,
+                  tidal_url: t.tidal_url || urlMap.get(t.tidal_id) || dbRows.get(normalizeId(t.tidal_id))?.tidal_url || undefined,
                 }))
                 // DJ-sequence the final list: smooth transitions, spaced artists.
                 const audio = new Map<string, SeqAudio>(
-                  getTracksByIds(enriched.map((t) => t.tidal_id)).map((r) => [
+                  Array.from(dbRows.values()).map((r) => [
                     r.id,
                     { bpm: r.bpm, music_key: r.music_key, key_scale: r.key_scale },
                   ])
